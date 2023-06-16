@@ -16,9 +16,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
-    #[Assert\NotBlank]
-    #[Assert\Unique]
+    #[ORM\Column(length: 60, unique: true)]
+    #[Assert\NotBlank(
+        message: 'You must enter a username.',
+    )]
+    #[Assert\Unique(
+        message: 'Username not available.',
+    )]
+    private $username;
+
+    #[ORM\Column(length: 60, unique: true)]
+    #[Assert\NotBlank(
+        message: 'You must enter a valid email.',
+    )]
+    #[Assert\Unique(
+        message: 'The email is already registered.',
+    )]
+    #[Assert\Email(
+        message: 'The email {{ value }} is not a valid email.',
+    )]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -27,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column(length: 64)]
     private ?string $password = null;
 
     public function getId(): ?int
@@ -35,6 +51,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->id;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * @param mixed $username
+     */
+    public function setUsername($username): void
+    {
+        $this->username = $username;
+    }
+
+    
     public function getEmail(): ?string
     {
         return $this->email;
