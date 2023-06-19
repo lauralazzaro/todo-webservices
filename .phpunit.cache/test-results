@@ -1,1 +1,1 @@
-{"version":1,"defects":[],"times":{"App\\Tests\\Entity\\UserTest::testEntityUser":0.003}}
+{"version":1,"defects":{"App\\Tests\\Entity\\TaskTest::testEntityUser":5},"times":{"App\\Tests\\Entity\\UserTest::testEntityUser":0.001,"App\\Tests\\Entity\\TaskTest::testEntityUser":0.021,"App\\Tests\\Entity\\TaskTest::testEntityTask":0.018}}
