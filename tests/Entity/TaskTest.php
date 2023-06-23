@@ -4,30 +4,53 @@ namespace App\Tests\Entity;
 
 use App\Entity\Task;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 
 class TaskTest extends TestCase
 {
-    public function testEntityTask()
+
+    public function testTitleIsRequired()
     {
-        // Arrange
+        $validator = Validation::createValidatorBuilder()
+            ->enableAnnotationMapping()
+            ->addDefaultDoctrineAnnotationReader()
+            ->getValidator();
         $task = new Task();
-        $createdAT = new \DateTimeImmutable();
-        $title = 'New super cool task';
-        $content = 'This is a test for the task entity';
+        $task->setContent('Some content');
+        $task->setDone(false);
 
-        // Act
-        $task->setCreatedAt($createdAT);
-        $task->setTitle($title);
-        $task->setContent($content);
-        $task->setDone(true);
+        $violations = $validator->validate($task);
+        $this->assertCount(1, $violations);
+        $this->assertEquals('You must enter a title.', $violations[0]->getMessage());
+    }
 
-        // Assert
-        $this->assertSame($createdAT, $task->getCreatedAt());
-        $this->assertEquals($title, $task->getTitle());
-        $this->assertEquals($content, $task->getContent());
+    public function testContentIsRequired()
+    {
+        $validator = Validation::createValidatorBuilder()
+            ->enableAnnotationMapping()
+            ->addDefaultDoctrineAnnotationReader()
+            ->getValidator();
+        
+        $task = new Task();
+        $task->setTitle('Task title');
+        $task->setDone(false);
 
-        $this->assertIsString($task->getTitle());
-        $this->assertIsString($task->getContent());
-        $this->assertIsBool($task->isDone());
+        $violations = $validator->validate($task);
+
+        $this->assertCount(1, $violations);
+        $this->assertEquals('You must enter a content.', $violations[0]->getMessage());
+    }
+
+    public function testValidTask()
+    {
+        $validator = Validation::createValidator();
+        $task = new Task();
+        $task->setTitle('Task title');
+        $task->setContent('Some content');
+        $task->setDone(false);
+
+        $violations = $validator->validate($task);
+        $this->assertCount(0, $violations);
     }
 }
