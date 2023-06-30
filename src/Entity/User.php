@@ -4,9 +4,12 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use http\Encoding\Stream;
+use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -20,31 +23,47 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(
         message: 'You must enter a username.',
     )]
-    #[Assert\Unique(
-        message: 'Username not available.',
-    )]
-    private $username;
+    #[Groups(
+        [
+            'getUsers'
+        ])
+    ]
+    private string $username;
 
     #[ORM\Column(length: 60, unique: true)]
     #[Assert\NotBlank(
-        message: 'You must enter a valid email.',
-    )]
-    #[Assert\Unique(
-        message: 'The email is already registered.',
+        message: 'You must enter a valid email.'
     )]
     #[Assert\Email(
         message: 'The email {{ value }} is not a valid email.',
+        mode: 'html5'
     )]
-    private ?string $email = null;
+    #[Groups(
+        [
+            'getUsers'
+        ])
+    ]
+    private string $email;
 
     #[ORM\Column]
+    #[Groups(
+        [
+            'getUsers'
+        ])
+    ]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column(length: 64)]
-    private ?string $password = null;
+    #[Assert\NotBlank(
+        message: 'You must enter a password.',
+    )]
+//    #[Assert\PasswordStrength([
+//        'minScore' => PasswordStrength::STRENGTH_VERY_WEAK,
+//    ])]
+    private string $password;
 
     public function getId(): ?int
     {
@@ -67,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->username = $username;
     }
 
-    
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -87,7 +106,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**

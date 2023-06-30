@@ -14,4 +14,4 @@ var/
 ###< symfony/phpunit-bridge ###
 
 public/test-coverage/
-*cache*
+/.phpunit.cache/

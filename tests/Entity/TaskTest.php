@@ -5,7 +5,6 @@ namespace App\Tests\Entity;
 use App\Entity\Task;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Validation;
-use Symfony\Component\Form\Extension\Validator\ValidatorExtension;
 
 class TaskTest extends TestCase
 {
