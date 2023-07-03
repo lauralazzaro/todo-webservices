@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -21,12 +20,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(
         message: 'You must enter a username.',
     )]
-    #[Groups(
-        [
-            'getUsers'
-        ]
-    )
-    ]
     private string $username;
 
     #[ORM\Column(length: 60, unique: true)]
@@ -37,21 +30,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         message: 'The email {{ value }} is not a valid email.',
         mode: 'html5'
     )]
-    #[Groups(
-        [
-            'getUsers'
-        ]
-    )
-    ]
     private string $email;
 
     #[ORM\Column]
-    #[Groups(
-        [
-            'getUsers'
-        ]
-    )
-    ]
     private array $roles = [];
 
     /**
