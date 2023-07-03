@@ -8,7 +8,6 @@ use Symfony\Component\Validator\Validation;
 
 class TaskTest extends TestCase
 {
-
     public function testTitleIsRequired()
     {
         $validator = Validation::createValidatorBuilder()
@@ -17,7 +16,6 @@ class TaskTest extends TestCase
             ->getValidator();
         $task = new Task();
         $task->setContent('Some content');
-        $task->setIsDone(false);
 
         $violations = $validator->validate($task);
         $this->assertCount(1, $violations);
@@ -30,10 +28,9 @@ class TaskTest extends TestCase
             ->enableAnnotationMapping()
             ->addDefaultDoctrineAnnotationReader()
             ->getValidator();
-        
+
         $task = new Task();
         $task->setTitle('Task title');
-        $task->setIsDone(false);
 
         $violations = $validator->validate($task);
 
