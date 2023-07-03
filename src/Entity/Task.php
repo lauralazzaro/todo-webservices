@@ -18,7 +18,7 @@ class Task
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?DateTimeImmutable $createdAt = null;
+    private DateTimeImmutable $createdAt;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(
@@ -32,15 +32,16 @@ class Task
     )]
     private string $content;
 
-    #[ORM\Column]
-    private ?bool $done = null;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    private bool $isDone;
 
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
+        $this->isDone = false;
     }
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -57,7 +58,7 @@ class Task
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -69,7 +70,7 @@ class Task
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -81,15 +82,13 @@ class Task
         return $this;
     }
 
-    public function isDone(): ?bool
+    public function isDone(): bool
     {
-        return $this->done;
+        return $this->isDone;
     }
 
-    public function setDone(bool $done): static
+    public function toggle($flag)
     {
-        $this->done = $done;
-
-        return $this;
+        $this->isDone = $flag;
     }
 }

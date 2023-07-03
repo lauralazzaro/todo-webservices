@@ -59,7 +59,7 @@ class UserController extends AbstractController
         User                        $user,
         Request                     $request,
         UserPasswordHasherInterface $passwordHasher,
-        EntityManagerInterface      $entityManager,)
+        UserRepository              $userRepository)
     {
         $form = $this->createForm(UserType::class, $user);
 
@@ -72,7 +72,7 @@ class UserController extends AbstractController
             );
             $user->setPassword($hashedPassword);
 
-            $entityManager->flush();
+            $userRepository->save($user, true);
 
             $this->addFlash('success', "L'utilisateur a bien été modifié");
 
