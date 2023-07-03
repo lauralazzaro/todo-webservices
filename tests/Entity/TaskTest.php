@@ -17,7 +17,7 @@ class TaskTest extends TestCase
             ->getValidator();
         $task = new Task();
         $task->setContent('Some content');
-        $task->setDone(false);
+        $task->setIsDone(false);
 
         $violations = $validator->validate($task);
         $this->assertCount(1, $violations);
@@ -33,7 +33,7 @@ class TaskTest extends TestCase
         
         $task = new Task();
         $task->setTitle('Task title');
-        $task->setDone(false);
+        $task->setIsDone(false);
 
         $violations = $validator->validate($task);
 
@@ -47,7 +47,7 @@ class TaskTest extends TestCase
         $task = new Task();
         $task->setTitle('Task title');
         $task->setContent('Some content');
-        $task->setDone(false);
+        $task->setIsDone(false);
 
         $violations = $validator->validate($task);
         $this->assertCount(0, $violations);

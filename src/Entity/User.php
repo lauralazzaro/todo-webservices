@@ -24,7 +24,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(
         [
             'getUsers'
-        ])
+        ]
+    )
     ]
     private string $username;
 
@@ -39,7 +40,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(
         [
             'getUsers'
-        ])
+        ]
+    )
     ]
     private string $email;
 
@@ -47,7 +49,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(
         [
             'getUsers'
-        ])
+        ]
+    )
     ]
     private array $roles = [];
 

@@ -24,11 +24,10 @@ class UserController extends AbstractController
 
     #[Route("/users/create", name: "user_create")]
     public function createAction(
-        Request                     $request,
+        Request $request,
         UserPasswordHasherInterface $passwordHasher,
-        UserRepository              $userRepository
-    )
-    {
+        UserRepository $userRepository
+    ) {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
@@ -56,11 +55,11 @@ class UserController extends AbstractController
 
     #[Route("/users/{id}/edit", name: "user_edit")]
     public function editAction(
-        User                        $user,
-        Request                     $request,
+        User $user,
+        Request $request,
         UserPasswordHasherInterface $passwordHasher,
-        UserRepository              $userRepository)
-    {
+        UserRepository $userRepository
+    ) {
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);

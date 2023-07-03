@@ -15,23 +15,23 @@ class TaskController extends AbstractController
     #[Route('/task', name: 'task_list')]
     public function listAction(TaskRepository $taskRepository): Response
     {
-        return $this->render('task/list.html.twig',
-            ['tasks' => $taskRepository->findAll()]);
+        return $this->render(
+            'task/list.html.twig',
+            ['tasks' => $taskRepository->findAll()]
+        );
     }
 
     #[Route('/task/create', name: 'task_create')]
     public function createAction(
-        Request        $request,
+        Request $request,
         TaskRepository $taskRepository
-    )
-    {
+    ) {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
             $taskRepository->save($task, true);
 
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
@@ -44,11 +44,10 @@ class TaskController extends AbstractController
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
     public function editAction(
-        Task           $task,
-        Request        $request,
+        Task $task,
+        Request $request,
         TaskRepository $taskRepository
-    )
-    {
+    ) {
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
@@ -69,10 +68,9 @@ class TaskController extends AbstractController
 
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
     public function toggleTaskAction(
-        Task           $task,
+        Task $task,
         TaskRepository $taskRepository
-    )
-    {
+    ) {
         $task->toggle(!$task->isDone());
         $taskRepository->save($task, true);
 
@@ -83,9 +81,9 @@ class TaskController extends AbstractController
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
     public function deleteTaskAction(
-        Task           $task,
-        TaskRepository $taskRepository)
-    {
+        Task $task,
+        TaskRepository $taskRepository
+    ) {
         $taskRepository->remove($task);
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
