@@ -84,7 +84,7 @@ class TaskController extends AbstractController
         Task $task,
         TaskRepository $taskRepository
     ) {
-        $taskRepository->remove($task);
+        $taskRepository->remove($task, true);
 
         $this->addFlash('success', 'La tâche a bien été supprimée.');
 
