@@ -42,7 +42,7 @@ class UserController extends AbstractController
 
             $user->setPassword($hashedPassword);
 
-            $userRepository->save($user);
+            $userRepository->save($user, true);
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
