@@ -1,0 +1,25 @@
+name: PHP Unit Tests
+
+on:
+    push:
+        branches:
+            - dev  # Set this to your main branch name
+
+jobs:
+    test:
+        runs-on: ubuntu-latest  # Choose the desired operating system
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v2
+
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.1'  # Choose the desired PHP version
+
+            - name: Install Composer dependencies
+              run: composer install
+
+            - name: Run PHPUnit tests
+              run: vendor/bin/phpunit
