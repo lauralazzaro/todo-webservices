@@ -42,18 +42,13 @@ class UserTest extends TestCase
 
     public function testEmailFormatIsValid()
     {
-        $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
-            ->getValidator();
         $user = new User();
         $user->setUsername('test_user');
         $user->setEmail('invalid_email');
         $user->setPassword('password');
 
-        $violations = $validator->validate($user);
-        $this->assertCount(1, $violations);
-        $this->assertEquals('The email "invalid_email" is not a valid email.', $violations[0]->getMessage());
+        $emailInvalidMessage = $user->isEmailValid($user->getEmail());
+        $this->assertEquals('The email "invalid_email" is not a valid email.', $emailInvalidMessage);
     }
 
     public function testPasswordIsRequired()

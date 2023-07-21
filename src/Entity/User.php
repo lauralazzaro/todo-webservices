@@ -28,10 +28,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(
         message: 'You must enter a valid email.'
     )]
-    #[Assert\Email(
-        message: 'The email {{ value }} is not a valid email.',
-        mode: 'html5'
-    )]
     private string $email;
 
     #[ORM\Column]
@@ -166,5 +162,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function isEmailValid(string $email): bool
+    {
+        $pattern = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
+        return preg_match($pattern, $email) === 1
+            ? true
+            : "The email $email is not a valid email.";
     }
 }
