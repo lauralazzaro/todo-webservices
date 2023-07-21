@@ -29,9 +29,11 @@ jobs:
       run: |
         echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> .env
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
       env:
         APP_ENV: ${{ secrets.APP_ENV }}
         APP_SECRET: ${{ secrets.APP_SECRET }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
