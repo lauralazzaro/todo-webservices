@@ -25,8 +25,13 @@ jobs:
       with:
         php-version: '8.1'
     - uses: actions/checkout@v3
-    - name: Copy .env.test.local
-      run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+    - name: Create .env file
+      run:
+        echo "API_KEY=${{ secrets.API_KEY }}" > .env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD 
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
