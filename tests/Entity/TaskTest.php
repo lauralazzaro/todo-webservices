@@ -44,7 +44,6 @@ class TaskTest extends TestCase
         $task = new Task();
         $task->setTitle('Task title');
         $task->setContent('Some content');
-        $task->setIsDone(false);
 
         $violations = $validator->validate($task);
         $this->assertCount(0, $violations);
