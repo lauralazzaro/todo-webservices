@@ -25,6 +25,13 @@ jobs:
       with:
         php-version: '8.1'
     - uses: actions/checkout@v3
+    - name: Create .env file
+      run: |
+        echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
+        echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> .env
+      env:
+        APP_ENV: ${{ secrets.APP_ENV }}
+        APP_SECRET: ${{ secrets.APP_SECRET }}
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
