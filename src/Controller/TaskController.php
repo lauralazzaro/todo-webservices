@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TaskController extends AbstractController
 {
@@ -46,6 +47,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
+    #[IsGranted('edit', 'task', 'You don\'t have the rights to edit this task', 403)]
     public function editAction(
         Task $task,
         Request $request,
@@ -58,7 +60,7 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $taskRepository->save($task, true);
 
-            $this->addFlash('success', 'La tâche a bien été modifiée.');
+            $this->addFlash('success', 'The task has been modified.');
 
             return $this->redirectToRoute('task_list');
         }
@@ -83,6 +85,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
+    #[IsGranted('delete', 'task', 'You don\'t have the rights to delete this task', 403)]
     public function deleteTaskAction(
         Task $task,
         TaskRepository $taskRepository
