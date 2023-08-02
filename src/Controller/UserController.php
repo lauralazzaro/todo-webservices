@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Entity\User;
+use App\Security\Voter\UserVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -16,7 +18,11 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class UserController extends AbstractController
 {
     #[Route('/user', name: 'user_list')]
-    #[IsGranted('ROLE_ADMIN', message: 'You don\'t have the right to view the list of users')]
+    #[IsGranted(
+        UserVoter::VIEW,
+        message: 'You don\'t have the rights to create a user',
+        statusCode: 403
+    )]
     public function listAction(UserRepository $userRepository): Response
     {
         return $this->render('user/list.html.twig', [
@@ -25,14 +31,18 @@ class UserController extends AbstractController
     }
 
     #[Route("/users/create", name: "user_create")]
-    #[IsGranted('ROLE_ADMIN', message: 'You don\'t have the right to add a user')]
+    #[IsGranted(
+        UserVoter::CREATE,
+        message: 'You don\'t have the rights to create a user',
+        statusCode: 403
+    )]
     public function createAction(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         UserRepository $userRepository
-    ) {
-        $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+    ): RedirectResponse|Response {
+        $newUser = new User();
+        $form = $this->createForm(UserType::class, $newUser);
 
         $form->handleRequest($request);
 
@@ -40,13 +50,13 @@ class UserController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $hashedPassword = $passwordHasher->hashPassword(
-                $user,
+                $newUser,
                 $password
             );
 
-            $user->setPassword($hashedPassword);
+            $newUser->setPassword($hashedPassword);
 
-            $userRepository->save($user, true);
+            $userRepository->save($newUser, true);
 
             $this->addFlash('success', "User successfully created.");
 
@@ -57,7 +67,11 @@ class UserController extends AbstractController
     }
 
     #[Route("/users/{id}/edit", name: "user_edit")]
-    #[IsGranted('ROLE_USER', message: 'You must be logged in to view this page')]
+    #[IsGranted(
+        UserVoter::EDIT,
+        message: 'You don\'t have the right to edit this user',
+        statusCode: 403
+    )]
     public function editAction(
         User $user,
         Request $request,

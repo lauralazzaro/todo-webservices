@@ -9,13 +9,14 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class TaskVoter extends Voter
 {
-    public const EDIT = 'edit';
-    public const DELETE = 'delete';
+    public const EDIT = 'TASK_EDIT';
+    public const DELETE = 'TASK_DELETE';
 
     public function supports(string $attribute, $subject): bool
     {
-        // Make sure this voter supports the "edit" attribute and the $subject is a Task object
-        return in_array($attribute, [self::EDIT, self::DELETE]) && $subject instanceof Task;
+        // Make sure this voter supports the attributes and the $subject is a Task object
+        return in_array($attribute, [self::EDIT, self::DELETE])
+            && $subject instanceof Task;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
@@ -23,19 +24,21 @@ class TaskVoter extends Voter
         // Get the current user from the security token
         $user = $token->getUser();
 
-        // If the user is not logged in, they cannot edit the task
         if (!$user instanceof User) {
             return false;
         }
 
-        // Check if the user is the creator of the task
-        if ($subject->getUser()) {
-            return $user === $subject->getUser();
-        }
+        switch ($attribute) {
+            case self::EDIT:
+            case self::DELETE:
+                if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                    return true;
+                }
 
-        // if the task has user = NULL it can be edited or deleted only by ADMINS
-        if (!$subject->getUser()) {
-            return in_array('ROLE_ADMIN', $user->getRoles());
+                // Check if the user is the creator of the task
+                if ($subject->getUser()) {
+                    return $user === $subject->getUser();
+                }
         }
     }
 }
