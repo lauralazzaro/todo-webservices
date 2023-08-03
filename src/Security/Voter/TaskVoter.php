@@ -24,21 +24,29 @@ class TaskVoter extends Voter
         // Get the current user from the security token
         $user = $token->getUser();
 
+        // Check if the user is connected
         if (!$user instanceof User) {
             return false;
         }
 
-        switch ($attribute) {
-            case self::EDIT:
-            case self::DELETE:
-                if (in_array('ROLE_ADMIN', $user->getRoles())) {
-                    return true;
-                }
+        return match ($attribute) {
+            self::EDIT, self::DELETE => $this->canEdit($subject, $user),
+            default => throw new \LogicException('This code should not be reached!')
+        };
+    }
 
-                // Check if the user is the creator of the task
-                if ($subject->getUser()) {
-                    return $user === $subject->getUser();
-                }
+    private function canEdit(Task $task, User $user): bool
+    {
+        // If the connected user has ROLE_ADMIN than can do everything
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            return true;
         }
+
+        // Check if the user is the creator of the task if it's not an ADMIN
+        if ($task->getUser() && $user === $task->getUser()) {
+            return true;
+        }
+
+        return false;
     }
 }

@@ -10,16 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TaskController extends AbstractController
 {
-    #[Route('/task', name: 'task_list')]
-    #[IsGranted(
-        'ROLE_USER',
-        message: 'You must be logged in',
-        statusCode: 401
-    )]
+    #[Route('/tasks', name: 'task_list')]
     public function listAction(TaskRepository $taskRepository): Response
     {
         return $this->render(
@@ -28,12 +22,7 @@ class TaskController extends AbstractController
         );
     }
 
-    #[Route('/task/create', name: 'task_create')]
-    #[IsGranted(
-        'ROLE_USER',
-        message: 'You must be logged in',
-        statusCode: 401
-    )]
+    #[Route('/tasks/create', name: 'task_create')]
     public function createAction(
         Request $request,
         TaskRepository $taskRepository
@@ -58,17 +47,17 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit')]
-    #[IsGranted(
-        TaskVoter::EDIT,
-        'task',
-        'You don\'t have the right to edit this task',
-        401
-    )]
     public function editAction(
         Task $task,
         Request $request,
         TaskRepository $taskRepository
     ) {
+        $this->denyAccessUnlessGranted(
+            attribute: TaskVoter::EDIT,
+            subject: $task,
+            message: 'You shall not pass!'
+        );
+
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
@@ -88,12 +77,6 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    #[IsGranted(
-        TaskVoter::EDIT,
-        'task',
-        'You don\'t have the right to edit this task',
-        401
-    )]
     public function toggleTaskAction(
         Task $task,
         TaskRepository $taskRepository
@@ -107,16 +90,16 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
-    #[IsGranted(
-        TaskVoter::DELETE,
-        'task',
-        'You don\'t have the right to edit this task',
-        401
-    )]
     public function deleteTaskAction(
         Task $task,
         TaskRepository $taskRepository
     ) {
+        $this->denyAccessUnlessGranted(
+            attribute: TaskVoter::DELETE,
+            subject: $task,
+            message: 'You shall not pass!'
+        );
+
         $taskRepository->remove($task, true);
 
         $this->addFlash('success', 'The task has been successfully deleted.');
