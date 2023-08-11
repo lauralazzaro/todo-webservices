@@ -2,7 +2,8 @@
 vendor/
 _old/
 .env*
-var/
+var/cache
+var/log
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
