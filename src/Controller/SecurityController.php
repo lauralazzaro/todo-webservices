@@ -30,6 +30,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/logout', name: 'logout')]
     public function logout(): void
     {
+        // This condition is not coverable since it depends on external factors.
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

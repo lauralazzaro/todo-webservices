@@ -8,11 +8,6 @@ var/
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-
 public/test-coverage/
 /.phpunit.cache/
 
