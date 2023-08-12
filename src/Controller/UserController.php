@@ -28,24 +28,25 @@ class UserController extends AbstractController
         UserPasswordHasherInterface $passwordHasher,
         UserRepository $userRepository
     ): RedirectResponse|Response {
-        $newUser = new User();
-        $form = $this->createForm(UserType::class, $newUser);
+        $form = $this->createForm(UserType::class);
 
         $form->handleRequest($request);
 
-        $password = $form->get('password')->getData();
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $newUser = $form->getData();
+
             $hashedPassword = $passwordHasher->hashPassword(
                 $newUser,
-                $password
+                $newUser->getPassword()
             );
-
             $newUser->setPassword($hashedPassword);
 
+            if (in_array('ROLE_ADMIN', $newUser->getRoles())) {
+                $newUser->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+            }
             $userRepository->save($newUser, true);
 
-            $this->addFlash('success', "User successfully created.");
+            $this->addFlash('success', "New user created.");
 
             return $this->redirectToRoute('user_list');
         }
