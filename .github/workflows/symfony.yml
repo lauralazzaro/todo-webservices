@@ -29,7 +29,7 @@ jobs:
       run: |
         echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> .env
-        echo "sqlite:///%kernel.project_dir%/var/data.db" >> .env
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
       env:
         APP_ENV: ${{ secrets.APP_ENV }}
         APP_SECRET: ${{ secrets.APP_SECRET }}
