@@ -25,6 +25,7 @@ jobs:
       with:
         php-version: '8.1'
     - uses: actions/checkout@v3
+      -
     - name: Create .env file
       run: |
         echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
@@ -34,6 +35,7 @@ jobs:
         APP_ENV: ${{ secrets.APP_ENV }}
         APP_SECRET: ${{ secrets.APP_SECRET }}
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
@@ -42,9 +44,23 @@ jobs:
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-php-
+
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+    - name: Create SQLite database
+      run: php bin/console doctrine:database:create --env=test
+
+    - name: Run Migrations
+      run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+    - name: Load Fixtures
+      run: php bin/console doctrine:fixtures:load --env=test --no-interaction
+
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
       run: vendor/bin/phpunit
+
+    - name: Clean up
+      run: php bin/console doctrine:database:drop --force --env=test
