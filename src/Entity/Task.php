@@ -35,8 +35,11 @@ class Task
     private bool $isDone;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?User $user = null;
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(
+        message: 'You must assign a user.',
+    )]
+    private User $user;
 
     public function __construct()
     {
@@ -52,13 +55,6 @@ class Task
     public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
-    }
-
-    public function setCreatedAt(DateTimeImmutable $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     public function getTitle(): string
@@ -95,12 +91,12 @@ class Task
         $this->isDone = $flag;
     }
 
-    public function getUser(): ?User
+    public function getUser(): User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(User $user): static
     {
         $this->user = $user;
 
