@@ -28,14 +28,15 @@ class TaskController extends AbstractController
         TaskRepository $taskRepository
     ) {
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
 
+        // retrieve the connected user and assign it to the task
+        $user = $this->getUser();
+        $task->setUser($user);
+
+        $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->getUser();
-            $task->setUser($user);
-
             $taskRepository->save($task, true);
 
             $this->addFlash('success', 'Task created successfully.');
