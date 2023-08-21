@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -35,7 +36,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(
         message: 'You must enter a password.',
     )]
+
     private string $password;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
+    private Collection $tasks;
 
     public function getId(): ?int
     {
