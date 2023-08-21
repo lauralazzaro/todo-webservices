@@ -222,10 +222,50 @@ class TaskControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
+    public function testDeleteSuccess()
+    {
+        $client = static::createClient();
+
+        $testUser = $this->loadUserByUsername(self::USER);
+        $client->loginUser($testUser);
+
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+        $task=new Task();
+        $task->setTitle('title');
+        $task->setContent('content');
+        $task->setUser($testUser);
+
+        $taskRepository->save($task, true);
+
+        $crawler = $client->request('GET', '/tasks');
+
+        // Find the form in the response by its action attribute
+        $form = $crawler->filter('form[action="/tasks/' . $task->getId() . '/delete"]')->form();
+
+        // Submit the form
+        $client->submit($form);
+
+        $this->assertEquals(
+            302,
+            $client->getResponse()->getStatusCode(),
+            'Did not redirect to task list'
+        );
+
+        $client->followRedirect(); // Follow the redirection
+
+        $this->assertSelectorTextContains(
+            'div.alert-success',
+            'The task has been successfully deleted.',
+            'The flash message did not appear'
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
     private function loadTaskFromDatabaseByOwner($user)
     {
         $taskRepository = static::getContainer()->get(TaskRepository::class);
-
         return $taskRepository->findOneBy(['user' => $user]);
     }
 
