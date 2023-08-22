@@ -31,7 +31,6 @@ class UserController extends AbstractController
         $form = $this->createForm(UserType::class);
 
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $newUser = $form->getData();
 
@@ -60,17 +59,17 @@ class UserController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
         UserRepository $userRepository
-    ) {
+    ): RedirectResponse|Response {
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $hashedPassword = $passwordHasher->hashPassword(
-                $user,
-                $user->getPassword()
-            );
-            $user->setPassword($hashedPassword);
+//            $hashedPassword = $passwordHasher->hashPassword(
+//                $user,
+//                $user->getPassword()
+//            );
+//            $user->setPassword($hashedPassword);
 
             $userRepository->save($user, true);
 

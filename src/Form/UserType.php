@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserType extends AbstractType
@@ -23,7 +25,7 @@ class UserType extends AbstractType
                 'invalid_message' => 'The passwords don\'t match.',
                 'required' => true,
                 'first_options'  => ['label' => 'Password'],
-                'second_options' => ['label' => 'Confirm password'],
+                'second_options' => ['label' => 'Confirm password']
             ])
             ->add('email', EmailType::class, ['label' => 'Email'])
             ->add(
@@ -38,6 +40,18 @@ class UserType extends AbstractType
                     'expanded' => false
                 ]
             );
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $form = $event->getForm();
+            $user = $event->getData();
+
+            if ($user && $user->getId()) {
+                $form->remove('password');
+            } else {
+                // Otherwise, it's a create form, so add the password field
+                $form->add('password', PasswordType::class);
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -121,7 +121,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $pattern = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
         return preg_match($pattern, $email) === 1
-            ? true
+            ?
             : "The email $email is not a valid email.";
     }
 

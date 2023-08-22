@@ -11,3 +11,11 @@ homepage:
     defaults:
         route: homepage
         permanent: true
+
+logout:
+    path: /logout
+    methods: [GET]
+    defaults:
+        _controller: |
+            function () {
+            }
