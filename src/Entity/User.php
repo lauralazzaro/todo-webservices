@@ -32,12 +32,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column(length: 64)]
+    #[ORM\Column(length: 64, nullable: true)]
     #[Assert\NotBlank(
         message: 'You must enter a password.',
     )]
+    private ?string $password = null;
 
-    private string $password;
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
     private Collection $tasks;
 

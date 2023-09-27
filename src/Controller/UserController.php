@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Form\AdminPageEditUserType;
+use App\Form\UserEditType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use App\Entity\User;
@@ -24,9 +26,9 @@ class UserController extends AbstractController
 
     #[Route("/users/create", name: "user_create")]
     public function createAction(
-        Request $request,
+        Request                     $request,
         UserPasswordHasherInterface $passwordHasher,
-        UserRepository $userRepository
+        UserRepository              $userRepository
     ): RedirectResponse|Response {
         $form = $this->createForm(UserType::class);
 
@@ -42,6 +44,8 @@ class UserController extends AbstractController
 
             if (in_array('ROLE_ADMIN', $newUser->getRoles())) {
                 $newUser->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+            } else {
+                $newUser->setRoles(['ROLE_USER']);
             }
             $userRepository->save($newUser, true);
 
@@ -55,21 +59,21 @@ class UserController extends AbstractController
 
     #[Route("/users/{id}/edit", name: "user_edit")]
     public function editAction(
-        User $user,
-        Request $request,
+        User                        $user,
+        Request                     $request,
         UserPasswordHasherInterface $passwordHasher,
-        UserRepository $userRepository
+        UserRepository              $userRepository
     ): RedirectResponse|Response {
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(AdminPageEditUserType::class, $user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-//            $hashedPassword = $passwordHasher->hashPassword(
-//                $user,
-//                $user->getPassword()
-//            );
-//            $user->setPassword($hashedPassword);
+            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+            } else {
+                $user->setRoles(['ROLE_USER']);
+            }
 
             $userRepository->save($user, true);
 
@@ -77,7 +81,6 @@ class UserController extends AbstractController
 
             return $this->redirectToRoute('user_list');
         }
-
         return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 }
