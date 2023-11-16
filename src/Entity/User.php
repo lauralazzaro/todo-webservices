@@ -26,23 +26,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         message: 'You must enter a valid email.'
     )]
     private string $email;
+
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
-    private ?string $password = null;
+    #[ORM\Column(type: "string", length: 255)]
+    private string $password;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
     private Collection $tasks;
 
-    #[ORM\Column(type: "string", length: 255, nullable: true)]
-    private ?string $verificationToken = null;
+    #[ORM\Column(type: "boolean")]
+    private string $isPasswordGenerated;
 
-    #[ORM\Column(type: "datetime_immutable", nullable: true)]
-    private ?DateTimeImmutable $verificationTokenExpirationDate = null;
+    #[ORM\Column(type: "datetime_immutable")]
+    private DateTimeImmutable $generatedPasswordValidity;
 
-    #[ORM\Column(type: "boolean", nullable: true)]
+    #[ORM\Column(type: "boolean")]
     private bool $isValidated;
+
+    public function __construct()
+    {
+        $this->isValidated = true;
+        $this->isPasswordGenerated = false;
+        $this->generatedPasswordValidity = new DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -58,9 +66,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param mixed $username
+     * @param string $username
      */
-    public function setUsername($username): void
+    public function setUsername(string $username): void
     {
         $this->username = $username;
     }
@@ -128,35 +136,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return string|null
-     */
-    public function getVerificationToken(): ?string
-    {
-        return $this->verificationToken;
-    }
-
-    /**
-     * @param string|null $verificationToken
-     */
-    public function setVerificationToken(?string $verificationToken): void
-    {
-        $this->verificationToken = $verificationToken;
-    }
-
-    /**
      * @return DateTimeImmutable|null
      */
-    public function getVerificationTokenExpirationDate(): ?DateTimeImmutable
+    public function getGeneratedPasswordValidity(): ?DateTimeImmutable
     {
-        return $this->verificationTokenExpirationDate;
+        return $this->generatedPasswordValidity;
     }
 
-    public function setVerificationTokenExpirationDate(): void
+    public function setGeneratedPasswordValidity(): void
     {
         $datetimeNow = new DateTimeImmutable();
         $expirationDate = $datetimeNow->modify('+48 hours');
 
-        $this->verificationTokenExpirationDate = $expirationDate;
+        $this->generatedPasswordValidity = $expirationDate;
     }
 
     /**
@@ -174,6 +166,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->isValidated = $isValidated;
     }
+
+    /**
+     * @return bool
+     */
+    public function isPasswordGenerated(): bool
+    {
+        return $this->isPasswordGenerated;
+    }
+
+    /**
+     * @param bool $isPasswordGenerated
+     */
+    public function setIsPasswordGenerated(bool $isPasswordGenerated): bool
+    {
+        $this->isPasswordGenerated = $isPasswordGenerated;
+    }
+
 
 
     public function eraseCredentials()

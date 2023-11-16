@@ -5,29 +5,33 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\AdminCreateUserType;
 use App\Form\AdminEditUserType;
+use App\Helper\UserHelper;
 use App\Repository\UserRepository;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class AdminController extends AbstractController
 {
-    #[Route('/admin', name: 'app_admin')]
-    public function index(): Response
+    #[Route('/admin/users', name: 'admin_user_list')]
+    public function listAction(UserRepository $userRepository): Response
     {
-        return $this->render('admin/index.html.twig', [
-            'controller_name' => 'AdminController',
+        return $this->render('user/list.html.twig', [
+            'users' => $userRepository->findAll(),
         ]);
     }
 
-    #[Route("/users/create", name: "user_create")]
+    /**
+     * @throws Exception
+     */
+    #[Route("/admin/users/create", name: "admin_user_create")]
     public function createAction(
         Request                     $request,
         UserRepository              $userRepository,
-        TokenGeneratorInterface     $tokenGenerator
+        UserHelper                  $userHelper
     ): RedirectResponse|Response {
         $form = $this->createForm(AdminCreateUserType::class);
 
@@ -35,24 +39,8 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $newUser = $form->getData();
 
-            /*
-             * INIT VALUES
-             *
-             * - when an admin creates a user, the username will be the mail and after that the user can modify it
-             * - first the user is not validated
-             * - set the expiration of the token at +48 hours
-             * - generate a random token
-             */
-            $newUser->setUsername($newUser->getEmail());
-            $newUser->setIsValidated(false);
-            $newUser->setVerificationTokenExpirationDate();
-            $newUser->setVerificationToken($tokenGenerator->generateToken());
+            $newUser = $userHelper->initUserData($newUser);
 
-            if (in_array('ROLE_ADMIN', $newUser->getRoles())) {
-                $newUser->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
-            } else {
-                $newUser->setRoles(['ROLE_USER']);
-            }
             $userRepository->save($newUser, true);
 
             //send email to user
@@ -66,7 +54,7 @@ class AdminController extends AbstractController
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route("/users/{id}/edit", name: "user_edit")]
+    #[Route("/admin/users/{id}/edit", name: "admin_user_edit")]
     public function editAction(
         User                        $user,
         Request                     $request,
