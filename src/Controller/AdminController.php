@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\AdminCreateUserType;
 use App\Form\AdminEditUserType;
+use App\Helper\Mailer;
 use App\Helper\UserHelper;
 use App\Repository\UserRepository;
 use Exception;
@@ -12,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
@@ -26,12 +28,14 @@ class AdminController extends AbstractController
 
     /**
      * @throws Exception
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
     #[Route("/admin/users/create", name: "admin_user_create")]
     public function createAction(
         Request                     $request,
         UserRepository              $userRepository,
-        UserHelper                  $userHelper
+        UserHelper                  $userHelper,
+        Mailer                      $mailer
     ): RedirectResponse|Response {
         $form = $this->createForm(AdminCreateUserType::class);
 
@@ -43,7 +47,11 @@ class AdminController extends AbstractController
 
             $userRepository->save($newUser, true);
 
-            //send email to user
+            $mailer->sendEmail(
+                $newUser->getEmail(),
+                'inscription todo app',
+                $newUser->getPassword()
+            );
 
 
             $this->addFlash('success', "New user created. Waiting for validation");

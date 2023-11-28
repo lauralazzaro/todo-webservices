@@ -178,7 +178,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @param bool $isPasswordGenerated
      */
-    public function setIsPasswordGenerated(bool $isPasswordGenerated): bool
+    public function setIsPasswordGenerated(bool $isPasswordGenerated): void
     {
         $this->isPasswordGenerated = $isPasswordGenerated;
     }
