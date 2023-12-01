@@ -2,10 +2,11 @@
 
 namespace App\Helper;
 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 
-class Mailer
+class Mailer extends AbstractController
 {
 
     private $mailer;
@@ -18,8 +19,9 @@ class Mailer
     /**
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function sendEmail(string $recipient, string $subject, string $content): void
+    public function sendEmail(string $subject, string $temporaryPassword, string $mailerTo): void
     {
+        $content = $this->createUserEmailBody($temporaryPassword);
 
         $email = (new Email())
             ->from($_ENV['MAILER_FROM'])
@@ -28,5 +30,14 @@ class Mailer
             ->html($content);
 
         $this->mailer->send($email);
+    }
+
+    private function createUserEmailBody($temporaryPassword): string
+    {
+        $template = 'email/create_user.html.twig';
+
+        return $this->renderView($template, [
+            'temporaryPassword' => $temporaryPassword,
+        ]);
     }
 }

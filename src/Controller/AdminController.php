@@ -48,9 +48,9 @@ class AdminController extends AbstractController
             $userRepository->save($newUser, true);
 
             $mailer->sendEmail(
-                $newUser->getEmail(),
-                'inscription todo app',
-                $newUser->getPassword()
+                "Temporary password for your ToDo App account",
+                $newUser->getPassword(),
+                $newUser->getEmail()
             );
 
 
