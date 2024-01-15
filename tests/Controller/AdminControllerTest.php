@@ -7,7 +7,7 @@ use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class UserControllerTest extends WebTestCase
+class AdminControllerTest extends WebTestCase
 {
     const USER = 'user';
     const ADMIN = 'admin';
@@ -24,7 +24,7 @@ class UserControllerTest extends WebTestCase
         $testUser = $this->loadUserByUsername(self::USER);
         $client->loginUser($testUser);
 
-        $client->request('GET', '/users');
+        $client->request('GET', '/admin/users');
 
         $this->assertEquals(
             403,
@@ -33,7 +33,7 @@ class UserControllerTest extends WebTestCase
         );
 
         $userForEdit = $this->loadUserByUsername(self::USER);
-        $client->request('GET', '/users/' . $userForEdit->getId() . '/edit');
+        $client->request('GET', '/admin/users/' . $userForEdit->getId() . '/edit');
 
         $this->assertEquals(
             403,
@@ -61,7 +61,7 @@ class UserControllerTest extends WebTestCase
         $testUser = $this->loadUserByUsername(self::ADMIN);
         $client->loginUser($testUser);
 
-        $client->request('GET', '/users');
+        $client->request('GET', '/admin/users');
 
         $this->assertResponseIsSuccessful('Cannot view create users page');
     }
@@ -76,7 +76,7 @@ class UserControllerTest extends WebTestCase
         $testUser = $this->loadUserByUsername(self::USER);
         $client->loginUser($testUser);
 
-        $client->request('GET', '/users/create');
+        $client->request('GET', '/admin/users/create');
 
         $this->assertEquals(
             403,
@@ -95,7 +95,7 @@ class UserControllerTest extends WebTestCase
         $testUser = $this->loadUserByUsername(self::ADMIN);
         $client->loginUser($testUser);
 
-        $crawler = $client->request('GET', '/users/create');
+        $crawler = $client->request('GET', '/admin/users/create');
 
         $this->assertResponseIsSuccessful('Error viewing create user page even if ROLE_ADMIN');
 
@@ -143,7 +143,7 @@ class UserControllerTest extends WebTestCase
         $userRepository->save($testUserToEdit, true);
 
         // Make a GET request to the edit page
-        $crawler = $client->request('GET', '/users/' . $testUserToEdit->getId() . '/edit');
+        $crawler = $client->request('GET', '/admin/users/' . $testUserToEdit->getId() . '/edit');
 
         // Check that the response is successful
         $this->assertResponseIsSuccessful('Did not not find user to edit');
