@@ -4,7 +4,7 @@ namespace App\Helper;
 
 use App\Entity\User;
 
-final class UserHelper
+class UserHelper
 {
 
     /**
