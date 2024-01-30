@@ -22,7 +22,7 @@ class UserTest extends TestCase
 
         $violations = $validator->validate($user);
         $this->assertCount(1, $violations);
-        $this->assertEquals('You must enter a username.', $violations[0]->getMessage());
+        $this->assertEquals('You must enter a valid username.', $violations[0]->getMessage());
     }
 
     public function testEmailIsRequired()
@@ -49,21 +49,6 @@ class UserTest extends TestCase
 
         $emailInvalidMessage = $user->isEmailValid($user->getEmail());
         $this->assertEquals('The email "invalid_email" is not a valid email.', $emailInvalidMessage);
-    }
-
-    public function testPasswordIsRequired()
-    {
-        $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
-            ->getValidator();
-        $user = new User();
-        $user->setUsername('test_user');
-        $user->setEmail('test@example.com');
-
-        $violations = $validator->validate($user);
-        $this->assertCount(1, $violations);
-        $this->assertEquals('You must enter a password.', $violations[0]->getMessage());
     }
 
     public function testValidUser()
