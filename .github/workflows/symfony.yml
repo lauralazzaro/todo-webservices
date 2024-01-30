@@ -26,13 +26,6 @@ jobs:
         php-version: '8.1'
     - uses: actions/checkout@v3
     - name: Create .env file
-      run: |
-        echo "APP_ENV=${{ secrets.APP_ENV }}" >> .env
-        echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> .env
-        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-        echo "MAILER_DNS=${{ secrets.MAILER_DNS }}" >> .env
-        echo "MAILER_TO=${{ secrets.MAILER_TO }}" >> .env
-        echo "MAILER_FROM=${{ secrets.MAILER_FROM }}" >> .env
       env:
         APP_ENV: ${{ secrets.APP_ENV }}
         APP_SECRET: ${{ secrets.APP_SECRET }}
@@ -40,6 +33,13 @@ jobs:
         MAILER_DNS: ${{ secrets.MAILER_DNS }}
         MAILER_TO: ${{ secrets.MAILER_TO }}
         MAILER_FROM: ${{ secrets.MAILER_FROM }}
+      run: |
+        echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
+        echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> .env
+        echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+        echo "MAILER_DNS=${{ secrets.MAILER_DNS }}" >> .env
+        echo "MAILER_TO=${{ secrets.MAILER_TO }}" >> .env
+        echo "MAILER_FROM=${{ secrets.MAILER_FROM }}" >> .env
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
