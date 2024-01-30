@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Create .env file
       run: |
-        echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
+        echo "APP_ENV=${{ secrets.APP_ENV }}" >> .env
         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> .env
         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
         echo "MAILER_DNS=${{ secrets.MAILER_DNS }}" >> .env
