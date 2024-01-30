@@ -10,7 +10,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    // @codeCoverageIgnoreStart
     private UserPasswordHasherInterface $passwordHasher;
+
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
         $this->passwordHasher = $passwordHasher;
@@ -19,6 +21,23 @@ class AppFixtures extends Fixture
     public function load(
         ObjectManager $manager
     ): void {
+
+        /*
+         * Start reset indexes of the tables
+         */
+        $connection = $manager->getConnection();
+        $schemaManager = $connection->createSchemaManager();
+        $tables = $schemaManager->listTableNames();
+
+        foreach ($tables as $table) {
+            $tableName = $connection->quoteIdentifier($table);
+            $sql = "DELETE FROM $tableName";
+            $connection->executeStatement($sql);
+        }
+        /*
+        * End reset indexes of the tables
+        */
+
         $user = new User();
         $user->setUsername('user');
         $user->setEmail('user@email.com');
@@ -27,6 +46,7 @@ class AppFixtures extends Fixture
             '123'
         );
         $user->setPassword($hashedPassword);
+        $user->setIsPasswordGenerated(true);
         $user->setRoles(['ROLE_USER']);
 
         $manager->persist($user);
@@ -40,7 +60,8 @@ class AppFixtures extends Fixture
             '123'
         );
         $admin->setPassword($hashedPassword);
-        $admin->setRoles(['ROLE_ADMIN','ROLE_USER']);
+        $admin->setIsPasswordGenerated(true);
+        $admin->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
 
         $manager->persist($admin);
         $manager->flush();
@@ -53,6 +74,7 @@ class AppFixtures extends Fixture
             '123'
         );
         $anonymous->setPassword($hashedPassword);
+        $anonymous->setIsPasswordGenerated(true);
         $anonymous->setRoles([]);
 
         $manager->persist($anonymous);
@@ -79,4 +101,5 @@ class AppFixtures extends Fixture
         $manager->persist($task);
         $manager->flush();
     }
+    // @codeCoverageIgnoreEnd
 }

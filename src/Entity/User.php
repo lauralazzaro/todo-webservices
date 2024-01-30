@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -18,13 +18,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 60, unique: true)]
-    #[Assert\NotBlank(
-        message: 'You must enter a username.',
-    )]
+    #[ORM\Column(type: "string", length: 255, unique: true)]
     private string $username;
 
-    #[ORM\Column(length: 60, unique: true)]
+    #[ORM\Column(type: "string", length: 255, unique: true)]
     #[Assert\NotBlank(
         message: 'You must enter a valid email.'
     )]
@@ -33,18 +30,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
-    #[ORM\Column(length: 64)]
-    #[Assert\NotBlank(
-        message: 'You must enter a password.',
-    )]
+    #[ORM\Column(type: "string", length: 255)]
     private string $password;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class)]
     private Collection $tasks;
 
+    #[ORM\Column(type: "boolean")]
+    private string $isPasswordGenerated;
+
+    #[ORM\Column(type: "datetime_immutable")]
+    private DateTimeImmutable $generatedPasswordValidity;
+
+    #[ORM\Column(type: "boolean")]
+    private bool $isValidated;
+
     public function __construct()
     {
-        $this->tasks = new ArrayCollection();
+        $this->isValidated = true;
+        $this->isPasswordGenerated = false;
+        $this->generatedPasswordValidity = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -61,9 +66,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param mixed $username
+     * @param string $username
      */
-    public function setUsername($username): void
+    public function setUsername(string $username): void
     {
         $this->username = $username;
     }
@@ -123,50 +128,65 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
-    public function eraseCredentials(): void
-    {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
-    }
-
-    /**
-     * @return Collection<int, Task>
-     */
-    public function getTasks(): Collection
-    {
-        return $this->tasks;
-    }
-
-    public function addTask(Task $task): static
-    {
-        if (!$this->tasks->contains($task)) {
-            $this->tasks->add($task);
-            $task->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTask(Task $task): static
-    {
-        if ($this->tasks->removeElement($task)) {
-            // set the owning side to null (unless already changed)
-            if ($task->getUser() === $this) {
-                $task->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function isEmailValid(string $email): bool
     {
         $pattern = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
         return preg_match($pattern, $email) === 1
-            ? true
-            : "The email $email is not a valid email.";
+            ?: "The email $email is not a valid email.";
+    }
+
+    /**
+     * @return DateTimeImmutable|null
+     */
+    public function getGeneratedPasswordValidity(): ?DateTimeImmutable
+    {
+        return $this->generatedPasswordValidity;
+    }
+
+    public function setGeneratedPasswordValidity(): void
+    {
+        $datetimeNow = new DateTimeImmutable();
+        $expirationDate = $datetimeNow->modify('+48 hours');
+
+        $this->generatedPasswordValidity = $expirationDate;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValidated(): bool
+    {
+        return $this->isValidated;
+    }
+
+    /**
+     * @param bool $isValidated
+     */
+    public function setIsValidated(bool $isValidated): void
+    {
+        $this->isValidated = $isValidated;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPasswordGenerated(): bool
+    {
+        return $this->isPasswordGenerated;
+    }
+
+    /**
+     * @param bool $isPasswordGenerated
+     */
+    public function setIsPasswordGenerated(bool $isPasswordGenerated): void
+    {
+        $this->isPasswordGenerated = $isPasswordGenerated;
+    }
+
+
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
     }
 }

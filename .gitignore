@@ -2,15 +2,15 @@
 vendor/
 _old/
 .env*
-var/cache
-var/log
+var
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 
 public/test-coverage/
-/.phpunit.cache/
+public/resultTest.html
+.phpunit.cache/
 
 ###> squizlabs/php_codesniffer ###
 /.phpcs-cache
