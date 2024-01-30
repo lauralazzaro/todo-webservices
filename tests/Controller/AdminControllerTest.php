@@ -101,10 +101,9 @@ class AdminControllerTest extends WebTestCase
 
         $form = $crawler->selectButton('Create user')->form();
 
-        $form['user[username]'] = 'your_username';
-        $form['user[password]'] = 'your_password';
-        $form['user[email]'] = 'your_email@example.com';
-        $form['user[roles]'] = ['ROLE_ADMIN'];
+        $form['admin_create_user[email]'] = 'your_email@example.com';
+        $form['admin_create_user[roles]'] = ['ROLE_ADMIN'];
+        $form['admin_create_user[username]'] = 'your_username';
 
         $client->submit($form);
 
@@ -120,7 +119,7 @@ class AdminControllerTest extends WebTestCase
 
         // remove user
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $lastUser = $userRepository->findOneBy(['username' => 'your_username']);
+        $lastUser = $userRepository->findOneBy(['email' => 'your_email@example.com']);
         $userRepository->remove($lastUser, true);
     }
 
@@ -135,9 +134,10 @@ class AdminControllerTest extends WebTestCase
         //create new user
         $userRepository = static::getContainer()->get(UserRepository::class);
         $testUserToEdit=new User();
-        $testUserToEdit->setUsername('test_user');
         $testUserToEdit->setEmail('test_user@email.com');
-        $testUserToEdit->setPassword('123');
+        $testUserToEdit->setUsername('test_username');
+        $testUserToEdit->setPassword('abc123!');
+        $testUserToEdit->setIsPasswordGenerated(true);
         $testUserToEdit->setRoles(['ROLE_USER']);
 
         $userRepository->save($testUserToEdit, true);
@@ -152,8 +152,8 @@ class AdminControllerTest extends WebTestCase
         $form = $crawler->selectButton('Modifier')->form();
 
         // Fill in the form fields with updated data
-        $form['user[username]'] = 'test_user_new';
-        $form['user[email]'] = 'test_user_new@example.com';
+        // can only update roles
+        $form['admin_edit_user[roles]'] = ['ROLE_ADMIN'];
 
         // Submit the form
         $client->submit($form);
@@ -170,8 +170,7 @@ class AdminControllerTest extends WebTestCase
 
         // Optionally, you can also check that the user entity in the database has been updated
         $updatedUser = $userRepository->find($testUserToEdit->getId());
-        $this->assertEquals('test_user_new', $updatedUser->getUsername());
-        $this->assertEquals('test_user_new@example.com', $updatedUser->getEmail());
+        $this->assertContains('ROLE_ADMIN', $updatedUser->getRoles());
 
         $userRepository->remove($updatedUser, true);
     }
