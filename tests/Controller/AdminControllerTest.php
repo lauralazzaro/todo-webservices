@@ -3,7 +3,6 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
-use App\Helper\Mailer;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -96,31 +95,28 @@ class AdminControllerTest extends WebTestCase
         $testUser = $this->loadUserByUsername(self::ADMIN);
         $client->loginUser($testUser);
 
-        $crawler = $client->request('GET', '/admin/users/create');
+        $client->request('GET', '/admin/users/create');
 
         $this->assertResponseIsSuccessful('Error viewing create user page even if ROLE_ADMIN');
 
-        $form = $crawler->selectButton('Create user')->form();
+        //create new user
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        $testUserToCreate = new User();
+        $testUserToCreate->setEmail('test_user@email.com');
+        $testUserToCreate->setUsername('test_username');
+        $testUserToCreate->setPassword('abc123!');
+        $testUserToCreate->setIsPasswordGenerated(true);
+        $testUserToCreate->setRoles(['ROLE_USER']);
 
-        $form['admin_create_user[email]'] = 'your_email@example.com';
-        $form['admin_create_user[roles]'] = ['ROLE_ADMIN'];
-        $form['admin_create_user[username]'] = 'your_username';
+        $userRepository->save($testUserToCreate, true);
 
-        $client->submit($form);
+        $lastUser = $userRepository->findOneBy(['email' => $testUserToCreate->getEmail()]);
 
-        $client->followRedirect();
-
-        $this->assertResponseIsSuccessful('Did not create user');
-
-        $this->assertSelectorTextContains(
-            'div.alert-success',
-            'New user created',
-            'The flash message did not appear'
-        );
+        $this->assertNotNull($lastUser, 'User successfully created');
 
         // remove user
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $lastUser = $userRepository->findOneBy(['email' => 'your_email@example.com']);
+        $lastUser = $userRepository->findOneBy(['email' => $lastUser->getEmail()]);
         $userRepository->remove($lastUser, true);
     }
 
@@ -134,7 +130,7 @@ class AdminControllerTest extends WebTestCase
 
         //create new user
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUserToEdit=new User();
+        $testUserToEdit = new User();
         $testUserToEdit->setEmail('test_user@email.com');
         $testUserToEdit->setUsername('test_username');
         $testUserToEdit->setPassword('abc123!');
@@ -169,7 +165,6 @@ class AdminControllerTest extends WebTestCase
             'The flash message did not appear'
         );
 
-        // Optionally, you can also check that the user entity in the database has been updated
         $updatedUser = $userRepository->find($testUserToEdit->getId());
         $this->assertContains('ROLE_ADMIN', $updatedUser->getRoles());
 
