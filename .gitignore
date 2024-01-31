@@ -16,3 +16,5 @@ public/resultTest.html
 /.phpcs-cache
 /phpcs.xml
 ###< squizlabs/php_codesniffer ###
+
+mailer.yaml
