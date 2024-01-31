@@ -8,8 +8,6 @@ name: Symfony
 on:
   push:
     branches: [ "master","development"]
-    paths-ignore:
-      - './config/packages/mailer.yml'
   pull_request:
     branches: [ "master","development" ]
 
@@ -27,15 +25,21 @@ jobs:
       with:
         php-version: '8.1'
     - uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --no-interaction
+      
     - name: Create .env file
       run: |
         echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> .env
         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+        echo "MAILER_DNS=MAILER_DNS" >> .env
       env:
         APP_ENV: ${{ secrets.APP_ENV }}
         APP_SECRET: ${{ secrets.APP_SECRET }}
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        MAILER_DNS: MAILER_DNS
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
@@ -44,9 +48,6 @@ jobs:
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-php-
-
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --no-interaction
 
     - name: Create SQLite database
       run: php bin/console doctrine:database:create --env=test --no-interaction
