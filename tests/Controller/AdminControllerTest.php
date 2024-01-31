@@ -95,28 +95,31 @@ class AdminControllerTest extends WebTestCase
         $testUser = $this->loadUserByUsername(self::ADMIN);
         $client->loginUser($testUser);
 
-        $client->request('GET', '/admin/users/create');
+        $crawler = $client->request('GET', '/admin/users/create');
 
         $this->assertResponseIsSuccessful('Error viewing create user page even if ROLE_ADMIN');
 
-        //create new user
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        $testUserToCreate = new User();
-        $testUserToCreate->setEmail('test_user@email.com');
-        $testUserToCreate->setUsername('test_username');
-        $testUserToCreate->setPassword('abc123!');
-        $testUserToCreate->setIsPasswordGenerated(true);
-        $testUserToCreate->setRoles(['ROLE_USER']);
+        $form = $crawler->selectButton('Create user')->form();
 
-        $userRepository->save($testUserToCreate, true);
+        $form['admin_create_user[email]'] = 'your_email@example.com';
+        $form['admin_create_user[roles]'] = ['ROLE_ADMIN'];
+        $form['admin_create_user[username]'] = 'your_username';
 
-        $lastUser = $userRepository->findOneBy(['email' => $testUserToCreate->getEmail()]);
+        $client->submit($form);
 
-        $this->assertNotNull($lastUser, 'User successfully created');
+        $client->followRedirect();
+
+        $this->assertResponseIsSuccessful('Did not create user');
+
+        $this->assertSelectorTextContains(
+            'div.alert-success',
+            'New user created',
+            'The flash message did not appear'
+        );
 
         // remove user
         $userRepository = static::getContainer()->get(UserRepository::class);
-        $lastUser = $userRepository->findOneBy(['email' => $lastUser->getEmail()]);
+        $lastUser = $userRepository->findOneBy(['email' => 'your_email@example.com']);
         $userRepository->remove($lastUser, true);
     }
 
