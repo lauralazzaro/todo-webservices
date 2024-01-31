@@ -34,12 +34,12 @@ jobs:
         echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
         echo "APP_SECRET=${{ secrets.APP_SECRET }}" >> .env
         echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
-        echo "MAILER_DNS=MAILER_DNS" >> .env
+        echo "MAILER_DSN=MAILER_DSN" >> .env
       env:
         APP_ENV: ${{ secrets.APP_ENV }}
         APP_SECRET: ${{ secrets.APP_SECRET }}
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        MAILER_DNS: MAILER_DNS
+        MAILER_DSN: MAILER_DSN
     - name: Cache Composer packages
       id: composer-cache
       uses: actions/cache@v3
