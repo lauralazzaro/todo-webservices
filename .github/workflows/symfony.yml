@@ -8,6 +8,8 @@ name: Symfony
 on:
   push:
     branches: [ "master","development"]
+    paths-ignore:
+      - 'config/packages/mailer.yml'
   pull_request:
     branches: [ "master","development" ]
 
