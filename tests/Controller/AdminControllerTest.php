@@ -3,9 +3,13 @@
 namespace App\Tests\Controller;
 
 use App\Entity\User;
+use App\Helper\Mailer;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Twig\Environment;
 
 class AdminControllerTest extends WebTestCase
 {
@@ -169,5 +173,37 @@ class AdminControllerTest extends WebTestCase
         $this->assertContains('ROLE_ADMIN', $updatedUser->getRoles());
 
         $userRepository->remove($updatedUser, true);
+    }
+
+    /**
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     */
+    public function testSendEmail(): void
+    {
+        $mailerMock = $this->createMock(MailerInterface::class);
+
+        $twigMock = $this->createMock(Environment::class);
+
+        $mailer = new Mailer($mailerMock, $twigMock);
+
+        $subject = 'Test Subject';
+        $temporaryPassword = 'TestPassword123';
+        $mailerTo = 'lz_laura@hotmail.com';
+
+        $twigMock->expects($this->once())
+            ->method('render')
+            ->willReturn('<html>Mocked email content</html>');
+
+        $mailerMock->expects($this->once())
+            ->method('send')
+            ->with($this->callback(function (Email $email) use ($subject, $temporaryPassword, $mailerTo) {
+                $expectedContent = '<html>Mocked email content</html>';
+                $this->assertEquals($expectedContent, $email->getHtmlBody());
+
+                return true;
+            }));
+
+        $mailer->sendEmail($subject, $temporaryPassword, $mailerTo);
     }
 }
