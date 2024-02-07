@@ -55,7 +55,7 @@ class AdminController extends AbstractController
 
             $this->addFlash('success', "New user created. Waiting for validation");
 
-            return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('admin_user_list');
         }
 
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
@@ -82,8 +82,8 @@ class AdminController extends AbstractController
 
             $this->addFlash('success', "User successfully modified");
 
-            return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('admin_user_list');
         }
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render('admin/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 }
