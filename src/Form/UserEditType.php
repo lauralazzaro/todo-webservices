@@ -31,10 +31,10 @@ class UserEditType extends AbstractType
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
-                'required' => false, // Password change is optional
+                'required' => false,
                 'first_options' => ['label' => 'New Password'],
                 'second_options' => ['label' => 'Repeat New Password'],
-                'mapped' => false, // This field is not mapped to an entity property
+                'mapped' => false,
             ]);
     }
 
