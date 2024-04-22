@@ -5,12 +5,15 @@ namespace App\Helper;
 use Twig\Environment;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class Mailer
 {
 
-    private $mailer;
-    private $twig;
+    private MailerInterface $mailer;
+    private Environment $twig;
 
     public function __construct(MailerInterface $mailer, Environment $twig)
     {
@@ -35,9 +38,9 @@ class Mailer
     }
 
     /**
-     * @throws \Twig\Error\SyntaxError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\LoaderError
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
      */
     public function createUserEmailBody($temporaryPassword): string
     {
