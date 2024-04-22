@@ -3,9 +3,17 @@
 namespace App\Helper;
 
 use App\Entity\User;
+use Exception;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserHelper
 {
+    private UserPasswordHasherInterface $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->passwordHasher = $passwordHasher;
+    }
 
     /**
      * when an admin creates a user, the username will be the mail and after that the user can modify it
@@ -15,7 +23,7 @@ class UserHelper
      *
      * @param User $user
      * @return User
-     * @throws \Exception
+     * @throws Exception
      */
     public function initUserData(
         User $user
@@ -37,29 +45,49 @@ class UserHelper
         return $user;
     }
 
-    /**
-     * Verify that the password is less than 48h old
-     *
-     * @param \DateTimeImmutable $passwordExpirationDate
-     * @return bool
-     */
-    public function isPasswordStillValid(\DateTimeImmutable $passwordExpirationDate):bool
-    {
-        $now = new \DateTimeImmutable();
-
-        return $now->diff($passwordExpirationDate)->h < 48;
-    }
-
     private function randomPassword(): string
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            $randomString = '';
+        $randomString = '';
 
         for ($i = 0; $i < 6; $i++) {
             $index = rand(0, strlen($characters) - 1);
             $randomString .= $characters[$index];
         }
 
-            return $randomString;
+        return $randomString;
+    }
+
+    /**
+     * Verify that the password is less than 48h old
+     *
+     * @param \DateTimeImmutable $passwordExpirationDate
+     * @return bool
+     */
+    public function isPasswordStillValid(\DateTimeImmutable $passwordExpirationDate): bool
+    {
+        $now = new \DateTimeImmutable();
+
+        return $now->diff($passwordExpirationDate)->h < 48;
+    }
+
+    /**
+     * Return the user with hashed password
+     *
+     * @param User $user
+     * @param UserPasswordHasherInterface $passwordHasher
+     * @return User
+     */
+    public function updatePassword(
+        User $user
+    ): User {
+        $hashedPassword = $this->passwordHasher->hashPassword(
+            $user,
+            $user->getPassword()
+        );
+
+        $user->setPassword($hashedPassword);
+
+        return $user;
     }
 }

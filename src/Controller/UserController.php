@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\UserEditType;
+use App\Helper\UserHelper;
 use App\Repository\UserRepository;
 use App\Entity\User;
 use App\Security\Voter\UserVoter;
@@ -19,8 +20,8 @@ class UserController extends AbstractController
     public function editAction(
         User                        $user,
         Request                     $request,
-        UserPasswordHasherInterface $passwordHasher,
         UserRepository              $userRepository,
+        UserHelper                  $userHelper,
         int $id
     ): RedirectResponse|Response {
         $this->denyAccessUnlessGranted(
@@ -34,6 +35,8 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $userHelper->updatePassword($user);
+
             $userRepository->save($user, true);
 
             $this->addFlash('success', "User successfully modified");
