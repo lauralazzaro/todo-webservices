@@ -26,6 +26,9 @@ jobs:
         php-version: '8.1.10'
     - uses: actions/checkout@v3
 
+    - name: update composer
+      run: composer update
+
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --no-interaction
       
