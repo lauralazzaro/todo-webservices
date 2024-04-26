@@ -19,6 +19,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: "string", length: 255, unique: true)]
+    #[Assert\NotBlank(
+        message: 'You must enter a valid username.'
+    )]
     private string $username;
 
     #[ORM\Column(type: "string", length: 255, unique: true)]
@@ -47,7 +50,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->isValidated = true;
+        $this->isValidated = false;
         $this->isPasswordGenerated = false;
         $this->generatedPasswordValidity = new DateTimeImmutable();
     }

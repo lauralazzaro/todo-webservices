@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
@@ -28,7 +28,7 @@ class AdminController extends AbstractController
 
     /**
      * @throws Exception
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     #[Route("/admin/users/create", name: "admin_user_create")]
     public function createAction(
@@ -56,7 +56,7 @@ class AdminController extends AbstractController
 
             $this->addFlash('success', "New user created. Waiting for validation");
 
-            return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('admin_user_list');
         }
 
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
@@ -83,8 +83,8 @@ class AdminController extends AbstractController
 
             $this->addFlash('success', "User successfully modified");
 
-            return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('admin_user_list');
         }
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render('admin/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 }

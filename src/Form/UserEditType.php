@@ -24,17 +24,12 @@ class UserEditType extends AbstractType
                 'label' => 'Email',
                 'disabled' => true
             ])
-            ->add('currentPassword', PasswordType::class, [
-                'mapped' => false,
-                'required' => false,
-            ])
-            ->add('plainPassword', RepeatedType::class, [
+            ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'invalid_message' => 'The password fields must match.',
-                'required' => false, // Password change is optional
+                'required' => true,
                 'first_options' => ['label' => 'New Password'],
-                'second_options' => ['label' => 'Repeat New Password'],
-                'mapped' => false, // This field is not mapped to an entity property
+                'second_options' => ['label' => 'Repeat New Password']
             ]);
     }
 

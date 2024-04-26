@@ -2,18 +2,23 @@
 
 namespace App\Helper;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Twig\Environment;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
-class Mailer extends AbstractController
+class Mailer
 {
 
-    private $mailer;
+    private MailerInterface $mailer;
+    private Environment $twig;
 
-    public function __construct(MailerInterface $mailer)
+    public function __construct(MailerInterface $mailer, Environment $twig)
     {
         $this->mailer = $mailer;
+        $this->twig = $twig;
     }
 
     /**
@@ -32,11 +37,16 @@ class Mailer extends AbstractController
         $this->mailer->send($email);
     }
 
-    private function createUserEmailBody($temporaryPassword): string
+    /**
+     * @throws SyntaxError
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
+    public function createUserEmailBody($temporaryPassword): string
     {
         $template = 'email/create_user.html.twig';
 
-        return $this->renderView($template, [
+        return $this->twig->render($template, [
             'temporaryPassword' => $temporaryPassword,
         ]);
     }
