@@ -7,6 +7,7 @@ use App\Helper\Mailer;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
@@ -124,6 +125,9 @@ class AdminControllerTest extends WebTestCase
         $userRepository->remove($lastUser, true);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testEditUserSuccess()
     {
         $client = static::createClient();
@@ -176,7 +180,7 @@ class AdminControllerTest extends WebTestCase
     }
 
     /**
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
     public function testSendEmail(): void
@@ -189,7 +193,7 @@ class AdminControllerTest extends WebTestCase
 
         $subject = 'Test Subject';
         $temporaryPassword = 'TestPassword123';
-        $mailerTo = 'lz_laura@hotmail.com';
+        $mailerTo = $_ENV['MAILER_TO'];
 
         $twigMock->expects($this->once())
             ->method('render')
