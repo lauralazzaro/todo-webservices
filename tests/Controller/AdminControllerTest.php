@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\User;
 use App\Helper\Mailer;
+use App\Helper\UserHelper;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -209,5 +210,44 @@ class AdminControllerTest extends WebTestCase
             }));
 
         $mailer->sendEmail($subject, $temporaryPassword, $mailerTo);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testInitUserDataForCreate(): void
+    {
+        $user = new User();
+        $user->setEmail('test@example.com');
+
+        $userHelper = $this->getMockBuilder(UserHelper::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([])
+            ->getMock();
+
+        $userHelper->initUserData($user);
+
+        $this->assertEquals('test@example.com', $user->getUsername());
+        $this->assertEquals(true, $user->isPasswordGenerated());
+        $this->assertNotNull($user->getPassword(), 'Password not generated automatically');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testInitUserAdminDataForCreate(): void
+    {
+        $user = new User();
+        $user->setEmail('test@example.com');
+        $user->setRoles(['ROLE_ADMIN']);
+
+        $userHelper = $this->getMockBuilder(UserHelper::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods([])
+            ->getMock();
+
+        $userHelper->initUserData($user);
+
+        $this->assertContains('ROLE_ADMIN', $user->getRoles());
     }
 }

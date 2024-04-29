@@ -2,13 +2,9 @@
 
 namespace App\Tests\Controller;
 
-use App\Controller\ResetPasswordController;
 use PHPUnit\Framework\MockObject\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
+use Symfony\Component\BrowserKit\Response;
 
 class ResetPasswordControllerTest extends WebTestCase
 {
@@ -26,13 +22,6 @@ class ResetPasswordControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
     }
 
-    public function testResetPasswordPage(): void
-    {
-        $client = static::createClient();
-        $client->request('GET', '/reset-password/reset/token');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
-    }
-
     /**
      * @throws Exception
      */
@@ -46,13 +35,31 @@ class ResetPasswordControllerTest extends WebTestCase
         $form['reset_password_request_form[email]'] = 'test@example.com';
         $client->submit($form);
 
-        $response = $client->getResponse();
-        $this->assertInstanceOf(RedirectResponse::class, $response, 'The response should be a RedirectResponse.');
+        $this->assertResponseStatusCodeSame(302, 'This should be a redirect.');
+
+        $client->followRedirect();
+
+        $request = $client->getRequest();
+
+        $route = $request->attributes->get('_route');
 
         $this->assertSame(
-            '/reset-password/check-email',
-            $response->getTargetUrl(),
+            'app_check_email',
+            $route,
             'The response should redirect to app_check_email.'
         );
+    }
+
+    public function testCheckTokenRemovedFromRequestUrl(): void
+    {
+        $client = static::createClient();
+
+        $client->request('GET', '/reset-password/reset/valid_token');
+
+        $crawler = $client->followRedirect();
+
+        $targetUrl = $crawler->getUri();
+
+        $this->assertStringNotContainsString('valid_token', $targetUrl);
     }
 }

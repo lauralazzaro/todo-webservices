@@ -29,8 +29,6 @@ class UserHelper
         User $user
     ): User {
         $user->setUsername($user->getEmail());
-        $user->setIsValidated(false);
-        $user->setGeneratedPasswordValidity();
         $user->setIsPasswordGenerated(true);
 
         $random = $this->randomPassword();
@@ -58,24 +56,11 @@ class UserHelper
         return $randomString;
     }
 
-    /**
-     * Verify that the password is less than 48h old
-     *
-     * @param \DateTimeImmutable $passwordExpirationDate
-     * @return bool
-     */
-    public function isPasswordStillValid(\DateTimeImmutable $passwordExpirationDate): bool
-    {
-        $now = new \DateTimeImmutable();
-
-        return $now->diff($passwordExpirationDate)->h < 48;
-    }
 
     /**
      * Return the user with hashed password
      *
      * @param User $user
-     * @param UserPasswordHasherInterface $passwordHasher
      * @return User
      */
     public function updatePassword(
@@ -87,6 +72,7 @@ class UserHelper
         );
 
         $user->setPassword($hashedPassword);
+        $user->setIsPasswordGenerated(false);
 
         return $user;
     }

@@ -42,17 +42,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "boolean")]
     private string $isPasswordGenerated;
 
-    #[ORM\Column(type: "datetime_immutable")]
-    private DateTimeImmutable $generatedPasswordValidity;
-
-    #[ORM\Column(type: "boolean")]
-    private bool $isValidated;
-
     public function __construct()
     {
-        $this->isValidated = false;
         $this->isPasswordGenerated = false;
-        $this->generatedPasswordValidity = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -139,38 +131,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return DateTimeImmutable|null
-     */
-    public function getGeneratedPasswordValidity(): ?DateTimeImmutable
-    {
-        return $this->generatedPasswordValidity;
-    }
-
-    public function setGeneratedPasswordValidity(): void
-    {
-        $datetimeNow = new DateTimeImmutable();
-        $expirationDate = $datetimeNow->modify('+48 hours');
-
-        $this->generatedPasswordValidity = $expirationDate;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValidated(): bool
-    {
-        return $this->isValidated;
-    }
-
-    /**
-     * @param bool $isValidated
-     */
-    public function setIsValidated(bool $isValidated): void
-    {
-        $this->isValidated = $isValidated;
-    }
-
-    /**
      * @return bool
      */
     public function isPasswordGenerated(): bool
@@ -185,8 +145,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->isPasswordGenerated = $isPasswordGenerated;
     }
-
-
 
     public function eraseCredentials()
     {
