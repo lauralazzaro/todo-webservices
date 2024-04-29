@@ -27,10 +27,9 @@ class Mailer
     public function sendEmail(string $subject, string $temporaryPassword, string $mailerTo): void
     {
         $content = $this->createUserEmailBody($temporaryPassword);
-
         $email = (new Email())
             ->from($_ENV['MAILER_FROM'])
-            ->to($_ENV['MAILER_TO'])
+            ->to($mailerTo)
             ->subject($subject)
             ->html($content);
 

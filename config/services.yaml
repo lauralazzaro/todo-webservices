@@ -26,3 +26,7 @@ services:
     App\Security\Voter\UserVoter:
         tags:
             - { name: security.voter }
+
+    App\Helper\EventsSubscribers\CopyEmailToUsernameSubscriber:
+        tags:
+            - { name: 'kernel.event_subscriber' }
