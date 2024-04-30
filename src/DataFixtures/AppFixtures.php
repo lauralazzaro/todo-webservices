@@ -31,8 +31,8 @@ class AppFixtures extends Fixture
 
         foreach ($tables as $table) {
             $tableName = $connection->quoteIdentifier($table);
-            $sql = "DELETE FROM $tableName";
-            $connection->executeStatement($sql);
+            $connection->executeStatement("DELETE FROM $tableName");
+            $connection->executeStatement("DELETE FROM sqlite_sequence WHERE name = $tableName;");
         }
         /*
         * End reset indexes of the tables
@@ -46,7 +46,7 @@ class AppFixtures extends Fixture
             '123'
         );
         $user->setPassword($hashedPassword);
-        $user->setIsPasswordGenerated(true);
+        $user->setIsPasswordGenerated(false);
         $user->setRoles(['ROLE_USER']);
 
         $manager->persist($user);
@@ -60,7 +60,7 @@ class AppFixtures extends Fixture
             '123'
         );
         $admin->setPassword($hashedPassword);
-        $admin->setIsPasswordGenerated(true);
+        $admin->setIsPasswordGenerated(false);
         $admin->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
 
         $manager->persist($admin);
@@ -74,7 +74,7 @@ class AppFixtures extends Fixture
             '123'
         );
         $anonymous->setPassword($hashedPassword);
-        $anonymous->setIsPasswordGenerated(true);
+        $anonymous->setIsPasswordGenerated(false);
         $anonymous->setRoles([]);
 
         $manager->persist($anonymous);

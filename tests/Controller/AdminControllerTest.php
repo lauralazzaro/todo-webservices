@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Twig\Environment;
 
 class AdminControllerTest extends WebTestCase
@@ -220,10 +221,9 @@ class AdminControllerTest extends WebTestCase
         $user = new User();
         $user->setEmail('test@example.com');
 
-        $userHelper = $this->getMockBuilder(UserHelper::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([])
-            ->getMock();
+        $passwordHasherMock = $this->createMock(UserPasswordHasherInterface::class);
+
+        $userHelper = new UserHelper($passwordHasherMock);
 
         $userHelper->initUserData($user);
 
@@ -241,10 +241,9 @@ class AdminControllerTest extends WebTestCase
         $user->setEmail('test@example.com');
         $user->setRoles(['ROLE_ADMIN']);
 
-        $userHelper = $this->getMockBuilder(UserHelper::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods([])
-            ->getMock();
+        $passwordHasherMock = $this->createMock(UserPasswordHasherInterface::class);
+
+        $userHelper = new UserHelper($passwordHasherMock);
 
         $userHelper->initUserData($user);
 

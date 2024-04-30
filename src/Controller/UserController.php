@@ -60,7 +60,7 @@ class UserController extends AbstractController
             message: 'You shall not pass!'
         );
 
-        $form = $this->createForm(UserEditGeneratedPasswordType::class, $user);
+        $form = $this->createForm(UserEditType::class, $user);
 
         $form->handleRequest($request);
 
