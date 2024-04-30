@@ -22,17 +22,23 @@ class UserHelper
      * generate a random token
      *
      * @param User $user
-     * @return User
+     * @return array
      * @throws Exception
      */
     public function initUserData(
         User $user
-    ): User {
+    ): array {
         $user->setUsername($user->getEmail());
         $user->setIsPasswordGenerated(true);
 
         $random = $this->randomPassword();
-        $user->setPassword($random);
+
+        $hashedPassword = $this->passwordHasher->hashPassword(
+            $user,
+            $random
+        );
+
+        $user->setPassword($hashedPassword);
 
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
             $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
@@ -40,7 +46,7 @@ class UserHelper
             $user->setRoles(['ROLE_USER']);
         }
 
-        return $user;
+        return ['user' => $user, 'plainPassword' => $random];
     }
 
     private function randomPassword(): string

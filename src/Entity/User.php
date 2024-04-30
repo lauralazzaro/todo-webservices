@@ -130,7 +130,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function isPasswordGenerated(): bool
     {
@@ -138,7 +138,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param bool $isPasswordGenerated
+     * @param boolean $isPasswordGenerated
      */
     public function setIsPasswordGenerated(bool $isPasswordGenerated): void
     {

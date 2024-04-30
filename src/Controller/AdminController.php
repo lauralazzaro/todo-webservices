@@ -43,13 +43,14 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $newUser = $form->getData();
 
-            $newUser = $userHelper->initUserData($newUser);
+            $initUserData = $userHelper->initUserData($newUser);
 
-            $userRepository->save($newUser, true);
+            $userRepository->save($initUserData['user'], true);
+
 
             $mailer->sendEmail(
                 "Temporary password for your ToDo App account",
-                $newUser->getPassword(),
+                $initUserData['plainPassword'],
                 $newUser->getEmail()
             );
 
