@@ -23,8 +23,8 @@
         "symfony/password-hasher": "6.3.*",
         "symfony/runtime": "6.3.*",
         "symfony/security-bundle": "6.3.*",
-        "symfony/twig-bundle": "6.3.*",
-        "symfony/validator": "6.3.*",
+        "symfony/twig-bundle": "6.4.*",
+        "symfony/validator": "6.4.*",
         "symfony/yaml": "6.3.*",
         "symfonycasts/reset-password-bundle": "^1.21",
         "twig/extra-bundle": "^2.12|^3.0",
@@ -75,11 +75,10 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.3.*"
+            "require": "6.4.*"
         }
     },
     "require-dev": {
-        "doctrine/annotations": "^2.0",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "phpunit/phpunit": "^10.2",
         "squizlabs/php_codesniffer": "^3.7",

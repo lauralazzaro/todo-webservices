@@ -25,8 +25,7 @@ class TaskTest extends TestCase
     public function testTitleIsRequired()
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->enableAttributeMapping()
             ->getValidator();
 
         $task = new Task();
@@ -43,8 +42,7 @@ class TaskTest extends TestCase
     public function testContentIsRequired()
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->enableAttributeMapping()
             ->getValidator();
 
         $task = new Task();
@@ -62,8 +60,7 @@ class TaskTest extends TestCase
     public function testUserIsRequired()
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->enableAttributeMapping()
             ->getValidator();
 
         $task = new Task();

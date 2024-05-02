@@ -7,7 +7,6 @@ use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class TaskControllerTest extends WebTestCase
 {
