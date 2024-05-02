@@ -13,7 +13,8 @@
         "egulias/email-validator": "^4.0",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "*",
-        "symfony/console": "*",
+        "symfony/console": "7.0.*",
+        "symfony/config": "7.0.*",
         "symfony/css-selector": "*",
         "symfony/dotenv": "*",
         "symfony/flex": "^1.16",
@@ -75,7 +76,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.4.*"
+            "require": "7.0.*"
         }
     },
     "require-dev": {
@@ -86,7 +87,7 @@
         "symfony/browser-kit": "*",
         "symfony/cache": "*",
         "symfony/panther": "^2.1",
-        "symfony/phpunit-bridge": "^6.3",
+        "symfony/phpunit-bridge": "*",
         "symfony/stopwatch": "*",
         "symfony/web-profiler-bundle": "*"
     }
