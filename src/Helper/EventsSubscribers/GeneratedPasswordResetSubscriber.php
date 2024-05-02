@@ -12,7 +12,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class GeneratedPasswordResetSubscriber implements EventSubscriberInterface
 {
-
     private Security $security;
     private UrlGeneratorInterface $urlGenerator;
 
@@ -33,9 +32,10 @@ class GeneratedPasswordResetSubscriber implements EventSubscriberInterface
     {
         $user = $this->security->getUser();
 
-        if ($user instanceof User &&
-            $user->isPasswordGenerated() &&
-            $event->getRequest()->get('_route') !== 'user_edit_generated_password') {
+        if (($user instanceof User) &&
+            ($user->isPasswordGenerated()) &&
+            ($event->getRequest()->get('_route') !== 'user_edit_generated_password')
+        ) {
             $resetPasswordUrl = $this->urlGenerator->generate('user_edit_generated_password', ['id' => $user->getId()]);
 
             $response = new RedirectResponse($resetPasswordUrl);

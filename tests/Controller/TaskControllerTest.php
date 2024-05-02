@@ -10,9 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskControllerTest extends WebTestCase
 {
-    const USER = 'user';
-    const ADMIN = 'admin';
-    const ANONYMOUS = 'anonymous';
+    private const USER = 'user';
+    private const ADMIN = 'admin';
+    private const ANONYMOUS = 'anonymous';
 
     /**
      * @throws Exception
@@ -53,6 +53,15 @@ class TaskControllerTest extends WebTestCase
         );
     }
 
+    /**
+     * @throws Exception
+     */
+    private function loadUserByUsername($username)
+    {
+        $userRepository = static::getContainer()->get(UserRepository::class);
+        return $userRepository->findOneBy(['username' => $username]);
+    }
+
     public function testRedirectIfNotLoggedIn(): void
     {
         $client = static::createClient();
@@ -88,9 +97,18 @@ class TaskControllerTest extends WebTestCase
 
         $task = $this->loadTaskFromDatabaseByOwner($testUser);
 
-        $client->request('GET', '/tasks/' . $task->getId() .'/edit');
+        $client->request('GET', '/tasks/' . $task->getId() . '/edit');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function loadTaskFromDatabaseByOwner($user)
+    {
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+        return $taskRepository->findOneBy(['user' => $user]);
     }
 
     /**
@@ -110,7 +128,7 @@ class TaskControllerTest extends WebTestCase
         $adminUser = $this->loadUserByUsername(self::ADMIN);
         $task = $this->loadTaskFromDatabaseByOwner($adminUser);
 
-        $client->request('GET', '/tasks/' . $task->getId() .'/edit');
+        $client->request('GET', '/tasks/' . $task->getId() . '/edit');
 
 
         // the owner is admin so user is not authorized
@@ -208,7 +226,7 @@ class TaskControllerTest extends WebTestCase
         $adminUser = $this->loadUserByUsername(self::ADMIN);
         $task = $this->loadTaskFromDatabaseByOwner($adminUser);
 
-        $client->request('GET', '/tasks/' . $task->getId() .'/delete');
+        $client->request('GET', '/tasks/' . $task->getId() . '/delete');
 
         // the owner is admin so user is not authorized
         $this->assertEquals(
@@ -229,7 +247,7 @@ class TaskControllerTest extends WebTestCase
         $client->loginUser($testUser);
 
         $taskRepository = static::getContainer()->get(TaskRepository::class);
-        $task=new Task();
+        $task = new Task();
         $task->setTitle('title');
         $task->setContent('content');
         $task->setUser($testUser);
@@ -257,23 +275,5 @@ class TaskControllerTest extends WebTestCase
             'The task has been successfully deleted.',
             'The flash message did not appear'
         );
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function loadTaskFromDatabaseByOwner($user)
-    {
-        $taskRepository = static::getContainer()->get(TaskRepository::class);
-        return $taskRepository->findOneBy(['user' => $user]);
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function loadUserByUsername($username)
-    {
-        $userRepository = static::getContainer()->get(UserRepository::class);
-        return $userRepository->findOneBy(['username' => $username]);
     }
 }

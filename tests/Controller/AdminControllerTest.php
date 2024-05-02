@@ -16,9 +16,9 @@ use Twig\Environment;
 
 class AdminControllerTest extends WebTestCase
 {
-    const USER = 'user';
-    const ADMIN = 'admin';
-    const ANONYMOUS = 'anonymous';
+    private const USER = 'user';
+    private const ADMIN = 'admin';
+    private const ANONYMOUS = 'anonymous';
 
     /**
      * @throws Exception

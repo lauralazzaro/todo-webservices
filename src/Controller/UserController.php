@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Form\UserEditGeneratedPasswordType;
 use App\Form\UserEditType;
 use App\Helper\UserHelper;
 use App\Repository\UserRepository;
@@ -18,11 +17,11 @@ class UserController extends AbstractController
 {
     #[Route("/users/{id}/edit", name: "user_edit")]
     public function editAction(
-        User           $user,
-        Request        $request,
+        User $user,
+        Request $request,
         UserRepository $userRepository,
-        UserHelper     $userHelper,
-        int            $id
+        UserHelper $userHelper,
+        int $id
     ): RedirectResponse|Response {
         $this->denyAccessUnlessGranted(
             attribute: UserVoter::EDIT,
@@ -48,11 +47,11 @@ class UserController extends AbstractController
 
     #[Route("/users/{id}/edit/generated_password", name: "user_edit_generated_password")]
     public function editGeneratedPasswordAction(
-        User           $user,
-        Request        $request,
+        User $user,
+        Request $request,
         UserRepository $userRepository,
-        UserHelper     $userHelper,
-        int            $id
+        UserHelper $userHelper,
+        int $id
     ): RedirectResponse|Response {
         $this->denyAccessUnlessGranted(
             attribute: UserVoter::EDIT,

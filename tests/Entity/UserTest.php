@@ -10,7 +10,6 @@ use Symfony\Component\Validator\Validation;
 
 class UserTest extends TestCase
 {
-
     public function testUsernameIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
@@ -72,3 +71,4 @@ class UserTest extends TestCase
         $this->assertCount(0, $violations, 'Invalid User');
     }
 }
+
