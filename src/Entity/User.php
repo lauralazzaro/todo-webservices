@@ -17,15 +17,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: "string", length: 255, unique: true)]
-    #[Assert\NotBlank(
-        message: 'You must enter a valid username.'
-    )]
+    #[ORM\Column(type: "string", length: 255, unique: true, nullable: false)]
+    #[Assert\NotBlank(message: 'You must enter a valid username.')]
     private string $username;
 
-    #[ORM\Column(type: "string", length: 255, unique: true)]
+    #[ORM\Column(type: "string", length: 255, unique: true, nullable: false)]
+    #[Assert\Email(message: 'Invalid Email Format')]
     #[Assert\NotBlank(message: 'You must enter a valid email.')]
-    #[Assert\Type(type: "email", message: "Invalid Email Format")]
     private string $email;
 
     #[ORM\Column]

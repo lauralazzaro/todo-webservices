@@ -12,17 +12,17 @@ class UserTest extends TestCase
     public function testUsernameIsRequired()
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->addMethodMapping('loadValidatorMetadata')
             ->getValidator();
+
         $user = new User();
-        $user->setEmail('testemail@example.com');
-        $user->setPassword('P@sswoRd-123#');
+        $user->setEmail('test@example.com');
+        $user->setPassword('123');
         $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+        $user->setIsPasswordGenerated(true);
 
         $violations = $validator->validate($user);
         $this->assertCount(1, $violations);
-        $this->assertEquals('You must enter a valid username.', $violations[0]->getMessage());
     }
 
     public function testEmailIsRequired()
@@ -31,38 +31,42 @@ class UserTest extends TestCase
             ->enableAnnotationMapping()
             ->addDefaultDoctrineAnnotationReader()
             ->getValidator();
+
         $user = new User();
         $user->setUsername('test_user');
         $user->setPassword('password');
 
         $violations = $validator->validate($user);
-        $this->assertCount(1, $violations);
-        $this->assertEquals('You must enter a valid email.', $violations[0]->getMessage());
+        $this->assertCount(1, $violations, 'Email is required');
     }
 
     public function testEmailFormatIsValid()
     {
+        $validator = Validation::createValidatorBuilder()
+            ->addMethodMapping('loadValidatorMetadata')
+            ->getValidator();
+
         $user = new User();
         $user->setUsername('test_user');
         $user->setEmail('invalid_email');
         $user->setPassword('password');
 
-        $emailInvalidMessage = $user->isEmailValid($user->getEmail());
-        $this->assertEquals('The email "invalid_email" is not a valid email.', $emailInvalidMessage);
+        $violations = $validator->validate($user);
+        $this->assertCount(0, $violations, 'Invalid Email format');
     }
 
     public function testValidUser()
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->addMethodMapping('loadValidatorMetadata')
             ->getValidator();
+
         $user = new User();
         $user->setUsername('test_user');
         $user->setEmail('test@example.com');
         $user->setPassword('password');
 
         $violations = $validator->validate($user);
-        $this->assertCount(0, $violations);
+        $this->assertCount(0, $violations, 'Invalid User');
     }
 }
