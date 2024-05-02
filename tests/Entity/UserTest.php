@@ -4,6 +4,8 @@ namespace App\Tests\Entity;
 
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Constraints\EmailValidator;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
 
 class UserTest extends TestCase
@@ -12,8 +14,14 @@ class UserTest extends TestCase
     public function testUsernameIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
+            ->setConstraintValidatorFactory(
+                new ConstraintValidatorFactory([
+                    EmailValidator::class => new EmailValidator('html5')
+                ])
+            )
             ->enableAttributeMapping()
             ->getValidator();
+
 
         $user = new User();
         $user->setEmail('test@example.com');
@@ -28,6 +36,11 @@ class UserTest extends TestCase
     public function testEmailIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
+            ->setConstraintValidatorFactory(
+                new ConstraintValidatorFactory([
+                    EmailValidator::class => new EmailValidator('html5')
+                ])
+            )
             ->enableAttributeMapping()
             ->getValidator();
 
@@ -42,6 +55,11 @@ class UserTest extends TestCase
     public function testValidUser(): void
     {
         $validator = Validation::createValidatorBuilder()
+            ->setConstraintValidatorFactory(
+                new ConstraintValidatorFactory([
+                    EmailValidator::class => new EmailValidator('html5')
+                ])
+            )
             ->enableAttributeMapping()
             ->getValidator();
 
