@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Validation;
 class UserTest extends TestCase
 {
 
-    public function testUsernameIsRequired()
+    public function testUsernameIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
             ->enableAttributeMapping()
@@ -25,7 +25,7 @@ class UserTest extends TestCase
         $this->assertCount(1, $violations);
     }
 
-    public function testEmailIsRequired()
+    public function testEmailIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
             ->enableAttributeMapping()
@@ -39,7 +39,7 @@ class UserTest extends TestCase
         $this->assertCount(1, $violations, 'Email is required');
     }
 
-    public function testValidUser()
+    public function testValidUser(): void
     {
         $validator = Validation::createValidatorBuilder()
             ->enableAttributeMapping()

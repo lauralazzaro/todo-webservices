@@ -17,7 +17,7 @@ class TaskControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testCreateAction()
+    public function testCreateAction(): void
     {
 
         $client = static::createClient();
@@ -53,7 +53,7 @@ class TaskControllerTest extends WebTestCase
         );
     }
 
-    public function testRedirectIfNotLoggedIn()
+    public function testRedirectIfNotLoggedIn(): void
     {
         $client = static::createClient();
         $client->request('GET', '/tasks');
@@ -77,7 +77,7 @@ class TaskControllerTest extends WebTestCase
      * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws Exception
      */
-    public function testEditPageIsAccessible()
+    public function testEditPageIsAccessible(): void
     {
         $client = static::createClient();
         $task = $this->createMock(Task::class);
@@ -98,7 +98,7 @@ class TaskControllerTest extends WebTestCase
      * @throws Exception
      *
      */
-    public function testEditPageRequiresAuthorization()
+    public function testEditPageRequiresAuthorization(): void
     {
         $client = static::createClient();
 
@@ -125,7 +125,7 @@ class TaskControllerTest extends WebTestCase
      * @throws \PHPUnit\Framework\MockObject\Exception
      * @throws Exception
      */
-    public function testEditActionSuccess()
+    public function testEditActionSuccess(): void
     {
         $client = static::createClient();
 
@@ -162,7 +162,7 @@ class TaskControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testToggleTaskAction()
+    public function testToggleTaskAction(): void
     {
         $client = static::createClient();
 
@@ -196,7 +196,7 @@ class TaskControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testDeletePageRequiresAuthorization()
+    public function testDeletePageRequiresAuthorization(): void
     {
         $client = static::createClient();
 
@@ -221,7 +221,7 @@ class TaskControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testDeleteSuccess()
+    public function testDeleteSuccess(): void
     {
         $client = static::createClient();
 

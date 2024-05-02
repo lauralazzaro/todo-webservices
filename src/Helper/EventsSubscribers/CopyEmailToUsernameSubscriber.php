@@ -19,7 +19,7 @@ class CopyEmailToUsernameSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onFormSubmit(FormEvent $event)
+    public function onFormSubmit(FormEvent $event): void
     {
         $data = $event->getData();
         $form = $event->getForm();

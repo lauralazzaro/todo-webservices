@@ -143,7 +143,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isPasswordGenerated = $isPasswordGenerated;
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // TODO: Implement eraseCredentials() method.
     }

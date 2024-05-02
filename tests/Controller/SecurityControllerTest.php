@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class SecurityControllerTest extends WebTestCase
 {
-    public function testLoginRedirectWhenUserAuthenticated()
+    public function testLoginRedirectWhenUserAuthenticated(): void
     {
         $client = static::createClient();
 
@@ -33,7 +33,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful('Could not request task_list after login');
     }
 
-    public function testLoginDisplayLoginPageWhenUserNotAuthenticated()
+    public function testLoginDisplayLoginPageWhenUserNotAuthenticated(): void
     {
         $client = static::createClient();
 
@@ -53,7 +53,7 @@ class SecurityControllerTest extends WebTestCase
         );
     }
 
-    public function testLogoutThrowsLogicException()
+    public function testLogoutThrowsLogicException(): void
     {
         $client = static::createClient();
         $client->request('GET', '/logout');

@@ -23,7 +23,7 @@ class AdminControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testDenyAccessIfNotAdmin()
+    public function testDenyAccessIfNotAdmin(): void
     {
         $client = static::createClient();
 
@@ -61,7 +61,7 @@ class AdminControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testAllowAccessToUsersPage()
+    public function testAllowAccessToUsersPage(): void
     {
         $client = static::createClient();
 
@@ -76,7 +76,7 @@ class AdminControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testForbiddenCreateUserIfNotAdmin()
+    public function testForbiddenCreateUserIfNotAdmin(): void
     {
         $client = static::createClient();
 
@@ -95,7 +95,7 @@ class AdminControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testCreateUserSuccess()
+    public function testCreateUserSuccess(): void
     {
         $client = static::createClient();
 
@@ -130,7 +130,7 @@ class AdminControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testEditUserSuccess()
+    public function testEditUserSuccess(): void
     {
         $client = static::createClient();
 

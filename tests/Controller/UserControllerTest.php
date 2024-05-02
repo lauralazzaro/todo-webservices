@@ -13,7 +13,7 @@ class UserControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testEditAction()
+    public function testEditAction(): void
     {
         $client = static::createClient();
 
