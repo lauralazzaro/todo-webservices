@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Twig\Environment;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
@@ -11,7 +12,6 @@ use Twig\Error\SyntaxError;
 
 class Mailer
 {
-
     private MailerInterface $mailer;
     private Environment $twig;
 
@@ -22,15 +22,17 @@ class Mailer
     }
 
     /**
-     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     * @throws SyntaxError
+     * @throws TransportExceptionInterface
+     * @throws RuntimeError
+     * @throws LoaderError
      */
     public function sendEmail(string $subject, string $temporaryPassword, string $mailerTo): void
     {
         $content = $this->createUserEmailBody($temporaryPassword);
-
         $email = (new Email())
             ->from($_ENV['MAILER_FROM'])
-            ->to($_ENV['MAILER_TO'])
+            ->to($mailerTo)
             ->subject($subject)
             ->html($content);
 

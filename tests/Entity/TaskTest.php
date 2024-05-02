@@ -22,11 +22,10 @@ class TaskTest extends TestCase
         return $user;
     }
 
-    public function testTitleIsRequired()
+    public function testTitleIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->enableAttributeMapping()
             ->getValidator();
 
         $task = new Task();
@@ -40,11 +39,10 @@ class TaskTest extends TestCase
         $this->assertEquals('You must enter a title.', $violations[0]->getMessage());
     }
 
-    public function testContentIsRequired()
+    public function testContentIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->enableAttributeMapping()
             ->getValidator();
 
         $task = new Task();
@@ -59,11 +57,10 @@ class TaskTest extends TestCase
         $this->assertEquals('You must enter a content.', $violations[0]->getMessage());
     }
 
-    public function testUserIsRequired()
+    public function testUserIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->enableAttributeMapping()
             ->getValidator();
 
         $task = new Task();
@@ -76,7 +73,7 @@ class TaskTest extends TestCase
         $this->assertEquals('You must assign a user.', $violations[0]->getMessage());
     }
 
-    public function testValidTask()
+    public function testValidTask(): void
     {
         $validator = Validation::createValidator();
         $task = new Task();

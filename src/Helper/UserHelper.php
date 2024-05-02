@@ -22,27 +22,29 @@ class UserHelper
      * generate a random token
      *
      * @param User $user
-     * @return User
+     * @return array
      * @throws Exception
      */
     public function initUserData(
         User $user
-    ): User {
+    ): array {
         $user->setUsername($user->getEmail());
-        $user->setIsValidated(false);
-        $user->setGeneratedPasswordValidity();
         $user->setIsPasswordGenerated(true);
 
         $random = $this->randomPassword();
-        $user->setPassword($random);
+
+        $hashedPassword = $this->passwordHasher->hashPassword(
+            $user,
+            $random
+        );
+
+        $user->setPassword($hashedPassword);
 
         if (in_array('ROLE_ADMIN', $user->getRoles())) {
             $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
-        } else {
-            $user->setRoles(['ROLE_USER']);
         }
 
-        return $user;
+        return ['user' => $user, 'plainPassword' => $random];
     }
 
     private function randomPassword(): string
@@ -58,24 +60,11 @@ class UserHelper
         return $randomString;
     }
 
-    /**
-     * Verify that the password is less than 48h old
-     *
-     * @param \DateTimeImmutable $passwordExpirationDate
-     * @return bool
-     */
-    public function isPasswordStillValid(\DateTimeImmutable $passwordExpirationDate): bool
-    {
-        $now = new \DateTimeImmutable();
-
-        return $now->diff($passwordExpirationDate)->h < 48;
-    }
 
     /**
      * Return the user with hashed password
      *
      * @param User $user
-     * @param UserPasswordHasherInterface $passwordHasher
      * @return User
      */
     public function updatePassword(
@@ -87,6 +76,7 @@ class UserHelper
         );
 
         $user->setPassword($hashedPassword);
+        $user->setIsPasswordGenerated(false);
 
         return $user;
     }

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Helper\EventsSubscribers\CopyEmailToUsernameSubscriber;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -31,6 +32,8 @@ class AdminCreateUserType extends AbstractType
                 ]
             )
             ->add('username', HiddenType::class, []);
+
+        $builder->addEventSubscriber(new CopyEmailToUsernameSubscriber());
     }
 
     public function configureOptions(OptionsResolver $resolver): void

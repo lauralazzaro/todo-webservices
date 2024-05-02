@@ -12,20 +12,20 @@
         "doctrine/orm": "^2.15",
         "egulias/email-validator": "^4.0",
         "symfony/apache-pack": "^1.0",
-        "symfony/asset": "6.3.*",
-        "symfony/console": "6.3.*",
-        "symfony/css-selector": "6.3.*",
-        "symfony/dotenv": "6.3.*",
-        "symfony/flex": "^2",
-        "symfony/form": "6.3.*",
-        "symfony/framework-bundle": "6.3.*",
-        "symfony/mailer": "6.3.*",
-        "symfony/password-hasher": "6.3.*",
-        "symfony/runtime": "6.3.*",
-        "symfony/security-bundle": "6.3.*",
-        "symfony/twig-bundle": "6.3.*",
-        "symfony/validator": "6.3.*",
-        "symfony/yaml": "6.3.*",
+        "symfony/asset": "*",
+        "symfony/console": "*",
+        "symfony/css-selector": "*",
+        "symfony/dotenv": "*",
+        "symfony/flex": "^1.16",
+        "symfony/form": "*",
+        "symfony/framework-bundle": "*",
+        "symfony/mailer": "*",
+        "symfony/password-hasher": "*",
+        "symfony/runtime": "*",
+        "symfony/security-bundle": "*",
+        "symfony/twig-bundle": "*",
+        "symfony/validator": "*",
+        "symfony/yaml": "*",
         "symfonycasts/reset-password-bundle": "^1.21",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
@@ -75,19 +75,19 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "6.3.*"
+            "require": "6.4.*"
         }
     },
     "require-dev": {
-        "doctrine/annotations": "^2.0",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "phpunit/phpunit": "^10.2",
+        "rector/rector": "^1.0",
         "squizlabs/php_codesniffer": "^3.7",
-        "symfony/browser-kit": "6.3.*",
-        "symfony/cache": "6.3.*",
-        "symfony/maker-bundle": "^1.52",
+        "symfony/browser-kit": "*",
+        "symfony/cache": "*",
+        "symfony/panther": "^2.1",
         "symfony/phpunit-bridge": "^6.3",
-        "symfony/stopwatch": "6.3.*",
-        "symfony/web-profiler-bundle": "6.3.*"
+        "symfony/stopwatch": "*",
+        "symfony/web-profiler-bundle": "*"
     }
 }

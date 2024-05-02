@@ -13,7 +13,7 @@ class UserControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testEditAction()
+    public function testEditAction(): void
     {
         $client = static::createClient();
 
@@ -41,7 +41,7 @@ class UserControllerTest extends WebTestCase
         // Check for a success flash message or other indicators of success on the redirected page
         $this->assertSelectorTextContains(
             'div.alert-success',
-            'User successfully modified',
+            'You successfully update your password',
             'The flash message did not appear'
         );
     }

@@ -1,4 +1,4 @@
-# projet8-TodoList
+#projet8-TodoList
 
 [![Symfony](https://github.com/lauralazzaro/projet8-TodoList/actions/workflows/symfony.yml/badge.svg)](https://github.com/lauralazzaro/projet8-TodoList/actions/workflows/symfony.yml)
 

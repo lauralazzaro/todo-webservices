@@ -26,3 +26,13 @@ services:
     App\Security\Voter\UserVoter:
         tags:
             - { name: security.voter }
+
+    App\Helper\EventsSubscribers\CopyEmailToUsernameSubscriber:
+        tags:
+            - { name: 'kernel.event_subscriber' }
+
+    App\Helper\EventsSubscribers\GeneratedPasswordResetSubscriber:
+        tags:
+            - { name: 'kernel.event_subscriber' }
+
+    App\Entity\User: ~

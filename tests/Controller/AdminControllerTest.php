@@ -4,24 +4,26 @@ namespace App\Tests\Controller;
 
 use App\Entity\User;
 use App\Helper\Mailer;
+use App\Helper\UserHelper;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Twig\Environment;
 
 class AdminControllerTest extends WebTestCase
 {
-    const USER = 'user';
-    const ADMIN = 'admin';
-    const ANONYMOUS = 'anonymous';
+    private const USER = 'user';
+    private const ADMIN = 'admin';
+    private const ANONYMOUS = 'anonymous';
 
     /**
      * @throws Exception
      */
-    public function testDenyAccessIfNotAdmin()
+    public function testDenyAccessIfNotAdmin(): void
     {
         $client = static::createClient();
 
@@ -59,7 +61,7 @@ class AdminControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testAllowAccessToUsersPage()
+    public function testAllowAccessToUsersPage(): void
     {
         $client = static::createClient();
 
@@ -74,7 +76,7 @@ class AdminControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testForbiddenCreateUserIfNotAdmin()
+    public function testForbiddenCreateUserIfNotAdmin(): void
     {
         $client = static::createClient();
 
@@ -93,7 +95,7 @@ class AdminControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testCreateUserSuccess()
+    public function testCreateUserSuccess(): void
     {
         $client = static::createClient();
 
@@ -128,7 +130,7 @@ class AdminControllerTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testEditUserSuccess()
+    public function testEditUserSuccess(): void
     {
         $client = static::createClient();
 
@@ -209,5 +211,42 @@ class AdminControllerTest extends WebTestCase
             }));
 
         $mailer->sendEmail($subject, $temporaryPassword, $mailerTo);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testInitUserDataForCreate(): void
+    {
+        $user = new User();
+        $user->setEmail('test@example.com');
+
+        $passwordHasherMock = $this->createMock(UserPasswordHasherInterface::class);
+
+        $userHelper = new UserHelper($passwordHasherMock);
+
+        $userHelper->initUserData($user);
+
+        $this->assertEquals('test@example.com', $user->getUsername());
+        $this->assertEquals(true, $user->isPasswordGenerated());
+        $this->assertNotNull($user->getPassword(), 'Password not generated automatically');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testInitUserAdminDataForCreate(): void
+    {
+        $user = new User();
+        $user->setEmail('test@example.com');
+        $user->setRoles(['ROLE_ADMIN']);
+
+        $passwordHasherMock = $this->createMock(UserPasswordHasherInterface::class);
+
+        $userHelper = new UserHelper($passwordHasherMock);
+
+        $userHelper->initUserData($user);
+
+        $this->assertContains('ROLE_ADMIN', $user->getRoles());
     }
 }

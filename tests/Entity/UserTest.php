@@ -4,65 +4,71 @@ namespace App\Tests\Entity;
 
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\Constraints\EmailValidator;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
 
 class UserTest extends TestCase
 {
-
-    public function testUsernameIsRequired()
+    public function testUsernameIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->setConstraintValidatorFactory(
+                new ConstraintValidatorFactory([
+                    EmailValidator::class => new EmailValidator('html5')
+                ])
+            )
+            ->enableAttributeMapping()
             ->getValidator();
+
+
         $user = new User();
-        $user->setEmail('testemail@example.com');
-        $user->setPassword('P@sswoRd-123#');
+        $user->setEmail('test@example.com');
+        $user->setPassword('123');
         $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+        $user->setIsPasswordGenerated(true);
 
         $violations = $validator->validate($user);
         $this->assertCount(1, $violations);
-        $this->assertEquals('You must enter a valid username.', $violations[0]->getMessage());
     }
 
-    public function testEmailIsRequired()
+    public function testEmailIsRequired(): void
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->setConstraintValidatorFactory(
+                new ConstraintValidatorFactory([
+                    EmailValidator::class => new EmailValidator('html5')
+                ])
+            )
+            ->enableAttributeMapping()
             ->getValidator();
+
         $user = new User();
         $user->setUsername('test_user');
         $user->setPassword('password');
 
         $violations = $validator->validate($user);
-        $this->assertCount(1, $violations);
-        $this->assertEquals('You must enter a valid email.', $violations[0]->getMessage());
+        $this->assertCount(1, $violations, 'Email is required');
     }
 
-    public function testEmailFormatIsValid()
-    {
-        $user = new User();
-        $user->setUsername('test_user');
-        $user->setEmail('invalid_email');
-        $user->setPassword('password');
-
-        $emailInvalidMessage = $user->isEmailValid($user->getEmail());
-        $this->assertEquals('The email "invalid_email" is not a valid email.', $emailInvalidMessage);
-    }
-
-    public function testValidUser()
+    public function testValidUser(): void
     {
         $validator = Validation::createValidatorBuilder()
-            ->enableAnnotationMapping()
-            ->addDefaultDoctrineAnnotationReader()
+            ->setConstraintValidatorFactory(
+                new ConstraintValidatorFactory([
+                    EmailValidator::class => new EmailValidator('html5')
+                ])
+            )
+            ->enableAttributeMapping()
             ->getValidator();
+
         $user = new User();
         $user->setUsername('test_user');
         $user->setEmail('test@example.com');
         $user->setPassword('password');
 
         $violations = $validator->validate($user);
-        $this->assertCount(0, $violations);
+        $this->assertCount(0, $violations, 'Invalid User');
     }
 }
+

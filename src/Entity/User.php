@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -18,16 +17,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: "string", length: 255, unique: true)]
-    #[Assert\NotBlank(
-        message: 'You must enter a valid username.'
-    )]
+    #[ORM\Column(type: "string", length: 255, unique: true, nullable: false)]
+    #[Assert\NotBlank(message: 'You must enter a valid username.')]
     private string $username;
 
-    #[ORM\Column(type: "string", length: 255, unique: true)]
-    #[Assert\NotBlank(
-        message: 'You must enter a valid email.'
-    )]
+    #[ORM\Column(type: "string", length: 255, unique: true, nullable: false)]
+    #[Assert\Email(message: 'Invalid Email Format')]
+    #[Assert\NotBlank(message: 'You must enter a valid email.')]
     private string $email;
 
     #[ORM\Column]
@@ -42,17 +38,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: "boolean")]
     private string $isPasswordGenerated;
 
-    #[ORM\Column(type: "datetime_immutable")]
-    private DateTimeImmutable $generatedPasswordValidity;
-
-    #[ORM\Column(type: "boolean")]
-    private bool $isValidated;
-
     public function __construct()
     {
-        $this->isValidated = false;
         $this->isPasswordGenerated = false;
-        $this->generatedPasswordValidity = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -131,47 +119,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isEmailValid(string $email): bool
-    {
-        $pattern = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
-        return preg_match($pattern, $email) === 1
-            ?: "The email $email is not a valid email.";
-    }
-
     /**
-     * @return DateTimeImmutable|null
-     */
-    public function getGeneratedPasswordValidity(): ?DateTimeImmutable
-    {
-        return $this->generatedPasswordValidity;
-    }
-
-    public function setGeneratedPasswordValidity(): void
-    {
-        $datetimeNow = new DateTimeImmutable();
-        $expirationDate = $datetimeNow->modify('+48 hours');
-
-        $this->generatedPasswordValidity = $expirationDate;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isValidated(): bool
-    {
-        return $this->isValidated;
-    }
-
-    /**
-     * @param bool $isValidated
-     */
-    public function setIsValidated(bool $isValidated): void
-    {
-        $this->isValidated = $isValidated;
-    }
-
-    /**
-     * @return bool
+     * @return boolean
      */
     public function isPasswordGenerated(): bool
     {
@@ -179,16 +128,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param bool $isPasswordGenerated
+     * @param boolean $isPasswordGenerated
      */
     public function setIsPasswordGenerated(bool $isPasswordGenerated): void
     {
         $this->isPasswordGenerated = $isPasswordGenerated;
     }
 
-
-
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
         // TODO: Implement eraseCredentials() method.
     }

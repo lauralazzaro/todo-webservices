@@ -32,10 +32,10 @@ class AdminController extends AbstractController
      */
     #[Route("/admin/users/create", name: "admin_user_create")]
     public function createAction(
-        Request                     $request,
-        UserRepository              $userRepository,
-        UserHelper                  $userHelper,
-        Mailer                      $mailer
+        Request $request,
+        UserRepository $userRepository,
+        UserHelper $userHelper,
+        Mailer $mailer
     ): RedirectResponse|Response {
         $form = $this->createForm(AdminCreateUserType::class);
 
@@ -43,13 +43,13 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $newUser = $form->getData();
 
-            $newUser = $userHelper->initUserData($newUser);
+            $initUserData = $userHelper->initUserData($newUser);
 
-            $userRepository->save($newUser, true);
+            $userRepository->save($initUserData['user'], true);
 
             $mailer->sendEmail(
                 "Temporary password for your ToDo App account",
-                $newUser->getPassword(),
+                $initUserData['plainPassword'],
                 $newUser->getEmail()
             );
 
@@ -58,15 +58,14 @@ class AdminController extends AbstractController
 
             return $this->redirectToRoute('admin_user_list');
         }
-
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
     }
 
     #[Route("/admin/users/{id}/edit", name: "admin_user_edit")]
     public function editAction(
-        User                        $user,
-        Request                     $request,
-        UserRepository              $userRepository
+        User $user,
+        Request $request,
+        UserRepository $userRepository
     ): RedirectResponse|Response {
         $form = $this->createForm(AdminEditUserType::class, $user);
 
@@ -75,8 +74,6 @@ class AdminController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if (in_array('ROLE_ADMIN', $user->getRoles())) {
                 $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
-            } else {
-                $user->setRoles(['ROLE_USER']);
             }
 
             $userRepository->save($user, true);

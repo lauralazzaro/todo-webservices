@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DefaultControllerTest extends WebTestCase
 {
-    public function testIndexRoute()
+    public function testIndexRoute(): void
     {
         $client = static::createClient();
         $client->request('GET', '/');
