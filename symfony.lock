@@ -14,7 +14,7 @@
         ]
     },
     "doctrine/doctrine-fixtures-bundle": {
-        "version": "3.5",
+        "version": "3.6",
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -45,10 +45,7 @@
             "branch": "main",
             "version": "1.0",
             "ref": "5e490cc197fb6bb1ae22e5abbc531ddc633b6767"
-        },
-        "files": [
-            "phpstan.dist.neon"
-        ]
+        }
     },
     "phpunit/phpunit": {
         "version": "10.5",
@@ -71,10 +68,7 @@
             "branch": "main",
             "version": "3.6",
             "ref": "1019e5c08d4821cb9b77f4891f8e9c31ff20ac6f"
-        },
-        "files": [
-            "phpcs.xml.dist"
-        ]
+        }
     },
     "symfony/apache-pack": {
         "version": "1.0",
@@ -83,10 +77,7 @@
             "branch": "main",
             "version": "1.0",
             "ref": "0f18b4decdf5695d692c1d0dfd65516a07a6adf1"
-        },
-        "files": [
-            "public/.htaccess"
-        ]
+        }
     },
     "symfony/console": {
         "version": "7.0",
