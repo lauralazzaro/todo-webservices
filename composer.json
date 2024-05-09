@@ -17,7 +17,7 @@
         "symfony/console": "7.0.*",
         "symfony/css-selector": "*",
         "symfony/dotenv": "*",
-        "symfony/flex": "^1.16",
+        "symfony/flex": "^2.4",
         "symfony/form": "*",
         "symfony/framework-bundle": "*",
         "symfony/mailer": "*",
@@ -81,7 +81,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "phpunit/phpunit": "^10.2",
+        "phpunit/phpunit": "^9.5",
         "rector/rector": "^1.0",
         "squizlabs/php_codesniffer": "^3.7",
         "symfony/browser-kit": "*",
