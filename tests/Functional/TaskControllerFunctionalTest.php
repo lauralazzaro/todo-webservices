@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Functional;
 
 use App\Entity\Task;
 use App\Repository\TaskRepository;
@@ -8,7 +8,7 @@ use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class TaskControllerTest extends WebTestCase
+class TaskControllerFunctionalTest extends WebTestCase
 {
     private const USER = 'user';
     private const ADMIN = 'admin';
@@ -22,11 +22,9 @@ class TaskControllerTest extends WebTestCase
 
         $client = static::createClient();
 
-        // retrieve the test user
         $testUser = $this->loadUserByUsername(self::USER);
         $client->loginUser($testUser);
 
-        // Make a request to the login route
         $client->request('GET', '/login');
 
         $crawler = $client->request('GET', '/tasks/create');
@@ -42,9 +40,9 @@ class TaskControllerTest extends WebTestCase
             $client->getResponse()->isRedirect('task_list'),
             302,
             'Did not redirect to task_list page'
-        ); // Assert the redirection
+        );
 
-        $client->followRedirect(); // Follow the redirection
+        $client->followRedirect();
 
         $this->assertSelectorTextContains(
             'div.alert-success',
@@ -103,15 +101,6 @@ class TaskControllerTest extends WebTestCase
     }
 
     /**
-     * @throws Exception
-     */
-    private function loadTaskFromDatabaseByOwner($user)
-    {
-        $taskRepository = static::getContainer()->get(TaskRepository::class);
-        return $taskRepository->findOneBy(['user' => $user]);
-    }
-
-    /**
      * @return void
      * @throws Exception
      *
@@ -123,15 +112,11 @@ class TaskControllerTest extends WebTestCase
         $testUser = $this->loadUserByUsername(self::USER);
         $client->loginUser($testUser);
 
-
-        // load admin user and one of his task to ensure that a ROLE_USER cannot access it
         $adminUser = $this->loadUserByUsername(self::ADMIN);
         $task = $this->loadTaskFromDatabaseByOwner($adminUser);
 
         $client->request('GET', '/tasks/' . $task->getId() . '/edit');
 
-
-        // the owner is admin so user is not authorized
         $this->assertEquals(
             403,
             $client->getResponse()->getStatusCode(),
@@ -187,27 +172,21 @@ class TaskControllerTest extends WebTestCase
         $testUser = $this->loadUserByUsername(self::USER);
         $client->loginUser($testUser);
 
-        // Load a task from your database (you may need to set up fixtures or use a mock)
-        $user = $this->loadUserByUsername(self::USER); // Implement this method
+        $user = $this->loadUserByUsername(self::USER);
 
         $task = $this->loadTaskFromDatabaseByOwner($user);
 
         $crawler = $client->request('GET', '/tasks');
 
-        // Find the form in the response by its action attribute
         $form = $crawler->filter('form[action="/tasks/' . $task->getId() . '/toggle"]')->form();
 
-        // Submit the form
         $client->submit($form);
 
-        // Check if the response is a redirect or any other expected response
         $this->assertTrue($client->getResponse()->isRedirect());
 
-        // Follow the redirect
         $client->followRedirect();
 
-        // Reload the task from the database to check if it has been toggled
-        $updatedTask = $this->loadTaskFromDatabaseByOwner($user); // Implement this method
+        $updatedTask = $this->loadTaskFromDatabaseByOwner($user);
         $this->assertEquals(!$task->isDone(), $updatedTask->isDone());
     }
 
@@ -221,14 +200,11 @@ class TaskControllerTest extends WebTestCase
         $testUser = $this->loadUserByUsername(self::USER);
         $client->loginUser($testUser);
 
-
-        // load admin user and one of his task to ensure that a ROLE_USER cannot access it
         $adminUser = $this->loadUserByUsername(self::ADMIN);
         $task = $this->loadTaskFromDatabaseByOwner($adminUser);
 
         $client->request('GET', '/tasks/' . $task->getId() . '/delete');
 
-        // the owner is admin so user is not authorized
         $this->assertEquals(
             403,
             $client->getResponse()->getStatusCode(),
@@ -256,10 +232,8 @@ class TaskControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/tasks');
 
-        // Find the form in the response by its action attribute
         $form = $crawler->filter('form[action="/tasks/' . $task->getId() . '/delete"]')->form();
 
-        // Submit the form
         $client->submit($form);
 
         $this->assertEquals(
@@ -268,12 +242,21 @@ class TaskControllerTest extends WebTestCase
             'Did not redirect to task list'
         );
 
-        $client->followRedirect(); // Follow the redirection
+        $client->followRedirect();
 
         $this->assertSelectorTextContains(
             'div.alert-success',
             'The task has been successfully deleted.',
             'The flash message did not appear'
         );
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function loadTaskFromDatabaseByOwner($user)
+    {
+        $taskRepository = static::getContainer()->get(TaskRepository::class);
+        return $taskRepository->findOneBy(['user' => $user]);
     }
 }

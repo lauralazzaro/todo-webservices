@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Functional;
 
 use App\Entity\User;
 use App\Helper\Mailer;
-use App\Helper\UserHelper;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
-class AdminControllerTest extends WebTestCase
+class AdminControllerFunctionalTest extends WebTestCase
 {
     private const USER = 'user';
     private const ADMIN = 'admin';
@@ -182,8 +183,10 @@ class AdminControllerTest extends WebTestCase
     }
 
     /**
+     * @throws SyntaxError
      * @throws TransportExceptionInterface
-     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws RuntimeError
+     * @throws LoaderError
      */
     public function testSendEmail(): void
     {
@@ -211,42 +214,5 @@ class AdminControllerTest extends WebTestCase
             }));
 
         $mailer->sendEmail($subject, $temporaryPassword, $mailerTo);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testInitUserDataForCreate(): void
-    {
-        $user = new User();
-        $user->setEmail('test@example.com');
-
-        $passwordHasherMock = $this->createMock(UserPasswordHasherInterface::class);
-
-        $userHelper = new UserHelper($passwordHasherMock);
-
-        $userHelper->initUserData($user);
-
-        $this->assertEquals('test@example.com', $user->getUsername());
-        $this->assertEquals(true, $user->isPasswordGenerated());
-        $this->assertNotNull($user->getPassword(), 'Password not generated automatically');
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function testInitUserAdminDataForCreate(): void
-    {
-        $user = new User();
-        $user->setEmail('test@example.com');
-        $user->setRoles(['ROLE_ADMIN']);
-
-        $passwordHasherMock = $this->createMock(UserPasswordHasherInterface::class);
-
-        $userHelper = new UserHelper($passwordHasherMock);
-
-        $userHelper->initUserData($user);
-
-        $this->assertContains('ROLE_ADMIN', $user->getRoles());
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Functional;
 
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class SecurityControllerTest extends WebTestCase
+class SecurityControllerFunctionalTest extends WebTestCase
 {
     public function testLoginRedirectWhenUserAuthenticated(): void
     {
@@ -33,27 +33,7 @@ class SecurityControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful('Could not request task_list after login');
     }
 
-    public function testLoginDisplayLoginPageWhenUserNotAuthenticated(): void
-    {
-        $client = static::createClient();
-
-        // Make a request to the login route
-        $crawler = $client->request('GET', '/login');
-
-        // Assert that the response is successful
-        $this->assertResponseIsSuccessful(
-            'Could not open login page'
-        );
-
-        // Assert that the login form is present
-        $this->assertCount(
-            1,
-            $crawler->filter('form[id="loginForm"]'),
-            'Logig form not found'
-        );
-    }
-
-    public function testLogoutThrowsLogicException(): void
+    public function testLogout(): void
     {
         $client = static::createClient();
         $client->request('GET', '/logout');

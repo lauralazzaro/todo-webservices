@@ -18,11 +18,9 @@ class UserHelper
     /**
      * when an admin creates a user, the username will be the mail and after that the user can modify it
      * first the user is not validated
-     * set the expiration of the token at +48 hours
-     * generate a random token
      *
      * @param User $user
-     * @return array
+     * @return array ['user' => User Object, 'plainPassword' => generated password]
      * @throws Exception
      */
     public function initUserData(
@@ -31,7 +29,7 @@ class UserHelper
         $user->setUsername($user->getEmail());
         $user->setIsPasswordGenerated(true);
 
-        $random = $this->randomPassword();
+        $random = bin2hex(random_bytes(3));
 
         $hashedPassword = $this->passwordHasher->hashPassword(
             $user,
@@ -45,19 +43,6 @@ class UserHelper
         }
 
         return ['user' => $user, 'plainPassword' => $random];
-    }
-
-    private function randomPassword(): string
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-
-        for ($i = 0; $i < 6; $i++) {
-            $index = rand(0, strlen($characters) - 1);
-            $randomString .= $characters[$index];
-        }
-
-        return $randomString;
     }
 
 
