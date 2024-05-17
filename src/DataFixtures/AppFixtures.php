@@ -22,22 +22,6 @@ class AppFixtures extends Fixture
         ObjectManager $manager
     ): void {
 
-        /*
-         * Start reset indexes of the tables
-         */
-        $connection = $manager->getConnection();
-        $schemaManager = $connection->createSchemaManager();
-        $tables = $schemaManager->listTableNames();
-
-        foreach ($tables as $table) {
-            $tableName = $connection->quoteIdentifier($table);
-            $connection->executeStatement("DELETE FROM $tableName");
-            $connection->executeStatement("DELETE FROM sqlite_sequence WHERE name = $tableName;");
-        }
-        /*
-        * End reset indexes of the tables
-        */
-
         $user = new User();
         $user->setUsername('user');
         $user->setEmail('user@email.com');

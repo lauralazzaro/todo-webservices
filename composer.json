@@ -68,6 +68,15 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "test-coverage": [
+            "vendor/bin/phpunit --coverage-html public/test-coverage"
+        ],
+        "init-db": [
+            "php bin/console doctrine:database:drop --force",
+            "bin/console doctrine:database:create",
+            "bin/console doctrine:schema:update --force --complete",
+            "bin/console doctrine:fixtures:load -n"
         ]
     },
     "conflict": {
