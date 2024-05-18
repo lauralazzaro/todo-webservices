@@ -15,15 +15,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TaskController extends AbstractController
 {
-    #[Route('/tasks', name: 'task_list')]
-    public function listAction(TaskRepository $taskRepository): Response
-    {
-        return $this->render(
-            'task/list.html.twig',
-            ['tasks' => $taskRepository->findAll()]
-        );
-    }
-
     #[Route('/tasks/create', name: 'task_create')]
     public function createAction(
         Request        $request,
@@ -85,9 +76,8 @@ class TaskController extends AbstractController
         Task           $task,
         TaskRepository $taskRepository
     ) {
-        $task->toggle(!$task->isDone());
+        $task->toggle();
         $taskRepository->save($task, true);
-        $this->addFlash('success', sprintf('The task %s has been modified.', $task->getTitle()));
         return $this->redirectToRoute('task_list');
     }
 
@@ -106,9 +96,35 @@ class TaskController extends AbstractController
             $this->addFlash('error', $e->getMessage());
             $this->redirect('task_list');
         }
-        
+
         $taskRepository->remove($task, true);
         $this->addFlash('success', 'The task has been successfully deleted.');
         return $this->redirectToRoute('task_list');
+    }
+
+    #[Route('/tasks/{page}', name: 'task_list', defaults: ['page' => 1])]
+    public function list(int $page, TaskRepository $taskRepository): Response
+    {
+        $pageSize = 5;
+        $paginator = $taskRepository->findAllToDoWithPaginationAndOrder($page, $pageSize);
+
+        return $this->render('task/list.html.twig', [
+            'paginator' => $paginator,
+            'currentPage' => $page,
+            'totalPages' => ceil(count($paginator) / $pageSize)
+        ]);
+    }
+
+    #[Route('/tasks/{page}/done', name: 'task_list_done', defaults: ['page' => 1])]
+    public function listDoneTasks(int $page, TaskRepository $taskRepository): Response
+    {
+        $pageSize = 5;
+        $paginator = $taskRepository->findAllDoneWithPaginationAndOrder($page, $pageSize);
+
+        return $this->render('task/list.done.html.twig', [
+            'paginator' => $paginator,
+            'currentPage' => $page,
+            'totalPages' => ceil(count($paginator) / $pageSize)
+        ]);
     }
 }

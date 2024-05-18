@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Task;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,30 @@ class TaskRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findAllToDoWithPaginationAndOrder(int $page = 1, int $pageSize = 10): Paginator
+    {
+        $query = $this->createQueryBuilder('t')
+            ->where('t.isDone = false')
+            ->orderBy('t.createdAt', 'DESC')
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize);
+
+        return new Paginator($query);
+    }
+
+    public function findAllDoneWithPaginationAndOrder(int $page = 1, int $pageSize = 10): Paginator
+    {
+        $query = $this->createQueryBuilder('t')
+            ->where('t.isDone = true')
+            ->orderBy('t.createdAt', 'DESC')
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize);
+
+        return new Paginator($query);
     }
 
 //    /**

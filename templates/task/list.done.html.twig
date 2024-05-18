@@ -7,10 +7,10 @@
 
 	<div class="pagination">
 		{% if currentPage > 1 %}
-			<a href="{{ path('task_list', {'page': currentPage - 1}) }}">Previous</a>
+			<a href="{{ path('task_list_done', {'page': currentPage - 1}) }}">Previous</a>
 		{% endif %}
 		{% if currentPage < totalPages %}
-			<a href="{{ path('task_list', {'page': currentPage + 1}) }}">Next</a>
+			<a href="{{ path('task_list_done', {'page': currentPage + 1}) }}">Next</a>
 		{% endif %}
 	</div>
 

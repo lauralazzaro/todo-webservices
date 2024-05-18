@@ -31,7 +31,7 @@ class Task
     )]
     private string $content;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN, options: ["default" => false])]
     private bool $isDone;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
@@ -82,9 +82,9 @@ class Task
         return $this->isDone;
     }
 
-    public function toggle($flag): void
+    public function toggle(): void
     {
-        $this->isDone = $flag;
+        $this->isDone = !$this->isDone;
     }
 
     public function getUser(): ?User

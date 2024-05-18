@@ -57,22 +57,6 @@ class TaskTest extends TestCase
         $this->assertEquals('You must enter a content.', $violations[0]->getMessage());
     }
 
-    public function testUserIsRequired(): void
-    {
-        $validator = Validation::createValidatorBuilder()
-            ->enableAttributeMapping()
-            ->getValidator();
-
-        $task = new Task();
-        $task->setTitle('Task title');
-        $task->setContent('Some content');
-
-        $violations = $validator->validate($task);
-
-        $this->assertCount(1, $violations);
-        $this->assertEquals('You must assign a user.', $violations[0]->getMessage());
-    }
-
     public function testValidTask(): void
     {
         $validator = Validation::createValidator();

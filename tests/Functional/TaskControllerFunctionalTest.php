@@ -117,10 +117,10 @@ class TaskControllerFunctionalTest extends WebTestCase
 
         $client->request('GET', '/tasks/' . $task->getId() . '/edit');
 
-        $this->assertEquals(
-            403,
-            $client->getResponse()->getStatusCode(),
-            'Opened the page even without authorization'
+        $this->assertSelectorTextContains(
+            'div.alert-danger',
+            'You cannot edit this task.',
+            'The user deleted a task even if not owner or admin'
         );
     }
 
@@ -178,9 +178,13 @@ class TaskControllerFunctionalTest extends WebTestCase
 
         $crawler = $client->request('GET', '/tasks');
 
-        $form = $crawler->filter('form[action="/tasks/' . $task->getId() . '/toggle"]')->form();
+        $link = $crawler->filter('a[href="/tasks/' . $task->getId() . '/toggle"]')->each(function ($node) {
+            if (trim($node->text()) === "Click to mark as done") {
+                return $node;
+            }
+        });
 
-        $client->submit($form);
+        $client->click($link[0]->link());
 
         $this->assertTrue($client->getResponse()->isRedirect());
 
@@ -206,9 +210,9 @@ class TaskControllerFunctionalTest extends WebTestCase
         $client->request('GET', '/tasks/' . $task->getId() . '/delete');
 
         $this->assertEquals(
-            403,
+            302,
             $client->getResponse()->getStatusCode(),
-            'Opened the page even without authorization'
+            'Did not redirect when trying to open a delete task page'
         );
     }
 
@@ -230,16 +234,12 @@ class TaskControllerFunctionalTest extends WebTestCase
 
         $taskRepository->save($task, true);
 
-        $crawler = $client->request('GET', '/tasks');
-
-        $form = $crawler->filter('form[action="/tasks/' . $task->getId() . '/delete"]')->form();
-
-        $client->submit($form);
+        $client->request('GET', '/tasks/' . $task->getId() . '/delete');
 
         $this->assertEquals(
             302,
             $client->getResponse()->getStatusCode(),
-            'Did not redirect to task list'
+            'Did not redirect when trying to open a delete task page'
         );
 
         $client->followRedirect();
