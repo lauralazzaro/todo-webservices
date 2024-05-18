@@ -65,25 +65,26 @@ class AppFixtures extends Fixture
         $manager->flush();
 
         $task = new Task();
-        $task->setTitle('Title task 1');
+        $task->setTitle('Task from admin');
         $task->setContent('This task has been created by an admin');
         $task->setUser($admin);
         $manager->persist($task);
         $manager->flush();
 
         $task = new Task();
-        $task->setTitle('Title task 2');
+        $task->setTitle('Task from user');
         $task->setContent('This task has been created by a user');
         $task->setUser($user);
         $manager->persist($task);
         $manager->flush();
 
-        $task = new Task();
-        $task->setTitle('Title task 3');
-        $task->setContent('This task has been created by anonymous');
-        $task->setUser($anonymous);
-        $manager->persist($task);
-        $manager->flush();
+        for ($i = 1; $i <= 5; $i++) {
+            $task = new Task();
+            $task->setTitle('Task without user n. ' . $i);
+            $task->setContent('This task has no user');
+            $manager->persist($task);
+            $manager->flush();
+        }
     }
     // @codeCoverageIgnoreEnd
 }

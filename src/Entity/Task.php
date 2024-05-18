@@ -35,10 +35,6 @@ class Task
     private bool $isDone;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank(
-        message: 'You must assign a user.',
-    )]
     private User $user;
 
     public function __construct()
@@ -91,9 +87,9 @@ class Task
         $this->isDone = $flag;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
-        return $this->user;
+        return $this->user ?? null;
     }
 
     public function setUser(User $user): static
