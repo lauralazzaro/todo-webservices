@@ -75,8 +75,9 @@ class TaskController extends AbstractController
     public function toggleTaskAction(
         Task           $task,
         TaskRepository $taskRepository
-    ) {
+    ): RedirectResponse {
         $task->toggle();
+        $this->addFlash('warning', 'The task has been successfully modified.');
         $taskRepository->save($task, true);
         return $this->redirectToRoute('task_list');
     }
@@ -98,42 +99,38 @@ class TaskController extends AbstractController
         }
 
         $taskRepository->remove($task, true);
-        $this->addFlash('success', 'The task has been successfully deleted.');
+        $this->addFlash('warning', 'The task has been successfully deleted.');
         return $this->redirectToRoute('task_list');
     }
 
-//    #[Route('/tasks', name: 'task_list')]
-//    public function listAction(TaskRepository $taskRepository): Response
-//    {
-//        return $this->render(
-//            'task/list.html.twig',
-//            ['tasks' => $taskRepository->findAll()]
-//        );
-//    }
-
-    #[Route('/tasks/{page}', name: 'task_list', defaults: ['page' => 1])]
-    public function list(int $page, TaskRepository $taskRepository): Response
-    {
+    #[Route('/tasks/{status}/{page}', name: 'task_list', defaults: ['status' => 'todo', 'page' => 1])]
+    public function listTasks(
+        string $status,
+        int $page,
+        TaskRepository $taskRepository
+    ): Response {
         $pageSize = 5;
-        $tasks = $taskRepository->findAllToDoWithPaginationAndOrder($page, $pageSize);
+        if ($status === 'done') {
+            $tasks = $taskRepository->findAllDoneWithPaginationAndOrder($page, $pageSize);
+        } else {
+            $tasks = $taskRepository->findAllToDoWithPaginationAndOrder($page, $pageSize);
+        }
+
+        $totalPages = ceil(count($tasks) / $pageSize);
+
+        if ($page > $totalPages && $totalPages > 0) {
+            $this->addFlash('warning', 'You tried to open a page that does not have any task.');
+            return $this->redirectToRoute('task_list', [
+                'status' => $status,
+                'page' => $totalPages,
+            ]);
+        }
 
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
             'currentPage' => $page,
-            'totalPages' => ceil(count($tasks) / $pageSize)
-        ]);
-    }
-
-    #[Route('/tasks/{page}/done', name: 'task_list_done', defaults: ['page' => 1])]
-    public function listDoneTasks(int $page, TaskRepository $taskRepository): Response
-    {
-        $pageSize = 5;
-        $tasks = $taskRepository->findAllDoneWithPaginationAndOrder($page, $pageSize);
-
-        return $this->render('task/list.done.html.twig', [
-            'tasks' => $tasks,
-            'currentPage' => $page,
-            'totalPages' => ceil(count($tasks) / $pageSize)
+            'totalPages' => $totalPages,
+            'status' => $status
         ]);
     }
 }
