@@ -245,7 +245,7 @@ class TaskControllerFunctionalTest extends WebTestCase
         $client->followRedirect();
 
         $this->assertSelectorTextContains(
-            'div.alert-success',
+            'div.alert-warning',
             'The task has been successfully deleted.',
             'The flash message did not appear'
         );

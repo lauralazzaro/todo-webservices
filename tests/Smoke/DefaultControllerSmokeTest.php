@@ -12,6 +12,6 @@ class DefaultControllerSmokeTest extends WebTestCase
         $client->request('GET', '/');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('h1', 'Welcome to the ToDo App');
+        $this->assertSelectorTextContains('h3', 'Welcome to the ToDo App');
     }
 }
