@@ -102,16 +102,25 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('task_list');
     }
 
+//    #[Route('/tasks', name: 'task_list')]
+//    public function listAction(TaskRepository $taskRepository): Response
+//    {
+//        return $this->render(
+//            'task/list.html.twig',
+//            ['tasks' => $taskRepository->findAll()]
+//        );
+//    }
+
     #[Route('/tasks/{page}', name: 'task_list', defaults: ['page' => 1])]
     public function list(int $page, TaskRepository $taskRepository): Response
     {
         $pageSize = 5;
-        $paginator = $taskRepository->findAllToDoWithPaginationAndOrder($page, $pageSize);
+        $tasks = $taskRepository->findAllToDoWithPaginationAndOrder($page, $pageSize);
 
         return $this->render('task/list.html.twig', [
-            'paginator' => $paginator,
+            'tasks' => $tasks,
             'currentPage' => $page,
-            'totalPages' => ceil(count($paginator) / $pageSize)
+            'totalPages' => ceil(count($tasks) / $pageSize)
         ]);
     }
 
@@ -119,12 +128,12 @@ class TaskController extends AbstractController
     public function listDoneTasks(int $page, TaskRepository $taskRepository): Response
     {
         $pageSize = 5;
-        $paginator = $taskRepository->findAllDoneWithPaginationAndOrder($page, $pageSize);
+        $tasks = $taskRepository->findAllDoneWithPaginationAndOrder($page, $pageSize);
 
         return $this->render('task/list.done.html.twig', [
-            'paginator' => $paginator,
+            'tasks' => $tasks,
             'currentPage' => $page,
-            'totalPages' => ceil(count($paginator) / $pageSize)
+            'totalPages' => ceil(count($tasks) / $pageSize)
         ]);
     }
 }

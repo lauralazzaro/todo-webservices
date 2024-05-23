@@ -83,6 +83,9 @@
             "bin/console doctrine:database:create --env=test",
             "bin/console doctrine:schema:update --force --complete --env=test",
             "bin/console doctrine:fixtures:load -n --env=test"
+        ],
+        "append-tasks-dev": [
+            "bin/console doctrine:fixtures:load -n --append --group=dev"
         ]
     },
     "conflict": {
