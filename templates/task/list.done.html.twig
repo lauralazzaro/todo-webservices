@@ -5,12 +5,17 @@
 
 {% block body %}
 
-	<div class="pagination">
+	<div class="pagination d-flex justify-content-between">
 		{% if currentPage > 1 %}
-			<a href="{{ path('task_list_done', {'page': currentPage - 1}) }}">Previous</a>
+			<a class="btn btn-primary" href="{{ path('task_list', {'page': currentPage - 1}) }}"><< Previous</a>
+		{% else %}
+			<button class="btn btn-primary disabled">Previous</button>
 		{% endif %}
+		<span class="page-number">Page {{ currentPage }} of {{ totalPages }}</span>
 		{% if currentPage < totalPages %}
-			<a href="{{ path('task_list_done', {'page': currentPage + 1}) }}">Next</a>
+			<a class="btn btn-primary" href="{{ path('task_list', {'page': currentPage + 1}) }}">Next >></a>
+		{% else %}
+			<button class="btn btn-primary disabled">Next</button>
 		{% endif %}
 	</div>
 
