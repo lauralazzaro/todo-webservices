@@ -1,8 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block header_img %}<img class="slide-image" src="{{ asset('assets/img/todolist_content.jpg') }}"
-                           alt="todo list">{% endblock %}
-
 {% block body %}
 	<div class="btn-group d-flex justify-content-center mb-4" role="group" aria-label="Task Status">
 		<a href="{{ path('task_list', {'status': 'todo'}) }}" class="btn {{ status == 'todo' ? 'btn-warning' : 'btn-outline-warning text-dark' }}">Show Tasks To Do</a>

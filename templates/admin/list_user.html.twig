@@ -1,13 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block header_img %}{% endblock %}
-
-{% block header_title %}<h1>Liste des utilisateurs</h1>{% endblock %}
-
 {% block body %}
     {% if users|length == 0 %}
         <div class="alert alert-warning" role="alert">
-            Il n'y a pas encore d'utilisateur enregistré. <a href="{{ path('admin_user_create') }}" class="btn btn-warning pull-right">Créer un utilisateur</a>
+            There are no user yet. <a href="{{ path('admin_user_create') }}" class="btn btn-warning pull-right">Créer un utilisateur</a>
         </div>
     {% else %}
         <div class="row">
@@ -15,8 +11,8 @@
                 <thead>
                 <tr>
                     <th>#</th>
-                    <th>Nom d'utilisateur</th>
-                    <th>Adresse d'utilisateur</th>
+                    <th>Username</th>
+                    <th>Email</th>
                     <th>Actions</th>
                 </tr>
                 </thead>

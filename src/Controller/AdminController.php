@@ -21,7 +21,7 @@ class AdminController extends AbstractController
     #[Route('/admin/users', name: 'admin_user_list')]
     public function listAction(UserRepository $userRepository): Response
     {
-        return $this->render('user/list.html.twig', [
+        return $this->render('admin/list_user.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
     }
@@ -58,7 +58,7 @@ class AdminController extends AbstractController
 
             return $this->redirectToRoute('admin_user_list');
         }
-        return $this->render('user/create.html.twig', ['form' => $form->createView()]);
+        return $this->render('admin/create_user.html.twig', ['form' => $form->createView()]);
     }
 
     #[Route("/admin/users/{id}/edit", name: "admin_user_edit")]
@@ -82,6 +82,6 @@ class AdminController extends AbstractController
 
             return $this->redirectToRoute('admin_user_list');
         }
-        return $this->render('admin/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render('admin/edit_user.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 }
