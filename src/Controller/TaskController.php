@@ -49,11 +49,11 @@ class TaskController extends AbstractController
             $this->denyAccessUnlessGranted(
                 attribute: TaskVoter::EDIT,
                 subject: $task,
-                message: 'You cannot edit this task.'
+                message: 'You cannot edit a task you did not create'
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
-            $this->redirect('task_list');
+            return $this->redirectToRoute('task_list');
         }
 
         $form = $this->createForm(TaskType::class, $task);
@@ -71,11 +71,20 @@ class TaskController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
     public function toggleTaskAction(
-        Task           $task,
-        TaskRepository $taskRepository
+        Task $task,
+        TaskRepository $taskRepository,
+        Request $request
     ): RedirectResponse {
+        if (!$request->headers->get('referer')) {
+            $this->addFlash('error', 'Please use the provided button to change the status of one task.');
+            return $this->redirectToRoute('task_list');
+        }
+
         $task->toggle();
         $this->addFlash('warning', 'The task has been successfully modified.');
         $taskRepository->save($task, true);
@@ -84,18 +93,24 @@ class TaskController extends AbstractController
 
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
     public function deleteTaskAction(
-        Task           $task,
-        TaskRepository $taskRepository
+        Task $task,
+        TaskRepository $taskRepository,
+        Request $request
     ): RedirectResponse {
         try {
             $this->denyAccessUnlessGranted(
                 attribute: TaskVoter::DELETE,
                 subject: $task,
-                message: 'You shall not pass!'
+                message: 'You cannot delete a task you did not create'
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
-            $this->redirect('task_list');
+            return $this->redirectToRoute('task_list');
+        }
+
+        if (!$request->headers->get('referer')) {
+            $this->addFlash('error', 'Please use the provided button to delete one task.');
+            return $this->redirectToRoute('task_list');
         }
 
         $taskRepository->remove($task, true);
@@ -105,8 +120,8 @@ class TaskController extends AbstractController
 
     #[Route('/tasks/{status}/{page}', name: 'task_list', defaults: ['status' => 'todo', 'page' => 1])]
     public function listTasks(
-        string $status,
-        int $page,
+        string         $status,
+        int            $page,
         TaskRepository $taskRepository
     ): Response {
         $pageSize = 5;

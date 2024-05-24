@@ -32,7 +32,7 @@ class UserController extends AbstractController
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
-            $this->redirect('task_list');
+            return $this->redirectToRoute('task_list');
         }
 
         $form = $this->createForm(UserEditType::class, $user);
@@ -63,7 +63,7 @@ class UserController extends AbstractController
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
-            $this->redirectToRoute('task_list');
+            return $this->redirectToRoute('task_list');
         }
 
         $form = $this->createForm(UserEditType::class, $user);
