@@ -77,14 +77,8 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
     public function toggleTaskAction(
         Task $task,
-        TaskRepository $taskRepository,
-        Request $request
+        TaskRepository $taskRepository
     ): RedirectResponse {
-        if (!$request->headers->get('referer')) {
-            $this->addFlash('error', 'Please use the provided button to change the status of one task.');
-            return $this->redirectToRoute('task_list');
-        }
-
         $task->toggle();
         $this->addFlash('warning', 'The task has been successfully modified.');
         $taskRepository->save($task, true);
@@ -94,8 +88,7 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/delete', name: 'task_delete')]
     public function deleteTaskAction(
         Task $task,
-        TaskRepository $taskRepository,
-        Request $request
+        TaskRepository $taskRepository
     ): RedirectResponse {
         try {
             $this->denyAccessUnlessGranted(
@@ -105,11 +98,6 @@ class TaskController extends AbstractController
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('task_list');
-        }
-
-        if (!$request->headers->get('referer')) {
-            $this->addFlash('error', 'Please use the provided button to delete one task.');
             return $this->redirectToRoute('task_list');
         }
 

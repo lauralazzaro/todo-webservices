@@ -76,13 +76,13 @@
             "php bin/console doctrine:database:drop --force",
             "bin/console doctrine:database:create",
             "bin/console doctrine:schema:update --force --complete",
-            "bin/console doctrine:fixtures:load -n"
+            "bin/console doctrine:fixtures:load -n --group=dev"
         ],
         "init-db-test": [
             "php bin/console doctrine:database:drop --force --env=test",
             "bin/console doctrine:database:create --env=test",
             "bin/console doctrine:schema:update --force --complete --env=test",
-            "bin/console doctrine:fixtures:load -n --env=test"
+            "bin/console doctrine:fixtures:load -n --env=test --group=test"
         ],
         "append-tasks-dev": [
             "bin/console doctrine:fixtures:load -n --append --group=dev"

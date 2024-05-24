@@ -19,7 +19,6 @@ class AdminControllerFunctionalTest extends WebTestCase
 {
     private const USER = 'user';
     private const ADMIN = 'admin';
-    private const ANONYMOUS = 'anonymous';
 
     /**
      * @throws Exception
