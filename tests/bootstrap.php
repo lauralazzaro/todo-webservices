@@ -7,7 +7,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 if (method_exists(Dotenv::class, 'bootEnv')) {
     (new Dotenv())->bootEnv(dirname(__DIR__) . '/.env');
 
-    if (getenv('APP_ENV') === 'test') {
+    if (getenv('APP_ENV') !== 'prod') {
         $command = 'php ' . dirname(__DIR__) . '/bin/console doctrine:database:drop --force --env=test';
         passthru($command);
         $command = 'php ' . dirname(__DIR__) . '/bin/console doctrine:database:create --env=test';

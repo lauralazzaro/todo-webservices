@@ -11,17 +11,13 @@ class SecurityControllerFunctionalTest extends WebTestCase
     {
         $client = static::createClient();
 
-        // Simulate a user being authenticated
         $userRepository = static::getContainer()->get(UserRepository::class);
 
-        // retrieve the test user
         $testUser = $userRepository->findOneBy(['username' => 'user']);
         $client->loginUser($testUser);
 
-        // Make a request to the login route
         $client->request('GET', '/login');
 
-        // Assert that the response is a redirect to 'task_list' route
         $this->assertResponseRedirects(
             $client->getResponse()->isRedirect('task_list'),
             302,

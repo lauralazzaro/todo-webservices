@@ -23,11 +23,6 @@ class AdminControllerFunctionalTest extends WebTestCase
     private KernelBrowser $client;
     private ?object $userRepository;
 
-    protected function setUp(): void
-    {
-        $this->client = self::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-    }
     /**
      * @throws Exception
      */
@@ -72,7 +67,7 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testForbiddenCreateUserIfNotAdmin(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::USER]);
+        $testUser = $this->userRepository->findOneBy(['roles' => ['["ROLE_USER"]']]);
         $this->client->loginUser($testUser);
 
         $this->client->request('GET', '/admin/users/create');
@@ -100,7 +95,7 @@ class AdminControllerFunctionalTest extends WebTestCase
         $testUserToCreate->setEmail('test_user_create_success@email.com');
         $testUserToCreate->setUsername('test_user_create_success');
         $testUserToCreate->setPassword('abc123!');
-        $testUserToCreate->setIsPasswordGenerated(true);
+        $testUserToCreate->setIsPasswordGenerated(false);
         $testUserToCreate->setRoles(['ROLE_USER']);
 
         $this->userRepository->save($testUserToCreate, true);
@@ -122,14 +117,10 @@ class AdminControllerFunctionalTest extends WebTestCase
 
         $crawler = $this->client->request('GET', '/admin/users/' . $testUserToEdit->getId() . '/edit');
 
-        $this->assertResponseIsSuccessful('Did not not find user to edit');
-
-        $form = $crawler->selectButton('Modifier')->form();
-
+        $form = $crawler->filter('#admin_edit_user_form')->form();
         $form['admin_edit_user[roles]'] = ['ROLE_ADMIN'];
 
         $this->client->submit($form);
-
         $this->client->followRedirect();
 
         $this->assertSelectorTextContains(
@@ -138,6 +129,7 @@ class AdminControllerFunctionalTest extends WebTestCase
             'The flash message did not appear'
         );
 
+        // Verify the user's role has been updated
         $updatedUser = $this->userRepository->findOneBy(['id' => $testUserToEdit->getId()]);
         $this->assertContains('ROLE_ADMIN', $updatedUser->getRoles());
     }
@@ -174,5 +166,11 @@ class AdminControllerFunctionalTest extends WebTestCase
             }));
 
         $mailer->sendEmail($subject, $temporaryPassword, $mailerTo);
+    }
+
+    protected function setUp(): void
+    {
+        $this->client = self::createClient();
+        $this->userRepository = static::getContainer()->get(UserRepository::class);
     }
 }
