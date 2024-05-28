@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functional;
 
+use App\Helper\Constants;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -19,7 +20,7 @@ class SecurityControllerFunctionalTest extends WebTestCase
         $client->request('GET', '/login');
 
         $this->assertResponseRedirects(
-            $client->getResponse()->isRedirect('task_list'),
+            $client->getResponse()->isRedirect(Constants::TASK_LIST_NAME),
             302,
             'Redirection to task_list'
         );

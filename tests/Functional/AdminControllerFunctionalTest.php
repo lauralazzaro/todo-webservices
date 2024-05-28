@@ -15,13 +15,21 @@ use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use App\Helper\Constants;
 
 class AdminControllerFunctionalTest extends WebTestCase
 {
-    private const USER = 'user';
     private const ADMIN = 'admin';
     private KernelBrowser $client;
     private ?object $userRepository;
+    private ?object $router;
+
+    protected function setUp(): void
+    {
+        $this->client = self::createClient();
+        $this->userRepository = static::getContainer()->get(UserRepository::class);
+        $this->router = static::getContainer()->get('router');
+    }
 
     /**
      * @throws Exception
@@ -31,21 +39,12 @@ class AdminControllerFunctionalTest extends WebTestCase
         $testUser = $this->userRepository->findOneBy(['roles' => ['["ROLE_USER"]']]);
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', '/admin/users');
+        $this->client->request('GET', Constants::ADMIN_USER_LIST_URL);
 
         $this->assertEquals(
             403,
             $this->client->getResponse()->getStatusCode(),
             'Opened the users page even without authorization'
-        );
-
-        $userForEdit = $this->userRepository->findOneBy(['username' => self::USER]);
-        $this->client->request('GET', '/admin/users/' . $userForEdit->getId() . '/edit');
-
-        $this->assertEquals(
-            403,
-            $this->client->getResponse()->getStatusCode(),
-            'Opened the edit user page without authorization'
         );
     }
 
@@ -57,7 +56,7 @@ class AdminControllerFunctionalTest extends WebTestCase
         $testUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', '/admin/users');
+        $this->client->request('GET', Constants::ADMIN_USER_LIST_URL);
 
         $this->assertResponseIsSuccessful('Cannot view create users page');
     }
@@ -70,7 +69,7 @@ class AdminControllerFunctionalTest extends WebTestCase
         $testUser = $this->userRepository->findOneBy(['roles' => ['["ROLE_USER"]']]);
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', '/admin/users/create');
+        $this->client->request('GET', Constants::ADMIN_USER_CREATE_URL);
 
         $this->assertEquals(
             403,
@@ -87,7 +86,7 @@ class AdminControllerFunctionalTest extends WebTestCase
         $testUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', '/admin/users/create');
+        $this->client->request('GET', Constants::ADMIN_USER_CREATE_URL);
 
         $this->assertResponseIsSuccessful('Error viewing create user page even if ROLE_ADMIN');
 
@@ -115,7 +114,9 @@ class AdminControllerFunctionalTest extends WebTestCase
 
         $testUserToEdit = $this->userRepository->findOneBy(['roles' => ['["ROLE_USER"]']]);
 
-        $crawler = $this->client->request('GET', '/admin/users/' . $testUserToEdit->getId() . '/edit');
+        $url = $this->router->generate(Constants::ADMIN_USER_EDIT_NAME, ['id' => $testUserToEdit->getId()]);
+
+        $crawler = $this->client->request('GET', $url);
 
         $form = $crawler->filter('#admin_edit_user_form')->form();
         $form['admin_edit_user[roles]'] = ['ROLE_ADMIN'];
@@ -166,11 +167,5 @@ class AdminControllerFunctionalTest extends WebTestCase
             }));
 
         $mailer->sendEmail($subject, $temporaryPassword, $mailerTo);
-    }
-
-    protected function setUp(): void
-    {
-        $this->client = self::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functional;
 
+use App\Helper\Constants;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Exception;
@@ -15,12 +16,14 @@ class TaskControllerFunctionalTest extends WebTestCase
     private KernelBrowser $client;
     private ?object $userRepository;
     private ?object $taskRepository;
+    private ?object $router;
 
     protected function setUp(): void
     {
         $this->client = self::createClient();
         $this->userRepository = static::getContainer()->get(UserRepository::class);
         $this->taskRepository = static::getContainer()->get(TaskRepository::class);
+        $this->router = static::getContainer()->get('router');
     }
 
     /**
@@ -33,7 +36,7 @@ class TaskControllerFunctionalTest extends WebTestCase
 
         $this->client->request('GET', '/login');
 
-        $crawler = $this->client->request('GET', '/tasks/create');
+        $crawler = $this->client->request('GET', Constants::TASK_CREATE_URL);
         $this->assertResponseIsSuccessful('Cannot open create task page');
 
         $form = $crawler->selectButton('Add')->form();
@@ -43,7 +46,7 @@ class TaskControllerFunctionalTest extends WebTestCase
         $this->client->submit($form);
 
         $this->assertResponseRedirects(
-            $this->client->getResponse()->isRedirect('task_list'),
+            $this->client->getResponse()->isRedirect(Constants::TASK_LIST_NAME),
             302,
             'Did not redirect to task_list page'
         );
@@ -59,18 +62,18 @@ class TaskControllerFunctionalTest extends WebTestCase
 
     public function testRedirectIfNotLoggedIn(): void
     {
-        $this->client->request('GET', '/tasks');
+        $this->client->request('GET', Constants::TASK_LIST_URL);
 
         $this->assertResponseRedirects(
-            $this->client->getResponse()->isRedirect('task_list'),
+            $this->client->getResponse()->isRedirect(Constants::TASK_LIST_NAME),
             302,
             'Did not redirect to login page from /tasks'
         );
 
-        $this->client->request('GET', '/tasks/create');
+        $this->client->request('GET', Constants::TASK_CREATE_URL);
 
         $this->assertResponseRedirects(
-            $this->client->getResponse()->isRedirect('task_list'),
+            $this->client->getResponse()->isRedirect(Constants::TASK_LIST_NAME),
             302,
             'Did not redirect to login page from /tasks/create'
         );
@@ -122,9 +125,10 @@ class TaskControllerFunctionalTest extends WebTestCase
         $testUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', '/tasks/2/edit');
+        $taskToEdit = $this->taskRepository->findOneBy(['user' => $testUser]);
+        $url = $this->router->generate(Constants::TASK_EDIT_NAME, ['id' => $taskToEdit->getId()]);
 
-        $crawler = $this->client->request('GET', '/tasks/2/edit');
+        $crawler = $this->client->request('GET', $url);
 
         $this->assertEquals(
             200,

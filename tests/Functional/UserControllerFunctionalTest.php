@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functional;
 
+use App\Helper\Constants;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -12,11 +13,13 @@ class UserControllerFunctionalTest extends WebTestCase
     const USER = 'user';
     private KernelBrowser $client;
     private ?object $userRepository;
+    private ?object $router;
 
     protected function setUp(): void
     {
         $this->client = self::createClient();
         $this->userRepository = static::getContainer()->get(UserRepository::class);
+        $this->router = static::getContainer()->get('router');
     }
 
     /**
@@ -27,13 +30,15 @@ class UserControllerFunctionalTest extends WebTestCase
         $testUser = $this->userRepository->findOneBy(['username' => self::USER]);
         $this->client->loginUser($testUser);
 
-        $crawler = $this->client->request('GET', '/users/' . $testUser->getId() . '/edit');
+        $url = $this->router->generate(Constants::USER_EDIT_NAME, ['id' => $testUser->getId()]);
+
+        $crawler = $this->client->request('GET', $url);
 
         $this->assertResponseIsSuccessful('Cannot find user edit page');
 
         $form = $crawler->selectButton('Modifier')->form();
-        $form['user_edit[password][first]'] = '123';
-        $form['user_edit[password][second]'] = '123';
+        $form['user_edit[password][first]'] = '1234';
+        $form['user_edit[password][second]'] = '1234';
 
         $this->client->submit($form);
 

@@ -50,7 +50,11 @@ class Constants
     const TASK_TOGGLE_NAME = 'task_toggle';
     //endregion
 
+    //region Authentication
+    const LOGIN = '/login';
+    const LOGOUT = '/logout';
 
+    //endregion
 
 
 }
