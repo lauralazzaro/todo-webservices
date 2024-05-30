@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use App\Helper\Utils;
 use App\Repository\TaskRepository;
 use App\Security\Voter\TaskVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -110,7 +111,7 @@ class TaskController extends AbstractController
     #[Route(
         Constants::TASK_LIST_URL,
         name: Constants::TASK_LIST_NAME,
-        defaults: ['status' => 'todo', 'page' => 1]
+        defaults: ['status' => Constants::TASK_STATUS_TODO, 'page' => 1]
     )]
     public function listTasks(
         string         $status,
@@ -118,11 +119,8 @@ class TaskController extends AbstractController
         TaskRepository $taskRepository
     ): Response {
         $pageSize = 5;
-        if ($status === 'done') {
-            $tasks = $taskRepository->findAllDoneWithPaginationAndOrder($page, $pageSize);
-        } else {
-            $tasks = $taskRepository->findAllToDoWithPaginationAndOrder($page, $pageSize);
-        }
+        $isDone = Utils::convertStatusToBool($status);
+        $tasks = $taskRepository->findAllTasks($page, $pageSize, $isDone);
 
         $totalPages = ceil(count($tasks) / $pageSize);
 

@@ -44,7 +44,7 @@ class Mailer
      * @throws RuntimeError
      * @throws LoaderError
      */
-    public function createUserEmailBody($temporaryPassword): string
+    private function createUserEmailBody($temporaryPassword): string
     {
         $template = 'email/create_user.html.twig';
 

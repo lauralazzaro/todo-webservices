@@ -40,26 +40,17 @@ class TaskRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllToDoWithPaginationAndOrder(int $page = 1, int $pageSize = 10): Paginator
+    public function findAllTasks(int $page = 1, int $pageSize = 10, bool $isDone = false): Paginator
     {
         $query = $this->createQueryBuilder('t')
-            ->where('t.isDone = false')
+            ->select('t, user')
+            ->leftJoin('t.user', 'user')
+            ->where('t.isDone = :status')
             ->orderBy('t.createdAt', 'DESC')
-            ->getQuery()
             ->setFirstResult(($page - 1) * $pageSize)
-            ->setMaxResults($pageSize);
-
-        return new Paginator($query);
-    }
-
-    public function findAllDoneWithPaginationAndOrder(int $page = 1, int $pageSize = 10): Paginator
-    {
-        $query = $this->createQueryBuilder('t')
-            ->where('t.isDone = true')
-            ->orderBy('t.createdAt', 'DESC')
-            ->getQuery()
-            ->setFirstResult(($page - 1) * $pageSize)
-            ->setMaxResults($pageSize);
+            ->setMaxResults($pageSize)
+            ->setParameter('status', $isDone)
+            ->getQuery();
 
         return new Paginator($query);
     }

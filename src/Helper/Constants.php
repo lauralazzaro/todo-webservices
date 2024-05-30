@@ -53,8 +53,10 @@ class Constants
     //region Authentication
     const LOGIN = '/login';
     const LOGOUT = '/logout';
-
     //endregion
 
-
+    //region Task
+    const TASK_STATUS_TODO = 'todo';
+    const TASK_STATUS_DONE = 'done';
+    //endregion
 }
