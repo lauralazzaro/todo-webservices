@@ -33,10 +33,10 @@ class AdminController extends AbstractController
      */
     #[Route(Constants::ADMIN_USER_CREATE_URL, name: Constants::ADMIN_USER_CREATE_NAME)]
     public function createAction(
-        Request        $request,
+        Request $request,
         UserRepository $userRepository,
-        UserHelper     $userHelper,
-        Mailer         $mailer
+        UserHelper $userHelper,
+        Mailer $mailer
     ): RedirectResponse|Response {
         $form = $this->createForm(AdminCreateUserType::class);
 
@@ -68,8 +68,8 @@ class AdminController extends AbstractController
 
     #[Route(Constants::ADMIN_USER_EDIT_URL, name: Constants::ADMIN_USER_EDIT_NAME)]
     public function editAction(
-        User           $user,
-        Request        $request,
+        User $user,
+        Request $request,
         UserRepository $userRepository
     ): RedirectResponse|Response {
         $form = $this->createForm(AdminEditUserType::class, $user);

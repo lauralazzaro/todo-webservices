@@ -19,7 +19,7 @@ class TaskController extends AbstractController
 {
     #[Route(Constants::TASK_CREATE_URL, name: Constants::TASK_CREATE_NAME)]
     public function createAction(
-        Request        $request,
+        Request $request,
         TaskRepository $taskRepository
     ): RedirectResponse|Response {
         $task = new Task();
@@ -43,8 +43,8 @@ class TaskController extends AbstractController
 
     #[Route(Constants::TASK_EDIT_URL, name: Constants::TASK_EDIT_NAME)]
     public function editAction(
-        Task           $task,
-        Request        $request,
+        Task $task,
+        Request $request,
         TaskRepository $taskRepository
     ): RedirectResponse|Response {
         try {
@@ -114,8 +114,8 @@ class TaskController extends AbstractController
         defaults: ['status' => Constants::TASK_STATUS_TODO, 'page' => 1]
     )]
     public function listTasks(
-        string         $status,
-        int            $page,
+        string $status,
+        int $page,
         TaskRepository $taskRepository
     ): Response {
         $pageSize = 5;

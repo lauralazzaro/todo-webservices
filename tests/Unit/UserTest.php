@@ -71,4 +71,3 @@ class UserTest extends TestCase
         $this->assertCount(0, $violations, 'Invalid User');
     }
 }
-

@@ -19,11 +19,11 @@ class UserController extends AbstractController
 {
     #[Route(Constants::USER_EDIT_URL, name: Constants::USER_EDIT_NAME)]
     public function editAction(
-        User           $user,
-        Request        $request,
+        User $user,
+        Request $request,
         UserRepository $userRepository,
-        UserHelper     $userHelper,
-        int            $id
+        UserHelper $userHelper,
+        int $id
     ): RedirectResponse|Response {
         try {
             $this->denyAccessUnlessGranted(
@@ -50,11 +50,11 @@ class UserController extends AbstractController
 
     #[Route(Constants::USER_GENERATED_PASSWORD_URL, name: Constants::USER_GENERATED_PASSWORD_NAME)]
     public function editGeneratedPasswordAction(
-        User           $user,
-        Request        $request,
+        User $user,
+        Request $request,
         UserRepository $userRepository,
-        UserHelper     $userHelper,
-        int            $id
+        UserHelper $userHelper,
+        int $id
     ): RedirectResponse|Response {
         try {
             $this->denyAccessUnlessGranted(

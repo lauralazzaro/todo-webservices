@@ -32,7 +32,8 @@ class GeneratedPasswordResetSubscriber implements EventSubscriberInterface
     {
         $user = $this->security->getUser();
 
-        if (($user instanceof User) &&
+        if (
+            ($user instanceof User) &&
             ($user->isPasswordGenerated()) &&
             ($event->getRequest()->get('_route') !== 'user_edit_generated_password')
         ) {
