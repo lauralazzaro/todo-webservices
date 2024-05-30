@@ -36,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tasks;
 
     #[ORM\Column(type: "boolean")]
-    private string $isPasswordGenerated;
+    private bool $isPasswordGenerated;
 
     public function __construct()
     {
@@ -120,7 +120,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isPasswordGenerated(): bool
     {
@@ -128,7 +128,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @param boolean $isPasswordGenerated
+     * @param bool $isPasswordGenerated
      */
     public function setIsPasswordGenerated(bool $isPasswordGenerated): void
     {

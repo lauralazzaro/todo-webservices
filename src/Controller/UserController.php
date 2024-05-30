@@ -12,10 +12,12 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use App\Helper\Constants;
 
 class UserController extends AbstractController
 {
-    #[Route("/users/{id}/edit", name: "user_edit")]
+    #[Route(Constants::USER_EDIT_URL, name: Constants::USER_EDIT_NAME)]
     public function editAction(
         User $user,
         Request $request,
@@ -23,29 +25,30 @@ class UserController extends AbstractController
         UserHelper $userHelper,
         int $id
     ): RedirectResponse|Response {
-        $this->denyAccessUnlessGranted(
-            attribute: UserVoter::EDIT,
-            subject: $id,
-            message: 'You shall not pass!'
-        );
+        try {
+            $this->denyAccessUnlessGranted(
+                attribute: UserVoter::EDIT,
+                subject: $id,
+                message: 'You don\'t have the rights to view this page.'
+            );
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+        }
 
         $form = $this->createForm(UserEditType::class, $user);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userHelper->updatePassword($user);
-
             $userRepository->save($user, true);
-
             $this->addFlash('success', "You successfully update your password");
-
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
         }
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render(Constants::USER_EDIT_VIEW, ['form' => $form->createView(), 'user' => $user]);
     }
 
-    #[Route("/users/{id}/edit/generated_password", name: "user_edit_generated_password")]
+    #[Route(Constants::USER_GENERATED_PASSWORD_URL, name: Constants::USER_GENERATED_PASSWORD_NAME)]
     public function editGeneratedPasswordAction(
         User $user,
         Request $request,
@@ -53,25 +56,26 @@ class UserController extends AbstractController
         UserHelper $userHelper,
         int $id
     ): RedirectResponse|Response {
-        $this->denyAccessUnlessGranted(
-            attribute: UserVoter::EDIT,
-            subject: $id,
-            message: 'You shall not pass!'
-        );
+        try {
+            $this->denyAccessUnlessGranted(
+                attribute: UserVoter::EDIT,
+                subject: $id,
+                message: 'You shall not pass!'
+            );
+        } catch (AccessDeniedException $e) {
+            $this->addFlash('error', $e->getMessage());
+            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+        }
 
         $form = $this->createForm(UserEditType::class, $user);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userHelper->updatePassword($user);
-
             $userRepository->save($user, true);
-
             $this->addFlash('success', "You successfully create your password");
-
-            return $this->redirectToRoute('task_list');
+            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
         }
-        return $this->render('user/edit.password.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render(Constants::USER_GENERATED_PASSWORD_VIEW, ['form' => $form->createView(), 'user' => $user]);
     }
 }

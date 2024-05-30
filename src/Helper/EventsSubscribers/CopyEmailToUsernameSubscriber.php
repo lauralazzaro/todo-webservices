@@ -8,7 +8,6 @@ use Symfony\Component\Form\FormEvents;
 
 class CopyEmailToUsernameSubscriber implements EventSubscriberInterface
 {
-
     /**
      * @inheritDoc
      */

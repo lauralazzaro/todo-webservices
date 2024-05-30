@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Smoke;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class DefaultControllerTest extends WebTestCase
+class DefaultControllerSmokeTest extends WebTestCase
 {
     public function testIndexRoute(): void
     {
@@ -12,6 +12,6 @@ class DefaultControllerTest extends WebTestCase
         $client->request('GET', '/');
 
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertSelectorTextContains('h1', 'Todo List');
+        $this->assertSelectorTextContains('h3', 'Welcome to the ToDo App');
     }
 }

@@ -31,14 +31,10 @@ class Task
     )]
     private string $content;
 
-    #[ORM\Column(type: Types::BOOLEAN)]
+    #[ORM\Column(type: Types::BOOLEAN, options: ["default" => false])]
     private bool $isDone;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank(
-        message: 'You must assign a user.',
-    )]
     private User $user;
 
     public function __construct()
@@ -86,14 +82,14 @@ class Task
         return $this->isDone;
     }
 
-    public function toggle($flag): void
+    public function toggle(): void
     {
-        $this->isDone = $flag;
+        $this->isDone = !$this->isDone;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
-        return $this->user;
+        return $this->user ?? null;
     }
 
     public function setUser(User $user): static

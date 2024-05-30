@@ -13,17 +13,17 @@
         "egulias/email-validator": "^4.0",
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "*",
-        "symfony/console": "7.0.*",
         "symfony/config": "7.0.*",
+        "symfony/console": "7.0.*",
         "symfony/css-selector": "*",
         "symfony/dotenv": "*",
-        "symfony/flex": "^1.16",
+        "symfony/flex": "^2.4",
         "symfony/form": "*",
         "symfony/framework-bundle": "*",
         "symfony/mailer": "*",
         "symfony/password-hasher": "*",
         "symfony/runtime": "*",
-        "symfony/security-bundle": "*",
+        "symfony/security-bundle": "7.0.*",
         "symfony/twig-bundle": "*",
         "symfony/validator": "*",
         "symfony/yaml": "*",
@@ -68,6 +68,24 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "test-coverage": [
+            "vendor/bin/phpunit --coverage-html public/test-coverage"
+        ],
+        "init-db": [
+            "php bin/console doctrine:database:drop --force",
+            "bin/console doctrine:database:create",
+            "bin/console doctrine:schema:update --force --complete",
+            "bin/console doctrine:fixtures:load -n --group=dev"
+        ],
+        "init-db-test": [
+            "php bin/console doctrine:database:drop --force --env=test",
+            "bin/console doctrine:database:create --env=test",
+            "bin/console doctrine:schema:update --force --complete --env=test",
+            "bin/console doctrine:fixtures:load -n --env=test --group=test"
+        ],
+        "append-tasks-dev": [
+            "bin/console doctrine:fixtures:load -n --append --group=dev"
         ]
     },
     "conflict": {
@@ -81,7 +99,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "phpunit/phpunit": "^10.2",
+        "phpunit/phpunit": "^9.5",
         "rector/rector": "^1.0",
         "squizlabs/php_codesniffer": "^3.7",
         "symfony/browser-kit": "*",

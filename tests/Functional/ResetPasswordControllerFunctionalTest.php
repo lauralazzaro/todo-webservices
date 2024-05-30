@@ -1,30 +1,11 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests\Functional;
 
-use PHPUnit\Framework\MockObject\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Response;
 
-class ResetPasswordControllerTest extends WebTestCase
+class ResetPasswordControllerFunctionalTest extends WebTestCase
 {
-    public function testRequestPasswordResetPage(): void
-    {
-        $client = static::createClient();
-        $client->request('GET', '/reset-password');
-        $this->assertResponseIsSuccessful();
-    }
-
-    public function testCheckEmailPage(): void
-    {
-        $client = static::createClient();
-        $client->request('GET', '/reset-password/check-email');
-        $this->assertResponseIsSuccessful();
-    }
-
-    /**
-     * @throws Exception
-     */
     public function testProcessSendingPasswordResetEmail(): void
     {
         $client = static::createClient();

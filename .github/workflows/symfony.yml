@@ -21,10 +21,10 @@ jobs:
     #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
     # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
     # uses: shivammathur/setup-php@v2
-    - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
+    - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -46,7 +46,7 @@ jobs:
         MAILER_TO: ${{ secrets.MAILER_TO }}
     - name: Cache Composer packages
       id: composer-cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: vendor
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Entity;
+namespace App\Tests\Unit;
 
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
@@ -71,4 +71,3 @@ class UserTest extends TestCase
         $this->assertCount(0, $violations, 'Invalid User');
     }
 }
-

@@ -11,7 +11,8 @@
 	<title>To Do List app</title>
 
 	<!-- Bootstrap Core CSS -->
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+	      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<!-- Custom CSS -->
 	<link href="{{ asset('assets/css/shop-homepage.css') }}" rel="stylesheet">
 
@@ -21,57 +22,90 @@
 	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
 	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 	<![endif]-->
+	<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 </head>
 
 <body>
-<nav class="navbar navbar-light navbar-fixed-top" style="background-color: #e3f2fd;" role="navigation">
+<nav class="navbar navbar-light bg-light sticky-top fixed-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="/">To Do List app</a>
-
-			<img src="{{ asset('assets/img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms" />
+			<img src="{{ asset('assets/img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms"/>
 		</div>
+	</div>
+	<div class="container mt-3 mb-3">
+		<ul class="nav nav-pills">
+			<li class="nav-item">
+				<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'homepage' %}active{% endif %}"
+				   href="{{ path('homepage') }}">Home Page</a>
+			</li>
+			{% if app.user %}
+				<li class="nav-item">
+					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'task_create' %}active{% endif %}"
+					   href="{{ path('task_create') }}">Add a task</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'task_list' %}active{% endif %}"
+					   href="{{ path('task_list') }}">Tasks</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'user_edit' %}active{% endif %}"
+					   href="{{ path('user_edit', {'id' : app.user.id}) }}">My Profile</a>
+				</li>
+			{% endif %}
+
+			{% if is_granted('ROLE_ADMIN') %}
+				<li class="nav-item">
+					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'admin_user_list' %}active{% endif %}"
+					   href="{{ path('admin_user_list') }}">View users</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'admin_user_create' %}active{% endif %}"
+					   href="{{ path('admin_user_create') }}">Create user</a>
+				</li>
+			{% endif %}
+		</ul>
+		{% if not app.user %}
+			<a class="nav-link btn btn-outline-primary {% if app.request.attributes.get('_route') == 'login' %}active{% endif %}"
+			   href="{{ path('login') }}">Login</a>
+		{% else %}
+			<a class="nav-link btn btn-danger" href="{{ path('logout') }}">Logout</a>
+		{% endif %}
 	</div>
 </nav>
 
 <!-- Page Content -->
 <div class="container">
-	<div class="row">
-		{% if is_granted('ROLE_ADMIN') %}
-		<a href="{{ path('admin_user_list') }}" class="btn btn-info">View users</a>
-		<a href="{{ path('admin_user_create') }}" class="btn btn-primary">Create user</a>
-		{% endif %}
-
-		{% if app.user %}
-			<a href="{{ path('user_edit', {'id' : app.user.id}) }}" class="pull-right btn btn-secondary">My Profile</a>
-			<a href="{{ path('logout') }}" class="pull-right btn btn-danger">Logout</a>
-		{% endif %}
-
-		{% if not app.user and 'login' != app.request.attributes.get('_route') %}
-			<a href="{{ path('login') }}" class="btn btn-success">Login</a>
-		{% endif %}
-	</div>
-
-	<div class="row">
+	<div class="row mt-3">
 		<div class="col-md-12">
 			{% for flash_message in app.session.flashBag.get('success') %}
 				<div class="alert alert-success" role="alert">
-					<strong>Nice !</strong> {{ flash_message }}
+					{{ flash_message }}
 				</div>
 			{% endfor %}
 
 			{% for flash_message in app.session.flashBag.get('error') %}
 				<div class="alert alert-danger" role="alert">
-					<strong>Oops !</strong> {{ flash_message }}
+					{{ flash_message }}
 				</div>
 			{% endfor %}
 
+			{% for flash_message in app.session.flashBag.get('warning') %}
+				<div class="alert alert-warning" role="alert">
+					{{ flash_message }}
+				</div>
+			{% endfor %}
+
+			{% block header_img %}
+				<img class="slide-image" src="{{ asset('assets/img/todolist_content.jpg') }}" alt="todo list">
+			{% endblock %}
+
 			{% block header_title %}{% endblock %}
-			{% block header_img %}<img class="slide-image" src="{{ asset('assets/img/todolist_homepage.jpg') }}" alt="todo list">{% endblock %}
+
 		</div>
 	</div>
 
-	<br />
+	<br/>
 
 	<div class="row">
 		<div class="col-md-12">
@@ -94,9 +128,15 @@
 
 </div>
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
 </body>
 </html>
