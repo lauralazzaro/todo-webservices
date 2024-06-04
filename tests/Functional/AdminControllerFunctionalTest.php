@@ -19,7 +19,6 @@ use App\Helper\Constants;
 
 class AdminControllerFunctionalTest extends WebTestCase
 {
-    private const ADMIN = 'admin';
     private KernelBrowser $client;
     private ?object $userRepository;
     private ?object $router;
@@ -36,7 +35,7 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testDenyAccessIfNotAdmin(): void
     {
-        $testUser = $this->userRepository->findOneBy(['roles' => ['["ROLE_USER"]']]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
         $this->client->loginUser($testUser);
 
         $this->client->request('GET', Constants::ADMIN_USER_LIST_URL);
@@ -53,7 +52,7 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testAllowAccessToUsersPage(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
         $this->client->loginUser($testUser);
 
         $this->client->request('GET', Constants::ADMIN_USER_LIST_URL);
@@ -66,7 +65,7 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testForbiddenCreateUserIfNotAdmin(): void
     {
-        $testUser = $this->userRepository->findOneBy(['roles' => ['["ROLE_USER"]']]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
         $this->client->loginUser($testUser);
 
         $this->client->request('GET', Constants::ADMIN_USER_CREATE_URL);
@@ -83,7 +82,7 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testCreateUserSuccess(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
         $this->client->loginUser($testUser);
 
         $this->client->request('GET', Constants::ADMIN_USER_CREATE_URL);
@@ -109,10 +108,10 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testEditUserSuccess(): void
     {
-        $adminUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
+        $adminUser = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
         $this->client->loginUser($adminUser);
 
-        $testUserToEdit = $this->userRepository->findOneBy(['roles' => ['["ROLE_USER"]']]);
+        $testUserToEdit = $this->userRepository->findOneByRole(Constants::ROLE_USER);
 
         $url = $this->router->generate(Constants::ADMIN_USER_EDIT_NAME, ['id' => $testUserToEdit->getId()]);
 

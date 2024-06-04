@@ -11,8 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TaskControllerFunctionalTest extends WebTestCase
 {
-    private const USER = 'user';
-    private const ADMIN = 'admin';
     private KernelBrowser $client;
     private ?object $userRepository;
     private ?object $taskRepository;
@@ -31,10 +29,10 @@ class TaskControllerFunctionalTest extends WebTestCase
      */
     public function testCreateAction(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::USER]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', '/login');
+        $this->client->request('GET', Constants::LOGIN);
 
         $crawler = $this->client->request('GET', Constants::TASK_CREATE_URL);
         $this->assertResponseIsSuccessful('Cannot open create task page');
@@ -85,7 +83,7 @@ class TaskControllerFunctionalTest extends WebTestCase
      */
     public function testEditPageIsAccessible(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
         $this->client->loginUser($testUser);
 
         $task = $this->taskRepository->findOneBy(['user' => $testUser]);
@@ -106,10 +104,10 @@ class TaskControllerFunctionalTest extends WebTestCase
      */
     public function testEditPageRequiresAuthorization(): void
     {
-        $testUser = $this->userRepository->findOneBy(['roles' => ['["ROLE_USER"]']]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
         $this->client->loginUser($testUser);
 
-        $adminUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
+        $adminUser = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
         $task = $this->taskRepository->findOneBy(['user' => $adminUser]);
 
         $this->client->request('GET', '/tasks/' . $task->getId() . '/edit');
@@ -122,7 +120,7 @@ class TaskControllerFunctionalTest extends WebTestCase
      */
     public function testEditActionSuccess(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
         $this->client->loginUser($testUser);
 
         $taskToEdit = $this->taskRepository->findOneBy(['user' => $testUser]);
@@ -154,7 +152,7 @@ class TaskControllerFunctionalTest extends WebTestCase
      */
     public function testToggleTaskAction(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::USER]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
         $this->client->loginUser($testUser);
 
         $task = $this->taskRepository->findOneBy(['user' => $testUser]);
@@ -172,10 +170,10 @@ class TaskControllerFunctionalTest extends WebTestCase
      */
     public function testDeletePageRequiresAuthorization(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::USER]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
         $this->client->loginUser($testUser);
 
-        $adminUser = $this->userRepository->findOneBy(['username' => self::ADMIN]);
+        $adminUser = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
         $task = $this->taskRepository->findOneBy(['user' => $adminUser]);
 
         $this->client->request('GET', '/tasks/' . $task->getId() . '/delete');
@@ -192,7 +190,7 @@ class TaskControllerFunctionalTest extends WebTestCase
      */
     public function testDeleteSuccess(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::USER]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
         $this->client->loginUser($testUser);
 
         $task = $this->taskRepository->findOneBy(['user' => $testUser]);

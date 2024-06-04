@@ -14,7 +14,7 @@ class SecurityControllerFunctionalTest extends WebTestCase
 
         $userRepository = static::getContainer()->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneBy(['username' => 'user']);
+        $testUser = $userRepository->findOneByRole(Constants::ROLE_USER);
         $client->loginUser($testUser);
 
         $client->request('GET', '/login');

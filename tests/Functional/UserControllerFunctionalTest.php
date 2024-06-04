@@ -27,7 +27,7 @@ class UserControllerFunctionalTest extends WebTestCase
      */
     public function testEditAction(): void
     {
-        $testUser = $this->userRepository->findOneBy(['username' => self::USER]);
+        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
         $this->client->loginUser($testUser);
 
         $url = $this->router->generate(Constants::USER_EDIT_NAME, ['id' => $testUser->getId()]);
