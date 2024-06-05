@@ -118,7 +118,7 @@ class TaskController extends AbstractController
         int $page,
         TaskRepository $taskRepository
     ): Response {
-        $pageSize = 5;
+        $pageSize = 10;
         $isDone = Utils::convertStatusToBool($status);
         $tasks = $taskRepository->findAllTasks($page, $pageSize, $isDone);
 

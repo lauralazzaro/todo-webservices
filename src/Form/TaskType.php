@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Task;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,7 +16,12 @@ class TaskType extends AbstractType
         $builder
             ->add('title')
             ->add('content', TextareaType::class)
-        ;
+            ->add('deadline', DateType::class, [
+                'widget' => 'choice',
+                'html5' => false,
+                'attr' => ['class' => 'js-datepicker'],
+                'format' => 'dd-MMM-yyyy'
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

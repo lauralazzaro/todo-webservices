@@ -46,7 +46,7 @@ class TaskRepository extends ServiceEntityRepository
             ->select('t, user')
             ->leftJoin('t.user', 'user')
             ->where('t.isDone = :status')
-            ->orderBy('t.createdAt', 'DESC')
+            ->orderBy('t.deadline', 'ASC')
             ->setFirstResult(($page - 1) * $pageSize)
             ->setMaxResults($pageSize)
             ->setParameter('status', $isDone)

@@ -15,6 +15,7 @@
 	      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<!-- Custom CSS -->
 	<link href="{{ asset('assets/css/shop-homepage.css') }}" rel="stylesheet">
+	<script src="https://kit.fontawesome.com/0451343b8f.js" crossorigin="anonymous"></script>
 
 	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -140,3 +141,10 @@
 
 </body>
 </html>
+<script>
+    $(document).ready(function () {
+        $('.js-datepicker').datepicker({
+            format: 'dd-MM-yyyy'
+        });
+    });
+</script>
