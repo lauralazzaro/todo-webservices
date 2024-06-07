@@ -57,7 +57,7 @@ jobs:
       run: php bin/console doctrine:database:create --env=test --no-interaction
 
     - name: Run Migrations
-      run: php /bin/console doctrine:schema:update --env=test --force --complete --no-interaction
+      run: php bin/console doctrine:schema:update --env=test --force --complete --no-interaction
 
     - name: Load Fixtures
       run: php bin/console doctrine:fixtures:load --env=test --no-interaction
