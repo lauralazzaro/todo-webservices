@@ -18,6 +18,7 @@ use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
 class UserAuthenticator extends AbstractLoginFormAuthenticator
 {
+    // @codeCoverageIgnoreStart
     use TargetPathTrait;
 
     public const LOGIN_ROUTE = 'login';
@@ -51,4 +52,5 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
+    // @codeCoverageIgnoreEnd
 }

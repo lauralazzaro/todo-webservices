@@ -29,7 +29,7 @@ class UserController extends AbstractController
             $this->denyAccessUnlessGranted(
                 attribute: UserVoter::EDIT,
                 subject: $id,
-                message: 'You don\'t have the rights to view this page.'
+                message: 'You don\'t have the rights to access this page.'
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
@@ -60,7 +60,7 @@ class UserController extends AbstractController
             $this->denyAccessUnlessGranted(
                 attribute: UserVoter::EDIT,
                 subject: $id,
-                message: 'You shall not pass!'
+                message: 'You don\'t have the rights to access this page.'
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
