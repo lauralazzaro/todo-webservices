@@ -10,10 +10,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'MarkOverdueAsDeletedCommand',
+    name: 'DeleteOverdueTasks',
     description: 'Delete all tasks overdue and not completed',
 )]
-class MarkOverdueAsDeletedCommand extends Command
+class DeleteOverdueTasksCommand extends Command
 {
     private TaskRepository $taskRepository;
 
@@ -46,7 +46,7 @@ class MarkOverdueAsDeletedCommand extends Command
         }
 
         $totalOverDueTasks = count($overdueTasks);
-        $io->success("A total of [$totalOverDueTasks] overdue items have been marked as deleted.");
+        $io->success("[$totalOverDueTasks] overdue tasks have been deleted.");
 
         return Command::SUCCESS;
     }

@@ -8,7 +8,7 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\Constraints\Date;
+use App\Validator as TaskAssert;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -40,6 +40,7 @@ class Task
     private User $user;
 
     #[ORM\Column(type: 'datetime')]
+    #[TaskAssert\DeadlineInFuture]
     private DateTime $deadline;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
