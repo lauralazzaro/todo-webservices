@@ -5,9 +5,11 @@
 	<div class="container mt-4">
 		<div class="btn-group d-flex justify-content-center mb-4" role="group" aria-label="Task Status">
 			<a href="{{ path('task_list', {'status': 'todo'}) }}"
-			   class="btn {{ status == 'todo' ? 'btn-warning' : 'btn-outline-warning text-dark' }} rounded">Show Tasks To Do</a>
+			   class="btn {{ status == 'todo' ? 'btn-warning' : 'btn-outline-warning text-dark' }} rounded">Show Tasks
+				To Do</a>
 			<a href="{{ path('task_list', {'status': 'done'}) }}"
-			   class="btn {{ status == 'done' ? 'btn-warning' : 'btn-outline-warning text-dark' }} rounded">Show completed
+			   class="btn {{ status == 'done' ? 'btn-warning' : 'btn-outline-warning text-dark' }} rounded">Show
+				completed
 				tasks</a>
 		</div>
 
@@ -33,7 +35,9 @@
 				{% set today = "now"|date('Y-m-d') %}
 				{% set tomorrow = "now"|date_modify('+1 day')|date('Y-m-d') %}
 
-				{% if deadline == today %}
+				{% if task.isDone == true %}
+					{% set deadlineClass = 'list-group-item-secondary' %}
+				{% elseif deadline == today %}
 					{% set deadlineClass = 'list-group-item-danger' %}
 				{% elseif deadline == tomorrow %}
 					{% set deadlineClass = 'list-group-item-warning' %}
@@ -43,18 +47,21 @@
 
 				<div class="list-group-item {{ deadlineClass }} mb-2 rounded">
 					<div class="d-flex w-100 justify-content-between">
-						<h5 class="mb-1"><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a></h5>
+						{% if task.isDone == true %}
+							<h5 class="mb-1">{{ task.title }}</h5>
+						{% else %}
+							<h5 class="mb-1"><a href="{{ path('task_edit', {'id' : task.id }) }}">{{ task.title }}</a>
+							</h5>
+						{% endif %}
+
 						<small style="font-style: italic">
 							<strong>Deadline: {{ task.deadline|date('Y-m-d') }}</strong>
 						</small>
 						<div class="btn-group" role="group">
 							{% if task.isDone == false %}
-								<a href="{{ path('task_toggle', {id: task.id}) }}" class="btn btn-success btn-sm rounded">
+								<a href="{{ path('task_toggle', {id: task.id}) }}"
+								   class="btn btn-success btn-sm rounded">
 									<i class="fa-solid fa-circle-check"></i> Done
-								</a>
-							{% else %}
-								<a href="{{ path('task_toggle', {id: task.id}) }}" class="btn btn-warning btn-sm rounded">
-									<i class="fa-regular fa-circle-check"></i> To Do
 								</a>
 							{% endif %}
 							<a href="{{ path('task_delete', {id: task.id}) }}" class="btn btn-danger btn-sm rounded">

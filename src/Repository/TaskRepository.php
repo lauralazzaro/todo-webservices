@@ -40,19 +40,31 @@ class TaskRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllTasks(int $page = 1, int $pageSize = 10, bool $isDone = false): Paginator
+    public function findAllTasks(int $page = 1, int $pageSize = 10, bool $status = false): Paginator
     {
         $query = $this->createQueryBuilder('t')
             ->select('t, user')
             ->leftJoin('t.user', 'user')
-            ->where('t.isDone = :status')
+            ->where('t.isDone = :isDone')
+            ->andWhere('t.deadline >= CURRENT_DATE()')
+            ->andWhere('t.deletedAt is null')
             ->orderBy('t.deadline', 'ASC')
+            ->orderBy('t.createdAt', 'DESC')
             ->setFirstResult(($page - 1) * $pageSize)
             ->setMaxResults($pageSize)
-            ->setParameter('status', $isDone)
+            ->setParameter('isDone', $status)
             ->getQuery();
 
         return new Paginator($query);
+    }
+
+    public function findOverdueTasks()
+    {
+        return $this->createQueryBuilder('e')
+            ->Where('e.deadline < CURRENT_DATE()')
+            ->andWhere('e.deletedAt is null')
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

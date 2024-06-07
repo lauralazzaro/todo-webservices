@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Task;
+use App\Validator\DeadlineInFuture;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -20,7 +21,10 @@ class TaskType extends AbstractType
                 'widget' => 'choice',
                 'html5' => false,
                 'attr' => ['class' => 'js-datepicker'],
-                'format' => 'dd-MMM-yyyy'
+                'format' => 'dd-MMM-yyyy',
+                'constraints' => [
+                    new DeadlineInFuture(),
+                ],
             ]);
     }
 

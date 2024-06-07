@@ -32,22 +32,23 @@ class TasksFixtures extends Fixture implements FixtureGroupInterface
             $task = new Task();
             $task->setTitle('Task without user n. ' . $i);
             $task->setContent('This task has no user');
-            $task->setDeadline(new \DateTime('today'));
-            $manager->persist($task);
-            $manager->flush();
-        }
-
-        for ($i = 1; $i <= 5; $i++) {
-            $task = new Task();
-            $task->setTitle('Task without user n. ' . $i);
-            $task->setContent('This task has no user');
             $task->setDeadline(new \DateTime('tomorrow'));
             $manager->persist($task);
             $manager->flush();
         }
 
-        $date = new \DateTime('now');
-        $date->modify('+5 days');
+        $date = new \DateTime('+5 days');
+
+        for ($i = 1; $i <= 5; $i++) {
+            $task = new Task();
+            $task->setTitle('Task without user n. ' . $i);
+            $task->setContent('This task has no user');
+            $task->setDeadline($date);
+            $manager->persist($task);
+            $manager->flush();
+        }
+
+        $date = new \DateTime('-5 days');
 
         for ($i = 1; $i <= 5; $i++) {
             $task = new Task();

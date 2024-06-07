@@ -42,11 +42,15 @@ class Task
     #[ORM\Column(type: 'datetime')]
     private DateTime $deadline;
 
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private DateTime $deletedAt;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
         $this->isDone = false;
         $this->deadline = new DateTime();
+        $this->deadline->setTime(0,0);
     }
 
     public function getId(): int
@@ -118,7 +122,23 @@ class Task
      */
     public function setDeadline(DateTime $deadline): void
     {
-        $this->deadline = $deadline;
+        $this->deadline = $deadline->setTime(0, 0);
     }
 
+    /**
+     * @return DateTime
+     */
+    public function getDeletedAt(): DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param DateTime $deletedAt
+     */
+    public function setDeletedAt(DateTime $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
+    }
 }
+

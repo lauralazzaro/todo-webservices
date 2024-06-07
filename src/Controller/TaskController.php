@@ -103,7 +103,8 @@ class TaskController extends AbstractController
             return $this->redirectToRoute(Constants::TASK_LIST_NAME);
         }
 
-        $taskRepository->remove($task, true);
+        $task->setDeletedAt(new \DateTime());
+        $taskRepository->save($task, true);
         $this->addFlash('warning', 'The task has been successfully deleted.');
         return $this->redirectToRoute(Constants::TASK_LIST_NAME);
     }
