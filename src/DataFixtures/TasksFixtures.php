@@ -30,31 +30,27 @@ class TasksFixtures extends Fixture implements FixtureGroupInterface
     ): void {
         for ($i = 1; $i <= 5; $i++) {
             $task = new Task();
-            $task->setTitle('Task without user n. ' . $i);
-            $task->setContent('This task has no user');
+            $task->setTitle('task deadline tomorrow n. ' . $i);
+            $task->setContent('Deadline tomorrow');
             $task->setDeadline(new \DateTime('tomorrow'));
             $manager->persist($task);
             $manager->flush();
         }
 
-        $date = new \DateTime('+5 days');
-
         for ($i = 1; $i <= 5; $i++) {
             $task = new Task();
-            $task->setTitle('Task without user n. ' . $i);
-            $task->setContent('This task has no user');
-            $task->setDeadline($date);
+            $task->setTitle('task far away n. ' . $i);
+            $task->setContent('deadline in 5 days');
+            $task->setDeadline(new \DateTime('+5 days'));
             $manager->persist($task);
             $manager->flush();
         }
 
-        $date = new \DateTime('-5 days');
-
         for ($i = 1; $i <= 5; $i++) {
             $task = new Task();
-            $task->setTitle('Task without user n. ' . $i);
-            $task->setContent('This task has no user');
-            $task->setDeadline($date);
+            $task->setTitle('task overdue n. ' . $i);
+            $task->setContent('This task is overdue');
+            $task->setDeadline(new \DateTime('-5 days'));
             $manager->persist($task);
             $manager->flush();
         }

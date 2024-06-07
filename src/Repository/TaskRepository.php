@@ -49,7 +49,7 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('t.deadline >= CURRENT_DATE()')
             ->andWhere('t.deletedAt is null')
             ->orderBy('t.deadline', 'ASC')
-            ->orderBy('t.createdAt', 'DESC')
+            ->addOrderBy('t.createdAt', 'DESC')
             ->setFirstResult(($page - 1) * $pageSize)
             ->setMaxResults($pageSize)
             ->setParameter('isDone', $status)
