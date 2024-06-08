@@ -27,53 +27,61 @@
 </head>
 
 <body>
-<nav class="navbar navbar-light bg-light sticky-top fixed-top" role="navigation">
-	<div class="container">
-		<div class="navbar-header">
-			<a class="navbar-brand" href="/">To Do List app</a>
-			<img src="{{ asset('assets/img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms"/>
+<div class="container">
+	<nav class="navbar navbar-expand-md navbar-light bg-light sticky-top fixed-top" role="navigation">
+		<div class="container">
+			<a class="navbar-brand d-flex align-items-center" href="/">
+				<img src="{{ asset('assets/img/Logo_OpenClassrooms.png') }}" alt="OpenClassrooms"/>
+				<span class="ml-2">To Do List app</span>
+			</a>
 		</div>
-	</div>
-	<div class="container mt-3 mb-3">
-		<ul class="nav nav-pills">
-			<li class="nav-item">
-				<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'homepage' %}active{% endif %}"
-				   href="{{ path('homepage') }}">Home Page</a>
-			</li>
-			{% if app.user %}
-				<li class="nav-item">
-					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'task_create' %}active{% endif %}"
-					   href="{{ path('task_create') }}">Add a task</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'task_list' %}active{% endif %}"
-					   href="{{ path('task_list') }}">Tasks</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'user_edit' %}active{% endif %}"
-					   href="{{ path('user_edit', {'id' : app.user.id}) }}">My Profile</a>
-				</li>
-			{% endif %}
+		<div class="container">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler"
+			        aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarToggler">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item">
+						<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'homepage' %}active{% endif %}"
+						   href="{{ path('homepage') }}">Home Page</a>
+					</li>
+					{% if app.user %}
+						<li class="nav-item">
+							<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'task_create' %}active{% endif %}"
+							   href="{{ path('task_create') }}">Add a task</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'task_list' %}active{% endif %}"
+							   href="{{ path('task_list') }}">Tasks</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'user_edit' %}active{% endif %}"
+							   href="{{ path('user_edit', {'id' : app.user.id}) }}">My Profile</a>
+						</li>
+					{% endif %}
 
-			{% if is_granted('ROLE_ADMIN') %}
-				<li class="nav-item">
-					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'admin_user_list' %}active{% endif %}"
-					   href="{{ path('admin_user_list') }}">View users</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'admin_user_create' %}active{% endif %}"
-					   href="{{ path('admin_user_create') }}">Create user</a>
-				</li>
-			{% endif %}
-		</ul>
-		{% if not app.user %}
-			<a class="nav-link btn btn-outline-primary {% if app.request.attributes.get('_route') == 'login' %}active{% endif %}"
-			   href="{{ path('login') }}">Login</a>
-		{% else %}
-			<a class="nav-link btn btn-danger" href="{{ path('logout') }}">Logout</a>
-		{% endif %}
-	</div>
-</nav>
+					{% if is_granted('ROLE_ADMIN') %}
+						<li class="nav-item">
+							<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'admin_user_list' %}active{% endif %}"
+							   href="{{ path('admin_user_list') }}">View users</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link btn btn-outline-secondary {% if app.request.attributes.get('_route') == 'admin_user_create' %}active{% endif %}"
+							   href="{{ path('admin_user_create') }}">Create user</a>
+						</li>
+					{% endif %}
+				</ul>
+				{% if not app.user %}
+					<a class="nav-link btn btn-outline-primary {% if app.request.attributes.get('_route') == 'login' %}active{% endif %}"
+					   href="{{ path('login') }}">Login</a>
+				{% else %}
+					<a class="nav-link btn btn-danger" href="{{ path('logout') }}">Logout</a>
+				{% endif %}
+			</div>
+		</div>
+	</nav>
+</div>
 
 <!-- Page Content -->
 <div class="container">

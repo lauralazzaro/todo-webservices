@@ -22,6 +22,7 @@ use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 #[Route('/reset-password')]
 class ResetPasswordController extends AbstractController
 {
+    // @codeCoverageIgnoreStart
     use ResetPasswordControllerTrait;
 
     public function __construct(
@@ -172,4 +173,5 @@ class ResetPasswordController extends AbstractController
 
         return $this->redirectToRoute('app_check_email');
     }
+    // @codeCoverageIgnoreEnd
 }
