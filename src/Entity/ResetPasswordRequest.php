@@ -10,6 +10,7 @@ use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordRequestTrait;
 #[ORM\Entity(repositoryClass: ResetPasswordRequestRepository::class)]
 class ResetPasswordRequest implements ResetPasswordRequestInterface
 {
+    // @codeCoverageIgnoreStart
     use ResetPasswordRequestTrait;
 
     #[ORM\Id]
@@ -36,4 +37,5 @@ class ResetPasswordRequest implements ResetPasswordRequestInterface
     {
         return $this->user;
     }
+    // @codeCoverageIgnoreEnd
 }

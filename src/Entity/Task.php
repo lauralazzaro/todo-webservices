@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Validator as TaskAssert;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
@@ -37,10 +39,19 @@ class Task
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private User $user;
 
+    #[ORM\Column(type: 'datetime')]
+    #[TaskAssert\DeadlineInFuture]
+    private DateTime $deadline;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private DateTime $deletedAt;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
         $this->isDone = false;
+        $this->deadline = new DateTime();
+        $this->deadline->setTime(0,0);
     }
 
     public function getId(): int
@@ -98,4 +109,37 @@ class Task
 
         return $this;
     }
+
+    /**
+     * @return DateTime
+     */
+    public function getDeadline(): DateTime
+    {
+        return $this->deadline;
+    }
+
+    /**
+     * @param DateTime $deadline
+     */
+    public function setDeadline(DateTime $deadline): void
+    {
+        $this->deadline = $deadline->setTime(0, 0);
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDeletedAt(): DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param DateTime $deletedAt
+     */
+    public function setDeletedAt(DateTime $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
+    }
 }
+

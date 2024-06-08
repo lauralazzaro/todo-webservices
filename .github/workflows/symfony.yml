@@ -57,13 +57,13 @@ jobs:
       run: php bin/console doctrine:database:create --env=test --no-interaction
 
     - name: Run Migrations
-      run: php bin/console doctrine:migrations:migrate --env=test --no-interaction
+      run: php bin/console doctrine:schema:update --env=test --force --complete --no-interaction
 
     - name: Load Fixtures
       run: php bin/console doctrine:fixtures:load --env=test --no-interaction
 
     - name: Execute tests (Unit and Feature tests) via PHPUnit
-      run: vendor/bin/phpunit
+      run: vendor/bin/phpunit --coverage-text
 
     - name: Clean up
       run: php bin/console doctrine:database:drop --force --env=test --no-interaction

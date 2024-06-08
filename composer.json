@@ -69,8 +69,11 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "test-coverage": [
+        "test-html": [
             "vendor/bin/phpunit --coverage-html public/test-coverage"
+        ],
+        "test-text": [
+            "vendor/bin/phpunit --coverage-text"
         ],
         "init-db": [
             "php bin/console doctrine:database:drop --force",
@@ -104,6 +107,7 @@
         "squizlabs/php_codesniffer": "^3.7",
         "symfony/browser-kit": "*",
         "symfony/cache": "*",
+        "symfony/maker-bundle": "^1.59",
         "symfony/panther": "^2.1",
         "symfony/phpunit-bridge": "*",
         "symfony/stopwatch": "*",

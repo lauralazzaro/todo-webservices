@@ -54,8 +54,13 @@ class Constants
     public const LOGOUT = '/logout';
     //endregion
 
-    //region Task
+    //region Task Entity
     public const TASK_STATUS_TODO = 'todo';
     public const TASK_STATUS_DONE = 'done';
+    //endregion
+
+    //region User Entity
+    public const ROLE_USER = 'ROLE_USER';
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
     //endregion
 }

@@ -4,7 +4,10 @@ namespace App\Tests\Unit;
 
 use App\Entity\Task;
 use App\Entity\User;
+use App\Validator\DeadlineInFutureValidator;
+use DateTime;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -65,9 +68,39 @@ class TaskTest extends TestCase
         $this->assertCount(0, $violations);
     }
 
+    public function testSetDeadlineInThePast(): void
+    {
+        $yesterday = new DateTime ('-1 day');
+
+        $task = new Task();
+        $task->setTitle('Task title');
+        $task->setContent('Some content');
+        $task->setDeadline($yesterday);
+        $violations = $this->validator->validate($task);
+        $this->assertCount(1, $violations);
+    }
+
+    public function testDeadlineWithoutTime(): void
+    {
+        $task = new Task();
+        $task->setTitle('Task title');
+        $task->setContent('Some content');
+
+        $hours = $task->getDeadline()->format('H');
+        $this->assertEquals(0, $hours, 'Hours should be 0');
+
+        $minutes = $task->getDeadline()->format('i');
+        $this->assertEquals(0, $minutes, 'Minutes should be 0');
+    }
+
     protected function setUp(): void
     {
         $this->validator = Validation::createValidatorBuilder()
+            ->setConstraintValidatorFactory(
+                new ConstraintValidatorFactory([
+                    DeadlineInFutureValidator::class => new DeadlineInFutureValidator()
+                ])
+            )
             ->enableAttributeMapping()
             ->getValidator();
     }

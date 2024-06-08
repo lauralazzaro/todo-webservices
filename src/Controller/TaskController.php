@@ -103,7 +103,8 @@ class TaskController extends AbstractController
             return $this->redirectToRoute(Constants::TASK_LIST_NAME);
         }
 
-        $taskRepository->remove($task, true);
+        $task->setDeletedAt(new \DateTime());
+        $taskRepository->save($task, true);
         $this->addFlash('warning', 'The task has been successfully deleted.');
         return $this->redirectToRoute(Constants::TASK_LIST_NAME);
     }
@@ -118,7 +119,7 @@ class TaskController extends AbstractController
         int $page,
         TaskRepository $taskRepository
     ): Response {
-        $pageSize = 5;
+        $pageSize = 10;
         $isDone = Utils::convertStatusToBool($status);
         $tasks = $taskRepository->findAllTasks($page, $pageSize, $isDone);
 
