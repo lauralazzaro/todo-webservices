@@ -70,18 +70,18 @@ Encore
     .autoProvidejQuery()
 
     // Add Bootstrap and Datepicker CSS
-    .addStyleEntry('appStyle', [
-        './node_modules/bootstrap/dist/css/bootstrap.css',
-        './node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
-        './assets/styles/app.css',
-        './public/assets/css/shop-homepage.css'
+    .addStyleEntry("appStyle", [
+        "./node_modules/bootstrap/dist/css/bootstrap.css",
+        "./node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css",
+        "./assets/styles/app.css",
+        "./public/assets/css/shop-homepage.css"
     ])
 
     // Add Bootstrap and Datepicker JS
-    .addEntry('app', [
-        './node_modules/bootstrap/dist/js/bootstrap.bundle.js',
-        './node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
-        './assets/app.js'
+    .addEntry("app", [
+        "./node_modules/bootstrap/dist/js/bootstrap.bundle.js",
+        "./node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js",
+        "./assets/app.js"
     ])
 ;
 

@@ -100,7 +100,6 @@ class UserControllerFunctionalTest extends WebTestCase
             'You successfully create your password',
             'The flash message did not appear'
         );
-
     }
 
     protected function setUp(): void

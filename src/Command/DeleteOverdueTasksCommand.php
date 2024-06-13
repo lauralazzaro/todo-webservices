@@ -3,6 +3,7 @@
 namespace App\Command;
 
 use App\Repository\TaskRepository;
+use DateTime;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -30,7 +31,7 @@ class DeleteOverdueTasksCommand extends Command
 
         $io->title('Marking overdue items as deleted');
 
-        $now = new \DateTime();
+        $now = new DateTime();
         $now->setTime(0, 0);
 
         $overdueTasks = $this->taskRepository->findOverdueTasks();

@@ -3,12 +3,11 @@
 namespace App\DataFixtures;
 
 use App\Entity\Task;
-use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Validator\Constraints\Date;
 
 class TasksFixtures extends Fixture implements FixtureGroupInterface
 {
@@ -32,7 +31,7 @@ class TasksFixtures extends Fixture implements FixtureGroupInterface
             $task = new Task();
             $task->setTitle('task deadline tomorrow n. ' . $i);
             $task->setContent('Deadline tomorrow');
-            $task->setDeadline(new \DateTime('tomorrow'));
+            $task->setDeadline(new DateTime('tomorrow'));
             $manager->persist($task);
             $manager->flush();
         }
@@ -41,7 +40,7 @@ class TasksFixtures extends Fixture implements FixtureGroupInterface
             $task = new Task();
             $task->setTitle('task far away n. ' . $i);
             $task->setContent('deadline in 5 days');
-            $task->setDeadline(new \DateTime('+5 days'));
+            $task->setDeadline(new DateTime('+5 days'));
             $manager->persist($task);
             $manager->flush();
         }
@@ -50,7 +49,7 @@ class TasksFixtures extends Fixture implements FixtureGroupInterface
             $task = new Task();
             $task->setTitle('task overdue n. ' . $i);
             $task->setContent('This task is overdue');
-            $task->setDeadline(new \DateTime('-5 days'));
+            $task->setDeadline(new DateTime('-5 days'));
             $manager->persist($task);
             $manager->flush();
         }

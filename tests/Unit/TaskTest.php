@@ -70,7 +70,7 @@ class TaskTest extends TestCase
 
     public function testSetDeadlineInThePast(): void
     {
-        $yesterday = new DateTime ('-1 day');
+        $yesterday = new DateTime('-1 day');
 
         $task = new Task();
         $task->setTitle('Task title');

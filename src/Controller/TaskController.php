@@ -4,16 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use App\Helper\Constants;
 use App\Helper\Utils;
 use App\Repository\TaskRepository;
 use App\Security\Voter\TaskVoter;
+use DateTime;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use App\Helper\Constants;
 
 class TaskController extends AbstractController
 {
@@ -74,7 +76,7 @@ class TaskController extends AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route(Constants::TASK_TOGGLE_URL, name: Constants::TASK_TOGGLE_NAME)]
     public function toggleTaskAction(
@@ -103,7 +105,7 @@ class TaskController extends AbstractController
             return $this->redirectToRoute(Constants::TASK_LIST_NAME);
         }
 
-        $task->setDeletedAt(new \DateTime());
+        $task->setDeletedAt(new DateTime());
         $taskRepository->save($task, true);
         $this->addFlash('warning', 'The task has been successfully deleted.');
         return $this->redirectToRoute(Constants::TASK_LIST_NAME);

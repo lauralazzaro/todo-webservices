@@ -3,9 +3,9 @@
 namespace App\Helper;
 
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Twig\Environment;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;

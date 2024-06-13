@@ -4,6 +4,7 @@ namespace App\Security\Voter;
 
 use App\Entity\Task;
 use App\Entity\User;
+use LogicException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
@@ -31,7 +32,7 @@ class TaskVoter extends Voter
 
         return match ($attribute) {
             self::EDIT, self::DELETE => $this->canEdit($subject, $user),
-            default => throw new \LogicException('This code should not be reached!')
+            default => throw new LogicException('This code should not be reached!')
         };
     }
 

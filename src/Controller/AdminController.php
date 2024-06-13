@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\AdminCreateUserType;
 use App\Form\AdminEditUserType;
+use App\Helper\Constants;
 use App\Helper\Mailer;
 use App\Helper\UserHelper;
 use App\Repository\UserRepository;
@@ -15,7 +16,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Helper\Constants;
 
 class AdminController extends AbstractController
 {

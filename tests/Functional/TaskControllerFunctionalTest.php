@@ -16,14 +16,6 @@ class TaskControllerFunctionalTest extends WebTestCase
     private ?object $taskRepository;
     private ?object $router;
 
-    protected function setUp(): void
-    {
-        $this->client = self::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-        $this->taskRepository = static::getContainer()->get(TaskRepository::class);
-        $this->router = static::getContainer()->get('router');
-    }
-
     /**
      * @throws Exception
      */
@@ -209,5 +201,13 @@ class TaskControllerFunctionalTest extends WebTestCase
             'The task has been successfully deleted.',
             'The flash message did not appear'
         );
+    }
+
+    protected function setUp(): void
+    {
+        $this->client = self::createClient();
+        $this->userRepository = static::getContainer()->get(UserRepository::class);
+        $this->taskRepository = static::getContainer()->get(TaskRepository::class);
+        $this->router = static::getContainer()->get('router');
     }
 }
