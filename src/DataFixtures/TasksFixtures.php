@@ -54,7 +54,6 @@ class TasksFixtures extends Fixture implements FixtureGroupInterface
             $manager->persist($task);
             $manager->flush();
         }
-
     }
     // @codeCoverageIgnoreEnd
 }
