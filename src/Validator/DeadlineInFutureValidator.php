@@ -7,7 +7,7 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class DeadlineInFutureValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint) :void
+    public function validate($value, Constraint $constraint): void
     {
         /* @var $constraint DeadlineInFuture */
 
@@ -22,4 +22,3 @@ class DeadlineInFutureValidator extends ConstraintValidator
         }
     }
 }
-

@@ -18,10 +18,10 @@ class TaskType extends AbstractType
             ->add('title')
             ->add('content', TextareaType::class)
             ->add('deadline', DateType::class, [
-                'widget' => 'choice',
+                'widget' => 'single_text',
                 'html5' => false,
-                'attr' => ['class' => 'js-datepicker'],
-                'format' => 'dd-MMM-yyyy',
+                'format' => 'dd/MM/yyyy',
+                'attr' => ['class' => 'datepicker'],
                 'constraints' => [
                     new DeadlineInFuture(),
                 ],

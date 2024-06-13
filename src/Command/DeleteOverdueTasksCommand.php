@@ -30,7 +30,7 @@ class DeleteOverdueTasksCommand extends Command
 
         $io->title('Marking overdue items as deleted');
 
-        $now = New \DateTime();
+        $now = new \DateTime();
         $now->setTime(0, 0);
 
         $overdueTasks = $this->taskRepository->findOverdueTasks();

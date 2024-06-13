@@ -51,7 +51,7 @@ class Task
         $this->createdAt = new DateTimeImmutable();
         $this->isDone = false;
         $this->deadline = new DateTime();
-        $this->deadline->setTime(0,0);
+        $this->deadline->setTime(0, 0);
     }
 
     public function getId(): int
@@ -142,4 +142,3 @@ class Task
         $this->deletedAt = $deletedAt;
     }
 }
-
