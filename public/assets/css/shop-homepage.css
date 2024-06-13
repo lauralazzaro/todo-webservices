@@ -47,3 +47,7 @@
 footer {
     margin: 50px 0;
 }
+
+.a.nav-link.active {
+    background-color: #9c9c9c !important;
+}
