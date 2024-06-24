@@ -22,13 +22,13 @@ Encore
   .addStyleEntry("appStyle", [
     "./node_modules/bootstrap/dist/css/bootstrap.css",
     "./node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker.css",
-    "./assets/styles/app.css",
+    "./public/assets/styles/app.css",
     "./public/assets/css/shop-homepage.css"
   ])
   .addEntry("app", [
     "./node_modules/bootstrap/dist/js/bootstrap.bundle.js",
     "./node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js",
-    "./assets/app.js"
+    "./public/assets/app.js"
   ]);
 
 module.exports = Encore.getWebpackConfig();

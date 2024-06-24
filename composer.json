@@ -73,9 +73,6 @@
         "test-html": [
             "vendor/bin/phpunit --coverage-html public/test-coverage"
         ],
-        "test-text": [
-            "vendor/bin/phpunit --coverage-text"
-        ],
         "init-db": [
             "php bin/console doctrine:database:drop --force",
             "bin/console doctrine:database:create",
@@ -87,9 +84,6 @@
             "bin/console doctrine:database:create --env=test",
             "bin/console doctrine:schema:update --force --complete --env=test",
             "bin/console doctrine:fixtures:load -n --env=test --group=test"
-        ],
-        "append-tasks-dev": [
-            "bin/console doctrine:fixtures:load -n --append --group=dev"
         ]
     },
     "conflict": {

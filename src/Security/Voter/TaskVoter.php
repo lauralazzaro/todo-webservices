@@ -38,13 +38,11 @@ class TaskVoter extends Voter
 
     private function canEdit(Task $task, User $user): bool
     {
-        // If the connected user has ROLE_ADMIN than can do everything
-        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+        if ($task->getUser() && $user === $task->getUser()) {
             return true;
         }
 
-        // Check if the user is the creator of the task if it's not an ADMIN
-        if ($task->getUser() && $user === $task->getUser()) {
+        if (!$task->getUser() && in_array('ROLE_ADMIN', $user->getRoles())) {
             return true;
         }
 

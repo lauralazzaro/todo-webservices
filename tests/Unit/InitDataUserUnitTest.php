@@ -8,7 +8,7 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class AdminControllerUnitTest extends TestCase
+class InitDataUserUnitTest extends TestCase
 {
     /**
      * @throws Exception
