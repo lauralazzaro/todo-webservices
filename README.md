@@ -31,7 +31,6 @@ Make sure you have the following software installed on your machine:
 
    Choose the URL of preference from the code page of the repository.  
 
-
 - **Install PHP dependencies:**
 
    ```bash

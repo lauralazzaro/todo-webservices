@@ -5,7 +5,6 @@
 - **Fork the repository**:   
 Create a copy of this repository on your GitHub account by clicking the "Fork" button.  
 
-
 - **Clone the repository**:   
 Clone the forked repository to your local machine.
     
@@ -38,7 +37,7 @@ Save your changes with a clear and descriptive commit message.
   ```
 
 - **Open a Pull Request**:  
-Go to the original repository and open a Pull Request from your forked repository.  
+In the original repository and open a Pull Request from your forked repository.  
 Describe your changes in detail in the Pull Request.
 
 ## Coding Standards
@@ -61,8 +60,7 @@ Make sure all tests pass before submitting your contribution.
 ## Comment Contribuer
 
 - **Forker le dépôt**  
-  Créez une copie de ce dépôt sur votre compte GitHub en cliquant sur le bouton "Fork".
-
+Créez une copie de ce dépôt sur votre compte GitHub en cliquant sur le bouton "Fork".
 
 - **Cloner le dépôt**
 
@@ -70,17 +68,18 @@ Make sure all tests pass before submitting your contribution.
   git clone https://github.com/lauralazzaro/projet8-TodoList.git
   ```
 
-- **Créer une branche** : Créez une nouvelle branche pour vos modifications.
+- **Créer une branche**  
+Créez une nouvelle branche pour vos modifications.
     
   ```bash
   git checkout -b nom-de-votre-branche
   ```
 
-- **Effectuer des modifications** :   
-  Apportez vos modifications ou ajouts sur votre branche.
+- **Effectuer des modifications**  
+Apportez vos modifications ou ajouts sur votre branche.
 
 
-- **Committer les modifications** :  
+- **Committer les modifications**  
 Enregistrez vos modifications avec un message de commit clair et descriptif.
     
   ```bash
@@ -88,14 +87,16 @@ Enregistrez vos modifications avec un message de commit clair et descriptif.
   git commit -m "Description de vos modifications"
   ```
 
-- **Pousser les modifications** : Poussez vos modifications sur votre dépôt forké.
+- **Pousser les modifications**  
+Poussez vos modifications sur votre dépôt forké.
     
   ```bash
   git push origin nom-de-votre-branche
   ```
 
-- **Ouvrir une Pull Request** : Allez sur le dépôt original et ouvrez une Pull Request depuis votre dépôt forké.
-  Décrivez vos modifications en détail dans la Pull Request.
+- **Ouvrir une Pull Request**  
+Allez sur le dépôt original et ouvrez une Pull Request depuis votre dépôt forké.  
+Décrivez vos modifications en détail dans la Pull Request.
 
 ## Normes de Codage
 
@@ -110,4 +111,4 @@ Enregistrez vos modifications avec un message de commit clair et descriptif.
 
 ## Tests
 
-Assurez-vous que tous les tests passent avant de soumettre votre contribution. `
+Assurez-vous que tous les tests passent avant de soumettre votre contribution.
