@@ -2,9 +2,10 @@
 
 namespace App\Validator;
 
+use Attribute;
 use Symfony\Component\Validator\Constraint;
 
-#[\Attribute]
+#[Attribute]
 class DeadlineInFuture extends Constraint
 {
     public string $message = 'The deadline must be today or in the future.';

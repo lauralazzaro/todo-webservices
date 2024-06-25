@@ -4,11 +4,11 @@ namespace App\DataFixtures;
 
 use App\Entity\Task;
 use App\Entity\User;
+use App\Helper\Constants;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use App\Helper\Constants;
 
 class AppFixtures extends Fixture implements FixtureGroupInterface
 {
@@ -80,6 +80,15 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             $task = new Task();
             $task->setTitle('Task without user n. ' . $i);
             $task->setContent('This task has no user');
+            $manager->persist($task);
+            $manager->flush();
+        }
+
+        for ($i = 1; $i <= 5; $i++) {
+            $task = new Task();
+            $task->setTitle('Task done ' . $i);
+            $task->setContent('This task is done');
+            $task->toggle();
             $manager->persist($task);
             $manager->flush();
         }

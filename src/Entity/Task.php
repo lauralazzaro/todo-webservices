@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use App\Validator as TaskAssert;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Validator as TaskAssert;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task

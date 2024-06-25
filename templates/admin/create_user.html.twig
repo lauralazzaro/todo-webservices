@@ -3,11 +3,11 @@
 {% block header_title %}<h1>Add a new user</h1>{% endblock %}
 
 {% block body %}
-    <div class="row">
-        {{ form_start(form, {'action' : path('admin_user_create')}) }}
-            {{ form_widget(form) }}
+	<div class="row">
+		{{ form_start(form, {'action' : path('admin_user_create')}) }}
+		{{ form_widget(form) }}
 
-            <button type="submit" class="btn btn-success pull-right">Create user</button>
-        {{ form_end(form) }}
-    </div>
+		<button type="submit" class="btn btn-success pull-right">Create user</button>
+		{{ form_end(form) }}
+	</div>
 {% endblock %}

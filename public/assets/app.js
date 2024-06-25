@@ -6,16 +6,16 @@
  */
 
 // any CSS you import will output into a single css file (app.css in this case)
-import $ from 'jquery';
-import './styles/app.css';
-import 'bootstrap-datepicker';
-import 'bootstrap-datepicker/dist/css/bootstrap-datepicker.css';
+import $ from "jquery";
+import "./styles/app.css";
+import "bootstrap-datepicker";
+import "bootstrap-datepicker/dist/css/bootstrap-datepicker.css";
 
 $(document).ready(function () {
-    $('.datepicker').datepicker({
-        format: 'dd/mm/yyyy',
-        autoclose: true,
-        todayHighlight: true,
-        todayBtn: true
-    });
+  $(".datepicker").datepicker({
+    format: "dd/mm/yyyy",
+    autoclose: true,
+    todayHighlight: true,
+    todayBtn: true,
+  });
 });

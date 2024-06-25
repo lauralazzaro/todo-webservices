@@ -3,6 +3,7 @@
 namespace App\Tests\Functional;
 
 use App\Entity\User;
+use App\Helper\Constants;
 use App\Helper\Mailer;
 use App\Repository\UserRepository;
 use Exception;
@@ -15,20 +16,12 @@ use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use App\Helper\Constants;
 
 class AdminControllerFunctionalTest extends WebTestCase
 {
     private KernelBrowser $client;
     private ?object $userRepository;
     private ?object $router;
-
-    protected function setUp(): void
-    {
-        $this->client = self::createClient();
-        $this->userRepository = static::getContainer()->get(UserRepository::class);
-        $this->router = static::getContainer()->get('router');
-    }
 
     /**
      * @throws Exception
@@ -166,5 +159,12 @@ class AdminControllerFunctionalTest extends WebTestCase
             }));
 
         $mailer->sendEmail($subject, $temporaryPassword, $mailerTo);
+    }
+
+    protected function setUp(): void
+    {
+        $this->client = self::createClient();
+        $this->userRepository = static::getContainer()->get(UserRepository::class);
+        $this->router = static::getContainer()->get('router');
     }
 }

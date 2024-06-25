@@ -2,6 +2,7 @@
 
 namespace App\Validator;
 
+use DateTime;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
@@ -15,7 +16,7 @@ class DeadlineInFutureValidator extends ConstraintValidator
             return;
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
         if ($value < $now->setTime(0, 0, 0)) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();

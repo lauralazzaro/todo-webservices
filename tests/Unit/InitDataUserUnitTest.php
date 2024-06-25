@@ -4,11 +4,11 @@ namespace App\Tests\Unit;
 
 use App\Entity\User;
 use App\Helper\UserHelper;
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Exception;
 
-class AdminControllerUnitTest extends TestCase
+class InitDataUserUnitTest extends TestCase
 {
     /**
      * @throws Exception
