@@ -75,15 +75,9 @@
         ],
         "init-db": [
             "php bin/console doctrine:database:drop --force",
-            "bin/console doctrine:database:create",
-            "bin/console doctrine:schema:update --force --complete",
-            "bin/console doctrine:fixtures:load -n --group=dev"
-        ],
-        "init-db-test": [
-            "php bin/console doctrine:database:drop --force --env=test",
-            "bin/console doctrine:database:create --env=test",
-            "bin/console doctrine:schema:update --force --complete --env=test",
-            "bin/console doctrine:fixtures:load -n --env=test --group=test"
+            "php bin/console doctrine:database:create",
+            "php bin/console doctrine:schema:update --force --complete",
+            "php bin/console doctrine:fixtures:load -n --group=dev"
         ]
     },
     "conflict": {
@@ -96,7 +90,7 @@
         }
     },
     "require-dev": {
-        "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "doctrine/doctrine-fixtures-bundle": "^3.6",
         "phpunit/phpunit": "^9.5",
         "rector/rector": "^1.0",
         "squizlabs/php_codesniffer": "^3.7",

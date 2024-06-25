@@ -1,7 +1,5 @@
 .idea/
 vendor/
-_old/
-.env*
 var
 public/test-coverage/
 public/resultTest.html
@@ -39,3 +37,5 @@ phpstan.neon
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+.env.test

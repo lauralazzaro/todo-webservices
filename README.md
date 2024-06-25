@@ -18,18 +18,38 @@ Project 8 - OpenClassrooms PHP/Symfony Developer
 
 Make sure you have the following software installed on your machine:
 
-- PHP (>=8.3)
+- PHP (>=8.2)
 - Composer
 - Node.js and npm
 - SQLite
-- Symfony (>=7.0)
 - Symfony CLI
 
 ### Installation
 
 - **Clone the repository:**
 
-   Choose the URL of preference from the code page of the repository.  
+  Choose the URL of preference from the code page of the repository.
+
+- **Create `.env.local` and set up the file with these variables:**
+
+   ```bash
+  APP_ENV=dev
+  APP_SECRET=use-your-own-secret-key
+  MAILER_DSN=smtp://your-email:your-password@smpt-server
+  MAILER_TO=[use-your-email-to-intercept-signup-mail]
+  MAILER_FROM=[use-your-email]
+  ```
+- **Create `.env.test` and set up the file with these variables:**
+
+  ```bash
+  APP_ENV=test
+  APP_SECRET=use-your-own-secret-key
+  DATABASE_URL=sqlite:///%kernel.project_dir%/var/test.db
+  MAILER_DSN=smtp://your-email:your-password@smpt-server
+  MAILER_TO=[use-your-email-to-intercept-signup-mail]
+  MAILER_FROM=[use-your-email]
+  BOOTSTRAP_FIXTURES_LOAD=true
+  ```
 
 - **Install PHP dependencies:**
 
@@ -39,23 +59,14 @@ Make sure you have the following software installed on your machine:
 
 - **Install JavaScript dependencies:**
 
-```bash
-npm install
-```
+  ```bash
+  npm install
+  ```
 
 - **Build assets for dev environment:**
 
    ```bash
    npm run dev
-   ```
-
-- **Set up the env.local file with these variables:**
-
-   ```bash
-   APP_ENV=dev  
-   APP_SECRET=05b6455e1c4e4c62ba339f000d1a4544  
-   DATABASE_URL=sqlite:///%kernel.project_dir%/var/data.db  
-   MAILER_DSN=smtp://your-email:your-password@smpt-server
    ```
 
 ### Database Setup
