@@ -1,8 +1,6 @@
 .idea/
 vendor/
 var
-public/test-coverage/
-public/resultTest.html
 .phpunit.cache/
 
 ###> squizlabs/php_codesniffer ###

@@ -12,10 +12,6 @@ class DeadlineInFutureValidator extends ConstraintValidator
     {
         /* @var $constraint DeadlineInFuture */
 
-        if (null === $value) {
-            return;
-        }
-
         $now = new DateTime();
         if ($value < $now->setTime(0, 0, 0)) {
             $this->context->buildViolation($constraint->message)

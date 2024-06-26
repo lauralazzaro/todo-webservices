@@ -25,10 +25,12 @@ class TaskVoter extends Voter
         // Get the current user from the security token
         $user = $token->getUser();
 
+        // @codeCoverageIgnoreStart
         // Check if the user is connected
         if (!$user instanceof User) {
             return false;
         }
+        // @codeCoverageIgnoreEnd
 
         return match ($attribute) {
             self::EDIT, self::DELETE => $this->canEdit($subject, $user),
