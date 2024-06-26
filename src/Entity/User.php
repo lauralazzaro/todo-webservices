@@ -135,6 +135,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isPasswordGenerated = $isPasswordGenerated;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function eraseCredentials(): void
     {
         // TODO: Implement eraseCredentials() method.

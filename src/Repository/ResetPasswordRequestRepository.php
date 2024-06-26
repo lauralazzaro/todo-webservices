@@ -27,6 +27,7 @@ class ResetPasswordRequestRepository extends ServiceEntityRepository implements 
         parent::__construct($registry, ResetPasswordRequest::class);
     }
 
+    // @codeCoverageIgnoreStart
     public function createResetPasswordRequest(
         object $user,
         DateTimeInterface $expiresAt,
@@ -35,4 +36,5 @@ class ResetPasswordRequestRepository extends ServiceEntityRepository implements 
     ): ResetPasswordRequestInterface {
         return new ResetPasswordRequest($user, $expiresAt, $selector, $hashedToken);
     }
+    // @codeCoverageIgnoreEnd
 }

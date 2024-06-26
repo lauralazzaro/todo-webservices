@@ -155,6 +155,7 @@ class TaskControllerFunctionalTest extends WebTestCase
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
         $this->assertNotEquals($before, $task->isDone());
+        $this->assertNotNull($task->getCreatedAt());
     }
 
     /**
@@ -201,6 +202,24 @@ class TaskControllerFunctionalTest extends WebTestCase
             'The task has been successfully deleted.',
             'The flash message did not appear'
         );
+        $this->assertNotNull($task->getDeletedAt());
+    }
+
+    public function testAdminCanEditTaskWithoutUser()
+    {
+        $roleUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
+        $roleAdmin = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
+
+        $taskAnonymous = $this->taskRepository->findOneBy(['user' => null]);
+
+        $this->client->loginUser($roleUser);
+        $this->client->request('GET', '/tasks/' . $taskAnonymous->getId() . '/edit');
+
+        $this->assertResponseRedirects();
+
+        $this->client->loginUser($roleAdmin);
+        $this->client->request('GET', '/tasks/' . $taskAnonymous->getId() . '/edit');
+        $this->assertResponseIsSuccessful();
     }
 
     protected function setUp(): void
