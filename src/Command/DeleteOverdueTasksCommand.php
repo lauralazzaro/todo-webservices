@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Repository\TaskRepository;
 use DateTime;
+use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -34,21 +35,26 @@ class DeleteOverdueTasksCommand extends Command
         $now = new DateTime();
         $now->setTime(0, 0);
 
-        $overdueTasks = $this->taskRepository->findOverdueTasks();
+        try {
+            $overdueTasks = $this->taskRepository->findOverdueTasks();
 
-        if (empty($overdueTasks)) {
-            $io->success('No overdue items found.');
+            if (empty($overdueTasks)) {
+                $io->success('No overdue items found.');
+                return Command::SUCCESS;
+            }
+
+            foreach ($overdueTasks as $task) {
+                $task->setDeletedAt($now);
+                $this->taskRepository->save($task, true);
+            }
+
+            $totalOverDueTasks = count($overdueTasks);
+            $io->success("[$totalOverDueTasks] overdue tasks have been deleted.");
+
             return Command::SUCCESS;
+        } catch (Exception $e) {
+            $io->error('An error occurred: ' . $e->getMessage());
+            return Command::FAILURE;
         }
-
-        foreach ($overdueTasks as $task) {
-            $task->setDeletedAt($now);
-            $this->taskRepository->save($task, true);
-        }
-
-        $totalOverDueTasks = count($overdueTasks);
-        $io->success("[$totalOverDueTasks] overdue tasks have been deleted.");
-
-        return Command::SUCCESS;
     }
 }
