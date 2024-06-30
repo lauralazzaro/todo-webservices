@@ -3,7 +3,6 @@
 namespace App\Tests\Functional;
 
 use App\Entity\User;
-use App\Helper\Constants;
 use App\Helper\Mailer;
 use App\Repository\UserRepository;
 use Exception;
@@ -28,10 +27,10 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testDenyAccessIfNotAdmin(): void
     {
-        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
+        $testUser = $this->userRepository->findOneByRole('ROLE_USER');
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', Constants::ADMIN_USER_LIST_URL);
+        $this->client->request('GET', $this->router->generate('admin_user_list'));
 
         $this->assertEquals(
             403,
@@ -45,10 +44,10 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testAllowAccessToUsersPage(): void
     {
-        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
+        $testUser = $this->userRepository->findOneByRole('ROLE_ADMIN');
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', Constants::ADMIN_USER_LIST_URL);
+        $this->client->request('GET', $this->router->generate('admin_user_list'));
 
         $this->assertResponseIsSuccessful('Cannot view create users page');
     }
@@ -58,10 +57,10 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testForbiddenCreateUserIfNotAdmin(): void
     {
-        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
+        $testUser = $this->userRepository->findOneByRole('ROLE_USER');
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', Constants::ADMIN_USER_CREATE_URL);
+        $this->client->request('GET', $this->router->generate('admin_user_list'));
 
         $this->assertEquals(
             403,
@@ -75,10 +74,10 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testCreateUserSuccess(): void
     {
-        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
+        $testUser = $this->userRepository->findOneByRole('ROLE_ADMIN');
         $this->client->loginUser($testUser);
 
-        $this->client->request('GET', Constants::ADMIN_USER_CREATE_URL);
+        $this->client->request('GET', $this->router->generate('admin_user_create'));
 
         $this->assertResponseIsSuccessful('Error viewing create user page even if ROLE_ADMIN');
 
@@ -101,12 +100,12 @@ class AdminControllerFunctionalTest extends WebTestCase
      */
     public function testEditUserSuccess(): void
     {
-        $adminUser = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
+        $adminUser = $this->userRepository->findOneByRole('ROLE_ADMIN');
         $this->client->loginUser($adminUser);
 
-        $testUserToEdit = $this->userRepository->findOneByRole(Constants::ROLE_USER);
+        $testUserToEdit = $this->userRepository->findOneByRole('ROLE_USER');
 
-        $url = $this->router->generate(Constants::ADMIN_USER_EDIT_NAME, ['id' => $testUserToEdit->getId()]);
+        $url = $this->router->generate('admin_user_edit', ['id' => $testUserToEdit->getId()]);
 
         $crawler = $this->client->request('GET', $url);
 

@@ -38,7 +38,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             );
             $user->setPassword($hashedPassword);
             $user->setIsPasswordGenerated(false);
-            $user->setRoles([Constants::ROLE_USER]);
+            $user->setRoles(['ROLE_USER']);
             $manager->persist($user);
             $manager->flush();
 
@@ -62,7 +62,7 @@ class AppFixtures extends Fixture implements FixtureGroupInterface
             );
             $admin->setPassword($hashedPassword);
             $admin->setIsPasswordGenerated(false);
-            $admin->setRoles([Constants::ROLE_ADMIN]);
+            $admin->setRoles(['ROLE_ADMIN']);
             $manager->persist($admin);
             $manager->flush();
 

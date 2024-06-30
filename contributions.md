@@ -48,8 +48,15 @@ Describe your changes in detail in the Pull Request.
 - Write unit tests for your new features or modifications.
 - Use clear and intuitive name for variable and method.
 - Use camel case for naming methods and variables.
-- Avoid hard coding; use constants whenever possible (e.g., in `.src/Helper/Constants.php`).
 - Ensure clear comments and descriptions in your commit messages.
+
+
+### Maintaining Coherent Route Naming
+
+To keep route names consistent, use a clear and structured naming strategy:  
+- Routes should reflect their associated controller and action (e.g. task_list for listing tasks and task_create for creating a new task).
+- Use action verbs like list, create, edit, and delete to describe what the route does. 
+- Group related routes with common prefixes, such as task_ for task routes and user_ for user routes.
 
 ## Testing
 
@@ -104,11 +111,16 @@ Décrivez vos modifications en détail dans la Pull Request.
 - Ajoutez des commentaires clairs et utiles.
 - Documentez vos fonctions et classes en utilisant PHPDoc.
 - Écrivez des tests unitaires pour vos nouvelles fonctionnalités ou modifications.
-- Utilisez des noms de variables et de méthodes clairs et intuitifs.
-- Utilisez la notation camel case pour nommer les méthodes et variables.
-- Évitez le codage dur ; utilisez des constantes lorsque possible (par exemple, dans `.src/Helper/Constants.php`).
-- Assurez-vous d'avoir des commentaires et des descriptions claires dans vos messages de commit..
+- Utilisez des noms clairs et intuitifs pour les variables et les méthodes.
+- Utilisez le camel case pour nommer les méthodes et les variables.
+- Assurez des commentaires et des descriptions clairs dans vos messages de commit.
 
+### Maintien de la Cohérence des Noms de Routes
+
+Pour garder les noms de routes cohérents, utilisez une stratégie de nommage claire et structurée :
+- Les routes doivent refléter leur contrôleur et action associés (par exemple, task_list pour lister les tâches et task_create pour créer une nouvelle tâche).
+- Utilisez des verbes d'action comme list, create, edit, et delete pour décrire ce que fait la route.
+- Regroupez les routes liées avec des préfixes communs, tels que task_ pour les routes de tâche et user_ pour les routes d'utilisateur.
 ## Tests
 
 Assurez-vous que tous les tests passent avant de soumettre votre contribution.

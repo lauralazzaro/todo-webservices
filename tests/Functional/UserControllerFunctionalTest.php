@@ -2,7 +2,6 @@
 
 namespace App\Tests\Functional;
 
-use App\Helper\Constants;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -19,10 +18,10 @@ class UserControllerFunctionalTest extends WebTestCase
      */
     public function testEditAction(): void
     {
-        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
+        $testUser = $this->userRepository->findOneByRole('ROLE_USER');
         $this->client->loginUser($testUser);
 
-        $url = $this->router->generate(Constants::USER_EDIT_NAME, ['id' => $testUser->getId()]);
+        $url = $this->router->generate('user_edit', ['id' => $testUser->getId()]);
 
         $crawler = $this->client->request('GET', $url);
 
@@ -45,11 +44,11 @@ class UserControllerFunctionalTest extends WebTestCase
 
     public function testEditUserPagesNeedsPermission()
     {
-        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
+        $testUser = $this->userRepository->findOneByRole('ROLE_USER');
         $this->client->loginUser($testUser);
 
-        $testAdmin = $this->userRepository->findOneByRole(Constants::ROLE_ADMIN);
-        $url = $this->router->generate(Constants::USER_EDIT_NAME, ['id' => $testAdmin->getId()]);
+        $testAdmin = $this->userRepository->findOneByRole('ROLE_ADMIN');
+        $url = $this->router->generate('user_edit', ['id' => $testAdmin->getId()]);
 
         $this->client->request('GET', $url);
 
@@ -62,7 +61,7 @@ class UserControllerFunctionalTest extends WebTestCase
             'The flash message did not appear'
         );
 
-        $url = $this->router->generate(Constants::USER_GENERATED_PASSWORD_NAME, ['id' => $testAdmin->getId()]);
+        $url = $this->router->generate('user_edit_generated_password', ['id' => $testAdmin->getId()]);
 
         $this->client->request('GET', $url);
 
@@ -78,10 +77,10 @@ class UserControllerFunctionalTest extends WebTestCase
 
     public function testEditGeneratedPassword(): void
     {
-        $testUser = $this->userRepository->findOneByRole(Constants::ROLE_USER);
+        $testUser = $this->userRepository->findOneByRole('ROLE_USER');
         $this->client->loginUser($testUser);
 
-        $url = $this->router->generate(Constants::USER_GENERATED_PASSWORD_NAME, ['id' => $testUser->getId()]);
+        $url = $this->router->generate('user_edit_generated_password', ['id' => $testUser->getId()]);
 
         $crawler = $this->client->request('GET', $url);
 
