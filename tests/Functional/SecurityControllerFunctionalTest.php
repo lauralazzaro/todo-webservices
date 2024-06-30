@@ -2,7 +2,6 @@
 
 namespace App\Tests\Functional;
 
-use App\Helper\Constants;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -14,13 +13,13 @@ class SecurityControllerFunctionalTest extends WebTestCase
 
         $userRepository = static::getContainer()->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneByRole(Constants::ROLE_USER);
+        $testUser = $userRepository->findOneByRole('ROLE_USER');
         $client->loginUser($testUser);
 
         $client->request('GET', '/login');
 
         $this->assertResponseRedirects(
-            $client->getResponse()->isRedirect(Constants::TASK_LIST_NAME),
+            $client->getResponse()->isRedirect('task_list'),
             302,
             'Redirection to task_list'
         );

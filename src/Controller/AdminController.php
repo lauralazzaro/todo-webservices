@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\AdminCreateUserType;
 use App\Form\AdminEditUserType;
-use App\Helper\Constants;
 use App\Helper\Mailer;
 use App\Helper\UserHelper;
 use App\Repository\UserRepository;
@@ -19,10 +18,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
 {
-    #[Route(Constants::ADMIN_USER_LIST_URL, name: Constants::ADMIN_USER_LIST_NAME)]
+    #[Route('/admin/users', name: 'admin_user_list')]
     public function listAction(UserRepository $userRepository): Response
     {
-        return $this->render(Constants::ADMIN_USER_LIST_VIEW, [
+        return $this->render('admin/list_user.html.twig', [
             'users' => $userRepository->findAll(),
         ]);
     }
@@ -31,7 +30,7 @@ class AdminController extends AbstractController
      * @throws Exception
      * @throws TransportExceptionInterface
      */
-    #[Route(Constants::ADMIN_USER_CREATE_URL, name: Constants::ADMIN_USER_CREATE_NAME)]
+    #[Route('/admin/users/create', name: 'admin_user_create')]
     public function createAction(
         Request $request,
         UserRepository $userRepository,
@@ -56,17 +55,17 @@ class AdminController extends AbstractController
 
             $this->addFlash('success', "New user created. Waiting for validation");
 
-            return $this->redirectToRoute(Constants::ADMIN_USER_LIST_NAME);
+            return $this->redirectToRoute('admin_user_list');
         }
         return $this->render(
-            Constants::ADMIN_USER_CREATE_VIEW,
+            'admin/create_user.html.twig',
             [
                 'form' => $form->createView()
             ]
         );
     }
 
-    #[Route(Constants::ADMIN_USER_EDIT_URL, name: Constants::ADMIN_USER_EDIT_NAME)]
+    #[Route('/admin/users/{id}/edit', name: 'admin_user_edit')]
     public function editAction(
         User $user,
         Request $request,
@@ -81,10 +80,10 @@ class AdminController extends AbstractController
 
             $this->addFlash('success', "User successfully modified");
 
-            return $this->redirectToRoute(Constants::ADMIN_USER_LIST_NAME);
+            return $this->redirectToRoute('admin_user_list');
         }
         return $this->render(
-            Constants::ADMIN_USER_EDIT_VIEW,
+            'admin/edit_user.html.twig',
             ['form' => $form->createView(),
                 'user' => $user
             ]

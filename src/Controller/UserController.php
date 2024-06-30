@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserEditType;
-use App\Helper\Constants;
 use App\Helper\UserHelper;
 use App\Repository\UserRepository;
 use App\Security\Voter\UserVoter;
@@ -17,7 +16,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class UserController extends AbstractController
 {
-    #[Route(Constants::USER_EDIT_URL, name: Constants::USER_EDIT_NAME)]
+    #[Route('/user/{id}/edit', name: 'user_edit')]
     public function editAction(
         User $user,
         Request $request,
@@ -33,7 +32,7 @@ class UserController extends AbstractController
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+            return $this->redirectToRoute('task_list');
         }
 
         $form = $this->createForm(UserEditType::class, $user);
@@ -43,12 +42,12 @@ class UserController extends AbstractController
             $user = $userHelper->updatePassword($user);
             $userRepository->save($user, true);
             $this->addFlash('success', "You successfully update your password");
-            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+            return $this->redirectToRoute('task_list');
         }
-        return $this->render(Constants::USER_EDIT_VIEW, ['form' => $form->createView(), 'user' => $user]);
+        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 
-    #[Route(Constants::USER_GENERATED_PASSWORD_URL, name: Constants::USER_GENERATED_PASSWORD_NAME)]
+    #[Route('/users/{id}/edit/generated_password', name: 'user_edit_generated_password')]
     public function editGeneratedPasswordAction(
         User $user,
         Request $request,
@@ -64,7 +63,7 @@ class UserController extends AbstractController
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+            return $this->redirectToRoute('task_list');
         }
 
         $form = $this->createForm(UserEditType::class, $user);
@@ -74,8 +73,8 @@ class UserController extends AbstractController
             $user = $userHelper->updatePassword($user);
             $userRepository->save($user, true);
             $this->addFlash('success', "You successfully create your password");
-            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+            return $this->redirectToRoute('task_list');
         }
-        return $this->render(Constants::USER_GENERATED_PASSWORD_VIEW, ['form' => $form->createView(), 'user' => $user]);
+        return $this->render('user/edit.password.html.twig', ['form' => $form->createView(), 'user' => $user]);
     }
 }

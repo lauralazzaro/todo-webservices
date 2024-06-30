@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
-use App\Helper\Constants;
 use App\Helper\Utils;
 use App\Repository\TaskRepository;
 use App\Security\Voter\TaskVoter;
@@ -19,7 +18,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class TaskController extends AbstractController
 {
-    #[Route(Constants::TASK_CREATE_URL, name: Constants::TASK_CREATE_NAME)]
+    #[Route('/tasks/create', name: 'task_create')]
     public function createAction(
         Request $request,
         TaskRepository $taskRepository
@@ -37,13 +36,13 @@ class TaskController extends AbstractController
 
             $this->addFlash('success', 'Task created successfully.');
 
-            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+            return $this->redirectToRoute('task_list');
         }
 
-        return $this->render(Constants::TASK_CREATE_VIEW, ['form' => $form->createView()]);
+        return $this->render('task/create.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route(Constants::TASK_EDIT_URL, name: Constants::TASK_EDIT_NAME)]
+    #[Route('/tasks/{id}/edit', name: 'task_edit')]
     public function editAction(
         Task $task,
         Request $request,
@@ -57,7 +56,7 @@ class TaskController extends AbstractController
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+            return $this->redirectToRoute('task_list');
         }
 
         $form = $this->createForm(TaskType::class, $task);
@@ -66,10 +65,10 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $taskRepository->save($task, true);
             $this->addFlash('success', 'The task has been modified.');
-            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+            return $this->redirectToRoute('task_list');
         }
 
-        return $this->render(Constants::TASK_EDIT_VIEW, [
+        return $this->render('task/edit.html.twig', [
             'form' => $form->createView(),
             'task' => $task,
         ]);
@@ -78,7 +77,7 @@ class TaskController extends AbstractController
     /**
      * @throws Exception
      */
-    #[Route(Constants::TASK_TOGGLE_URL, name: Constants::TASK_TOGGLE_NAME)]
+    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
     public function toggleTaskAction(
         Task $task,
         TaskRepository $taskRepository
@@ -86,10 +85,10 @@ class TaskController extends AbstractController
         $task->toggle();
         $this->addFlash('warning', 'The task has been successfully modified.');
         $taskRepository->save($task, true);
-        return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+        return $this->redirectToRoute('task_list');
     }
 
-    #[Route(Constants::TASK_DELETE_URL, name: Constants::TASK_DELETE_NAME)]
+    #[Route('/tasks/{id}/delete', name: 'task_delete')]
     public function deleteTaskAction(
         Task $task,
         TaskRepository $taskRepository
@@ -102,20 +101,16 @@ class TaskController extends AbstractController
             );
         } catch (AccessDeniedException $e) {
             $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+            return $this->redirectToRoute('task_list');
         }
 
         $task->setDeletedAt(new DateTime());
         $taskRepository->save($task, true);
         $this->addFlash('warning', 'The task has been successfully deleted.');
-        return $this->redirectToRoute(Constants::TASK_LIST_NAME);
+        return $this->redirectToRoute('task_list');
     }
 
-    #[Route(
-        Constants::TASK_LIST_URL,
-        name: Constants::TASK_LIST_NAME,
-        defaults: ['status' => Constants::TASK_STATUS_TODO, 'page' => 1]
-    )]
+    #[Route('/tasks/{status}/{page}', name: 'task_list', defaults: ['status' => 'todo', 'page' => 1])]
     public function listTasks(
         string $status,
         int $page,
@@ -129,13 +124,13 @@ class TaskController extends AbstractController
 
         if ($page > $totalPages && $totalPages > 0) {
             $this->addFlash('warning', 'You tried to open a page that does not have any task.');
-            return $this->redirectToRoute(Constants::TASK_LIST_NAME, [
+            return $this->redirectToRoute('task_list', [
                 'status' => $status,
                 'page' => $totalPages,
             ]);
         }
 
-        return $this->render(Constants::TASK_LIST_VIEW, [
+        return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
             'currentPage' => $page,
             'totalPages' => $totalPages,
