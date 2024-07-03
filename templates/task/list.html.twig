@@ -26,12 +26,12 @@
 				{% for page in 0..totalPages - 1 %}
 					<li class="page-item {% if currentPage == loop.index %}active{% endif %}">
 						<a class="page-link"
-						   href="{{ path('task_list', {'page':  loop.index, 'status.value': status.value}) }}">{{ loop.index }}</a>
+						   href="{{ path('task_list', {'page':  loop.index, 'status': status.value}) }}">{{ loop.index }}</a>
 					</li>
 				{% endfor %}
 				<li class="page-item {% if currentPage == totalPages %} disabled {% endif %}">
 					<a class="page-link"
-					   href="{{ path('task_list', {'page': currentPage + 1, 'status.value': status.value}) }}"
+					   href="{{ path('task_list', {'page': currentPage + 1, 'status': status.value}) }}"
 					   aria-label="Next">
 						<i class="fa-solid fa-forward"></i>
 					</a>
@@ -76,7 +76,8 @@
 
 						<div class="col-12 col-lg-3 justify-content-lg-end justify-content-left mb-lg-0 mb-1">
 							<strong>Status:</strong>
-							<select class="form-select form-select-sm" aria-label="Task Status" onchange="changeTaskStatus(this, {{ task.id }})">
+							<select class="form-select form-select-sm" aria-label="Task Status"
+							        onchange="changeTaskStatus(this, {{ task.id }})">
 								{% for status in ['todo', 'in-progress', 'done'] %}
 									<option value="{{ status }}"
 									        {% if task.status.value == status %}selected{% endif %}>

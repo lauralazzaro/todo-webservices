@@ -77,7 +77,6 @@ class TasksFixtures extends Fixture implements FixtureGroupInterface, DependentF
             $task->setTitle('task overdue n. ' . $i);
             $task->setContent('This task is overdue');
             $task->setDeadline(new DateTime('-5 days'));
-            $task->setStatus(TaskStatus::TODO);
             $manager->persist($task);
             $manager->flush();
         }

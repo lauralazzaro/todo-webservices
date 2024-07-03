@@ -22,5 +22,8 @@ $(document).ready(function () {
 
 window.changeTaskStatus = function(selectElement, taskId) {
   const selectedStatus = selectElement.value;
-  window.location.href = `/tasks/${taskId}/change-status/${selectedStatus}`;
+  const confirmChange = confirm(`Are you sure you want to change the task status to *${selectedStatus}*?`);
+  if (confirmChange) {
+    window.location.href = `/tasks/${taskId}/change-status/${selectedStatus}`;
+  }
 };
