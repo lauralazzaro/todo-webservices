@@ -18,7 +18,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(type: "string", length: 255, unique: true, nullable: false)]
-    #[Assert\NotBlank(message: 'You must enter a valid username.')]
+    #[Assert\NotBlank(message: 'You must enter a username.')]
     private string $username;
 
     #[ORM\Column(type: "string", length: 255, unique: true, nullable: false)]

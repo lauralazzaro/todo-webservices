@@ -21,12 +21,10 @@ class UserTest extends TestCase
             ->enableAttributeMapping()
             ->getValidator();
 
-
         $user = new User();
         $user->setEmail('test@example.com');
         $user->setPassword('123');
-        $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
-        $user->setIsPasswordGenerated(true);
+        $user->setRoles(['ROLE_ADMIN']);
 
         $violations = $validator->validate($user);
         $this->assertCount(1, $violations);

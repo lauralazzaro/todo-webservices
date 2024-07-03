@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Task;
+use App\Enum\TaskStatus;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,19 +41,19 @@ class TaskRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllTasks(int $page = 1, int $pageSize = 10, bool $status = false): Paginator
+    public function findAllTasks(int $page = 1, int $pageSize = 10, TaskStatus $status = TaskStatus::TODO): Paginator
     {
         $query = $this->createQueryBuilder('t')
             ->select('t, user')
             ->leftJoin('t.user', 'user')
-            ->where('t.isDone = :isDone')
+            ->where('t.status = :status')
             ->andWhere('t.deadline >= CURRENT_DATE()')
             ->andWhere('t.deletedAt is null')
             ->orderBy('t.deadline', 'ASC')
             ->addOrderBy('t.createdAt', 'DESC')
             ->setFirstResult(($page - 1) * $pageSize)
             ->setMaxResults($pageSize)
-            ->setParameter('isDone', $status)
+            ->setParameter('status', $status)
             ->getQuery();
 
         return new Paginator($query);

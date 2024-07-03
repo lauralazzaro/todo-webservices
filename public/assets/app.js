@@ -19,3 +19,8 @@ $(document).ready(function () {
     todayBtn: true,
   });
 });
+
+window.changeTaskStatus = function(selectElement, taskId) {
+  const selectedStatus = selectElement.value;
+  window.location.href = `/tasks/${taskId}/change-status/${selectedStatus}`;
+};

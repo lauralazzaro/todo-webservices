@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Task;
+use App\Enum\TaskStatus;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
@@ -76,6 +77,7 @@ class TasksFixtures extends Fixture implements FixtureGroupInterface, DependentF
             $task->setTitle('task overdue n. ' . $i);
             $task->setContent('This task is overdue');
             $task->setDeadline(new DateTime('-5 days'));
+            $task->setStatus(TaskStatus::TODO);
             $manager->persist($task);
             $manager->flush();
         }

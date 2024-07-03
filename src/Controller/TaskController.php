@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Enum\TaskStatus;
 use App\Form\TaskType;
 use App\Helper\Utils;
 use App\Repository\TaskRepository;
@@ -77,12 +78,13 @@ class TaskController extends AbstractController
     /**
      * @throws Exception
      */
-    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTaskAction(
+    #[Route('/tasks/{id}/change-status/{status}', name: 'task_change_status')]
+    public function changeStatusTaskAction(
         Task $task,
-        TaskRepository $taskRepository
+        TaskRepository $taskRepository,
+        TaskStatus $status
     ): RedirectResponse {
-        $task->toggle();
+        $task->setStatus($status);
         $this->addFlash('warning', 'The task has been successfully modified.');
         $taskRepository->save($task, true);
         return $this->redirectToRoute('task_list');
@@ -112,13 +114,12 @@ class TaskController extends AbstractController
 
     #[Route('/tasks/{status}/{page}', name: 'task_list', defaults: ['status' => 'todo', 'page' => 1])]
     public function listTasks(
-        string $status,
+        TaskStatus $status,
         int $page,
         TaskRepository $taskRepository
     ): Response {
         $pageSize = 10;
-        $isDone = Utils::convertStatusToBool($status);
-        $tasks = $taskRepository->findAllTasks($page, $pageSize, $isDone);
+        $tasks = $taskRepository->findAllTasks($page, $pageSize, $status);
 
         $totalPages = ceil(count($tasks) / $pageSize);
 
