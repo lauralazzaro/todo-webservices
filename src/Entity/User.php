@@ -36,12 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $tasks;
 
     #[ORM\Column(type: "boolean")]
-    private bool $isPasswordGenerated;
-
-    public function __construct()
-    {
-        $this->isPasswordGenerated = false;
-    }
+    private bool $isPasswordGenerated = true;
 
     public function getId(): ?int
     {
