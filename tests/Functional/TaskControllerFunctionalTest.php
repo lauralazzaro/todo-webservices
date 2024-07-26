@@ -2,6 +2,7 @@
 
 namespace App\Tests\Functional;
 
+use App\Enum\TaskStatus;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Exception;
@@ -133,19 +134,20 @@ class TaskControllerFunctionalTest extends WebTestCase
     /**
      * @throws Exception
      */
-    public function testToggleTaskAction(): void
+    public function testChangeStatusTaskAction(): void
     {
         $testUser = $this->userRepository->findOneByRole('ROLE_USER');
         $this->client->loginUser($testUser);
 
-        $task = $this->taskRepository->findOneBy(['user' => $testUser]);
+        $task = $this->taskRepository->findOneBy(['status' => TaskStatus::TODO]);
 
-        $before = $task->isDone();
-        $this->client->request('GET', '/tasks/' . $task->getId() . '/toggle');
+        $currentStatus = $task->getStatus();
+
+        $this->client->request('GET', '/tasks/' . $task->getId() . '/change-status/' . TaskStatus::DONE->value);
 
         $this->client->followRedirect();
         $this->assertResponseIsSuccessful();
-        $this->assertNotEquals($before, $task->isDone());
+        $this->assertNotEquals($currentStatus, $task->getStatus());
         $this->assertNotNull($task->getCreatedAt());
     }
 

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Enum\TaskStatus;
 use App\Form\TaskType;
 use App\Helper\Utils;
 use App\Repository\TaskRepository;
@@ -77,12 +78,13 @@ class TaskController extends AbstractController
     /**
      * @throws Exception
      */
-    #[Route('/tasks/{id}/toggle', name: 'task_toggle')]
-    public function toggleTaskAction(
+    #[Route('/tasks/{id}/change-status/{status}', name: 'task_change_status')]
+    public function changeStatusTaskAction(
         Task $task,
-        TaskRepository $taskRepository
+        TaskRepository $taskRepository,
+        TaskStatus $status
     ): RedirectResponse {
-        $task->toggle();
+        $task->setStatus($status);
         $this->addFlash('warning', 'The task has been successfully modified.');
         $taskRepository->save($task, true);
         return $this->redirectToRoute('task_list');
@@ -110,31 +112,23 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('task_list');
     }
 
-    #[Route('/tasks/{status}/{page}', name: 'task_list', defaults: ['status' => 'todo', 'page' => 1])]
+    #[Route('/tasks/{page}', name: 'task_list', defaults: ['page' => 1])]
     public function listTasks(
-        string $status,
-        int $page,
+        Request $request,
         TaskRepository $taskRepository
     ): Response {
-        $pageSize = 10;
-        $isDone = Utils::convertStatusToBool($status);
-        $tasks = $taskRepository->findAllTasks($page, $pageSize, $isDone);
+        $sort = $request->query->get('sort', 'title');
+        $direction = $request->query->get('direction', 'asc');
+        $currentPage = $request->query->getInt('page', 1);
 
-        $totalPages = ceil(count($tasks) / $pageSize);
-
-        if ($page > $totalPages && $totalPages > 0) {
-            $this->addFlash('warning', 'You tried to open a page that does not have any task.');
-            return $this->redirectToRoute('task_list', [
-                'status' => $status,
-                'page' => $totalPages,
-            ]);
-        }
+        $tasks = $taskRepository->findBy([], [$sort => $direction], $limit = 10, $offset = ($currentPage - 1) * 10);
 
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
-            'status' => $status
+            'currentPage' => $currentPage,
+            'totalPages' => ceil(count($tasks) / 10),
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 }

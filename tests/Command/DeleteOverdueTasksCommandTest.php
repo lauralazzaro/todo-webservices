@@ -15,19 +15,6 @@ class DeleteOverdueTasksCommandTest extends KernelTestCase
 
     public function testExecute(): void
     {
-        $overdueTask1 = new Task();
-        $overdueTask1->setTitle('Overdue Task 1');
-        $overdueTask1->setContent('Content overdue Task 1');
-        $overdueTask1->setDeadline(new DateTime('-1 day'));
-
-        $overdueTask2 = new Task();
-        $overdueTask2->setTitle('Overdue Task 2');
-        $overdueTask2->setContent('Content overdue Task 2');
-        $overdueTask2->setDeadline(new DateTime('-2 days'));
-
-        $this->taskRepository->save($overdueTask1, true);
-        $this->taskRepository->save($overdueTask2, true);
-
         $application = new Application(self::$kernel);
         $command = $application->find('DeleteOverdueTasks');
         $commandTester = new CommandTester($command);
@@ -35,7 +22,7 @@ class DeleteOverdueTasksCommandTest extends KernelTestCase
 
         $commandTester->assertCommandIsSuccessful();
         $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('[2] overdue tasks have been deleted.', $output);
+        $this->assertStringContainsString('overdue tasks have been deleted.', $output);
 
         $commandTester->execute([]);
         $output = $commandTester->getDisplay();

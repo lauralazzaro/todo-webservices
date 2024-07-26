@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\TaskStatus;
 use App\Repository\TaskRepository;
 use App\Validator as TaskAssert;
 use DateTime;
@@ -33,9 +34,6 @@ class Task
     )]
     private string $content;
 
-    #[ORM\Column(type: Types::BOOLEAN, options: ["default" => false])]
-    private bool $isDone;
-
     #[ORM\ManyToOne(inversedBy: 'tasks')]
     private User $user;
 
@@ -46,10 +44,12 @@ class Task
     #[ORM\Column(type: 'datetime', nullable: true)]
     private DateTime $deletedAt;
 
+    #[ORM\Column(type: 'string', enumType: TaskStatus::class)]
+    private ?TaskStatus $status = TaskStatus::TODO;
+
     public function __construct()
     {
         $this->createdAt = new DateTimeImmutable();
-        $this->isDone = false;
         $this->deadline = new DateTime();
         $this->deadline->setTime(0, 0);
     }
@@ -88,15 +88,6 @@ class Task
         return $this;
     }
 
-    public function isDone(): bool
-    {
-        return $this->isDone;
-    }
-
-    public function toggle(): void
-    {
-        $this->isDone = !$this->isDone;
-    }
 
     public function getUser(): ?User
     {
@@ -140,5 +131,15 @@ class Task
     public function setDeletedAt(DateTime $deletedAt): void
     {
         $this->deletedAt = $deletedAt;
+    }
+
+    public function getStatus(): ?TaskStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?TaskStatus $status): void
+    {
+        $this->status = $status;
     }
 }
