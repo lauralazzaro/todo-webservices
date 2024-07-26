@@ -112,30 +112,23 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('task_list');
     }
 
-    #[Route('/tasks/{status}/{page}', name: 'task_list', defaults: ['status' => 'todo', 'page' => 1])]
+    #[Route('/tasks/{page}', name: 'task_list', defaults: ['page' => 1])]
     public function listTasks(
-        TaskStatus $status,
-        int $page,
+        Request $request,
         TaskRepository $taskRepository
     ): Response {
-        $pageSize = 10;
-        $tasks = $taskRepository->findAllTasks($page, $pageSize, $status);
+        $sort = $request->query->get('sort', 'title');
+        $direction = $request->query->get('direction', 'asc');
+        $currentPage = $request->query->getInt('page', 1);
 
-        $totalPages = ceil(count($tasks) / $pageSize);
-
-        if ($page > $totalPages && $totalPages > 0) {
-            $this->addFlash('warning', 'You tried to open a page that does not have any task.');
-            return $this->redirectToRoute('task_list', [
-                'status' => $status,
-                'page' => $totalPages,
-            ]);
-        }
+        $tasks = $taskRepository->findBy([], [$sort => $direction], $limit = 10, $offset = ($currentPage - 1) * 10);
 
         return $this->render('task/list.html.twig', [
             'tasks' => $tasks,
-            'currentPage' => $page,
-            'totalPages' => $totalPages,
-            'status' => $status
+            'currentPage' => $currentPage,
+            'totalPages' => ceil(count($tasks) / 10),
+            'sort' => $sort,
+            'direction' => $direction,
         ]);
     }
 }

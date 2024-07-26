@@ -2,110 +2,107 @@
 
 {% block body %}
 
-	<div class="container mt-4">
-		<div class="btn-group d-flex justify-content-center mb-4" role="group" aria-label="Task Status">
-			<a href="{{ path('task_list', {'status': 'todo'}) }}"
-			   class="btn {{ status.value == 'todo' ? 'btn-warning' : 'btn-outline-warning text-dark' }} rounded m-1">Show
-				Tasks
-				To Do</a>
-			<a href="{{ path('task_list', {'status': 'done'}) }}"
-			   class="btn {{ status.value == 'done' ? 'btn-warning' : 'btn-outline-warning text-dark' }} rounded m-1">Show
-				completed
-				tasks</a>
-		</div>
+ <div class="container mt-4">
+  <nav aria-label="Page navigation">
+   <ul class="pagination pagination-md justify-content-center">
+    <li class="page-item {% if currentPage == 1 %} disabled {% endif %}">
+     <a class="page-link"
+        href="{{ path('task_list', {'page': currentPage - 1, 'sort': sort, 'direction': direction}) }}"
+        aria-label="Previous">
+      <i class="fa-solid fa-backward"></i>
+     </a>
+    </li>
+    {% for page in 0..totalPages - 1 %}
+     <li class="page-item {% if currentPage == loop.index %}active{% endif %}">
+      <a class="page-link"
+         href="{{ path('task_list', {'page':  loop.index, 'sort': sort, 'direction': direction}) }}">{{ loop.index }}</a>
+     </li>
+    {% endfor %}
+    <li class="page-item {% if currentPage == totalPages %} disabled {% endif %}">
+     <a class="page-link"
+        href="{{ path('task_list', {'page': currentPage + 1, 'sort': sort, 'direction': direction}) }}"
+        aria-label="Next">
+      <i class="fa-solid fa-forward"></i>
+     </a>
+    </li>
+   </ul>
+  </nav>
+  <table class="table table-striped">
+   <thead>
+    <tr>
+     <th>Title</th>
+     <th>Description</th>
+     <th>
+      <a href="{{ path('task_list', {'sort': 'status', 'direction': direction == 'asc' ? 'desc' : 'asc'}) }}">
+       Status
+       {% if sort == 'status' %}
+        <i class="fa-solid fa-sort-{{ direction == 'asc' ? 'up' : 'down' }}"></i>
+       {% endif %}
+      </a>
+     </th>
+     <th>
+      <a href="{{ path('task_list', {'sort': 'deadline', 'direction': direction == 'asc' ? 'desc' : 'asc'}) }}">
+       Deadline
+       {% if sort == 'deadline' %}
+        <i class="fa-solid fa-sort-{{ direction == 'asc' ? 'up' : 'down' }}"></i>
+       {% endif %}
+      </a>
+     </th>
+     <th>Actions</th>
+    </tr>
+   </thead>
+   <tbody>
+    {% for task in tasks %}
+     {% set deadlineClass = '' %}
+     {% set deadline = task.deadline|date('Y-m-d') %}
+     {% set today = "now"|date('Y-m-d') %}
+     {% set tomorrow = "now"|date_modify('+1 day')|date('Y-m-d') %}
 
-		<nav aria-label="Page navigation">
-			<ul class="pagination pagination-md justify-content-center">
-				<li class="page-item {% if currentPage == 1 %} disabled {% endif %}">
-					<a class="page-link"
-					   href="{{ path('task_list', {'page': currentPage - 1, 'status.value': status.value}) }}"
-					   aria-label="Previous">
-						<i class="fa-solid fa-backward"></i>
-					</a>
-				</li>
-				{% for page in 0..totalPages - 1 %}
-					<li class="page-item {% if currentPage == loop.index %}active{% endif %}">
-						<a class="page-link"
-						   href="{{ path('task_list', {'page':  loop.index, 'status': status.value}) }}">{{ loop.index }}</a>
-					</li>
-				{% endfor %}
-				<li class="page-item {% if currentPage == totalPages %} disabled {% endif %}">
-					<a class="page-link"
-					   href="{{ path('task_list', {'page': currentPage + 1, 'status': status.value}) }}"
-					   aria-label="Next">
-						<i class="fa-solid fa-forward"></i>
-					</a>
-				</li>
-			</ul>
-		</nav>
-		<div class="list-group">
-			{% for task in tasks %}
-				{% set deadlineClass = '' %}
-				{% set deadline = task.deadline|date('Y-m-d') %}
-				{% set today = "now"|date('Y-m-d') %}
-				{% set tomorrow = "now"|date_modify('+1 day')|date('Y-m-d') %}
+     {% if task.status.value == 'done' %}
+      {% set deadlineBadgeClass = 'alert-secondary' %}
+      {% set deadlineIconClass = 'text-secondary' %}
+      {% set deadlineText = 'Completed' %}
+     {% elseif deadline == today %}
+      {% set deadlineBadgeClass = 'alert-danger' %}
+      {% set deadlineIconClass = 'text-danger' %}
+      {% set deadlineText = 'High Priority' %}
+     {% elseif deadline == tomorrow %}
+      {% set deadlineBadgeClass = 'alert-warning' %}
+      {% set deadlineIconClass = 'text-warning' %}
+      {% set deadlineText = 'Approaching Deadline' %}
+     {% else %}
+      {% set deadlineBadgeClass = 'alert-success' %}
+      {% set deadlineIconClass = 'text-success' %}
+      {% set deadlineText = 'Low Priority' %}
+     {% endif %}
 
-				{% if task.status.value == 'done' %}
-					{% set deadlineBadgeClass = 'alert-secondary' %}
-					{% set deadlineIconClass = 'text-secondary' %}
-					{% set deadlineText = 'Completed' %}
-				{% elseif deadline == today %}
-					{% set deadlineBadgeClass = 'alert-danger' %}
-					{% set deadlineIconClass = 'text-danger' %}
-					{% set deadlineText = 'High Priority' %}
-				{% elseif deadline == tomorrow %}
-					{% set deadlineBadgeClass = 'alert-warning' %}
-					{% set deadlineIconClass = 'text-warning' %}
-					{% set deadlineText = 'Approaching Deadline' %}
-				{% else %}
-					{% set deadlineBadgeClass = 'alert-success' %}
-					{% set deadlineIconClass = 'text-success' %}
-					{% set deadlineText = 'Low Priority' %}
-				{% endif %}
-
-				<div class="list-group-item mb-3 rounded border p-2">
-					<div class="row">
-						<div class="col-12 col-lg-6 justify-content-lg-end justify-content-left mb-lg-0 mb-1">
-							<a href="{{ path('task_edit', {'id' : task.id }) }}"><i
-										class="fa-solid fa-pen-to-square"></i></a>
-							<strong>{{ task.title }}</strong> : {{ task.content }}
-							<br>
-							<small class="text-muted" style="font-style: italic">created by
-								: {{ task.user.username | default('Anonymous') }} </small>
-						</div>
-
-						<div class="col-12 col-lg-3 justify-content-lg-end justify-content-left mb-lg-0 mb-1">
-							<strong>Status:</strong>
-							<select class="form-select form-select-sm" aria-label="Task Status"
-							        onchange="changeTaskStatus(this, {{ task.id }})">
-								{% for status in ['todo', 'in-progress', 'done'] %}
-									<option value="{{ status }}"
-									        {% if task.status.value == status %}selected{% endif %}>
-										{{ status|capitalize }}
-									</option>
-								{% endfor %}
-							</select>
-						</div>
-
-						<div class="col-12 col-lg-4 d-flex align-items-center justify-content-lg-end justify-content-left mb-lg-0 mb-1">
-							<span class="badge {{ deadlineBadgeClass }} mr-2 align-items-center">
-								{{ deadlineText }}
-							</span>
-							<span class="badge me-2 align-items-center">
-								<i class="fa-regular fa-calendar"></i> {{ task.deadline|date('d-m-Y') }}
-							</span>
-						</div>
-
-						<div class="col-lg-2 col-12 d-flex align-items-center justify-content-lg-end justify-content-left mb-lg-0 mb-1">
-							<a href="{{ path('task_delete', {id: task.id}) }}"
-							   class="btn btn-danger btn-sm rounded">
-								<i class="fa-solid fa-trash-can"></i>
-							</a>
-						</div>
-					</div>
-
-				</div>
-			{% endfor %}
-		</div>
-	</div>
+     <tr>
+      <td>
+       <a href="{{ path('task_edit', {'id' : task.id }) }}"><i class="fa-solid fa-pen-to-square"></i></a>
+       <strong>{{ task.title }}</strong>
+      </td>
+      <td>{{ task.content }}</td>
+      <td>
+       <select class="form-select form-select-sm" aria-label="Task Status" onchange="changeTaskStatus(this, {{ task.id }})">
+        {% for status in ['todo', 'in-progress', 'done'] %}
+         <option value="{{ status }}" {% if task.status.value == status %}selected{% endif %}>
+          {{ status|capitalize }}
+         </option>
+        {% endfor %}
+       </select>
+      </td>
+      <td>
+       <span class="badge {{ deadlineBadgeClass }} align-items-center">{{ deadlineText }}</span>
+       <span class="badge align-items-center"><i class="fa-regular fa-calendar"></i> {{ task.deadline|date('d-m-Y') }}</span>
+      </td>
+      <td>
+       <a href="{{ path('task_delete', {id: task.id}) }}" class="btn btn-danger btn-sm rounded">
+        <i class="fa-solid fa-trash-can"></i>
+       </a>
+      </td>
+     </tr>
+    {% endfor %}
+   </tbody>
+  </table>
+ </div>
 {% endblock %}

@@ -139,7 +139,7 @@ class TaskControllerFunctionalTest extends WebTestCase
         $testUser = $this->userRepository->findOneByRole('ROLE_USER');
         $this->client->loginUser($testUser);
 
-        $task = $this->taskRepository->findOneBy(['status' => TaskStatus::TODO->value]);
+        $task = $this->taskRepository->findOneBy(['status' => TaskStatus::TODO]);
 
         $currentStatus = $task->getStatus();
 
