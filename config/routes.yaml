@@ -13,7 +13,7 @@ homepage:
         permanent: true
 
 logout:
-    path: /logout
+    path: /api/logout
     methods: [GET]
     defaults:
         _controller: |
