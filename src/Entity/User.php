@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -15,18 +16,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["task_list"])]
     private ?int $id = null;
 
     #[ORM\Column(type: "string", length: 255, unique: true, nullable: false)]
     #[Assert\NotBlank(message: 'You must enter a username.')]
+    #[Groups(["task_list"])]
     private string $username;
 
     #[ORM\Column(type: "string", length: 255, unique: true, nullable: false)]
     #[Assert\Email(message: 'Invalid Email Format')]
     #[Assert\NotBlank(message: 'You must enter a valid email.')]
+    #[Groups(["task_list"])]
     private string $email;
 
     #[ORM\Column]
+    #[Groups(["task_list"])]
     private array $roles = [];
 
     #[ORM\Column(type: "string", length: 255)]

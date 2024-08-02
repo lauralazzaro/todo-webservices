@@ -9,6 +9,7 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
@@ -17,34 +18,42 @@ class Task
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["task_list"])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(["task_list"])]
     private DateTimeImmutable $createdAt;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(
         message: 'You must enter a title.',
     )]
+    #[Groups(["task_list"])]
     private string $title;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank(
         message: 'You must enter a content.',
     )]
+    #[Groups(["task_list"])]
     private string $content;
 
     #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[Groups(["task_list"])]
     private User $user;
 
     #[ORM\Column(type: 'datetime')]
     #[TaskAssert\DeadlineInFuture]
+    #[Groups(["task_list"])]
     private DateTime $deadline;
 
     #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Groups(["task_list"])]
     private DateTime $deletedAt;
 
     #[ORM\Column(type: 'string', enumType: TaskStatus::class)]
+    #[Groups(["task_list"])]
     private ?TaskStatus $status = TaskStatus::TODO;
 
     public function __construct()

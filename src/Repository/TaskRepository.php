@@ -41,7 +41,7 @@ class TaskRepository extends ServiceEntityRepository
         }
     }
 
-    public function findAllTasks(int $page = 1, int $pageSize = 10): Paginator
+    public function findAllTasks(int $page, int $limit): Paginator
     {
         $query = $this->createQueryBuilder('t')
             ->select('t, user')
@@ -50,8 +50,8 @@ class TaskRepository extends ServiceEntityRepository
             ->andWhere('t.deletedAt is null')
             ->orderBy('t.deadline', 'ASC')
             ->addOrderBy('t.createdAt', 'DESC')
-            ->setFirstResult(($page - 1) * $pageSize)
-            ->setMaxResults($pageSize)
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
             ->getQuery();
 
         return new Paginator($query);

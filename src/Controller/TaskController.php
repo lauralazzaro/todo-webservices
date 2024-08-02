@@ -3,98 +3,334 @@
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
+use App\Enum\TaskResponseMessage;
 use App\Enum\TaskStatus;
 use App\Form\TaskType;
-use App\Helper\Utils;
+use App\Repository\UserRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\SerializerInterface;
 use App\Repository\TaskRepository;
 use App\Security\Voter\TaskVoter;
 use DateTime;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use OpenApi\Attributes as OA;
 
 class TaskController extends AbstractController
 {
-    #[Route('/tasks/create', name: 'task_create')]
+    #[OA\Post(
+        path: "/tasks/create",
+        summary: "Create a new task",
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: "#/components/schemas/Task")
+        ),
+        tags: ["Tasks"],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: TaskResponseMessage::TASK_SAVED->value,
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "message",
+                            type: "string",
+                            example: TaskResponseMessage::TASK_SAVED
+                        )
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 400,
+                description: TaskResponseMessage::INVALID_FORM_SUBMISSION->value,
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "error",
+                            type: "string",
+                            example: TaskResponseMessage::INVALID_FORM_SUBMISSION
+                        )
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: "Internal server error",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "error",
+                            type: "string",
+                            example: TaskResponseMessage::INTERNAL_SERVER_ERROR
+                        )
+                    ],
+                    type: "object"
+                )
+            )
+        ]
+    )]
+    #[Route('/tasks/create', name: 'api_task_create', methods: ['POST'])]
     public function createAction(
         Request $request,
-        TaskRepository $taskRepository
-    ): RedirectResponse|Response {
-        $task = new Task();
+        TaskRepository $taskRepository,
+        UserRepository $userRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+        try {
+            $data = $request->getContent();
+            $task = $serializer->deserialize($data, Task::class, 'json');
 
-        $user = $this->getUser();
-        $task->setUser($user);
+            $userId = json_decode($data, true)['user']['id'];
+            $user = $userRepository->find($userId);
+            if (!$user instanceof User) {
+                return new JsonResponse(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
+            }
 
-        $form = $this->createForm(TaskType::class, $task);
-        $form->handleRequest($request);
+            $task->setUser($user);
 
-        if ($form->isSubmitted() && $form->isValid()) {
             $taskRepository->save($task, true);
-
-            $this->addFlash('success', 'Task created successfully.');
-
-            return $this->redirectToRoute('task_list');
+            return new JsonResponse(
+                $serializer->serialize(
+                    $task,
+                    'json',
+                    ['groups' => 'task_list']
+                ),
+                Response::HTTP_CREATED,
+                [],
+                true
+            );
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return $this->render('task/create.html.twig', ['form' => $form->createView()]);
     }
 
-    #[Route('/tasks/{id}/edit', name: 'task_edit')]
+    #[OA\Put(
+        path: "/tasks/{id}/edit",
+        summary: "Edit an existing task",
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(ref: "#/components/schemas/Task")
+        ),
+        tags: ["Tasks"],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: TaskResponseMessage::TASK_MODIFIED->value,
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "message",
+                            type: "string",
+                            example: TaskResponseMessage::TASK_MODIFIED
+                        )
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 400,
+                description: TaskResponseMessage::INVALID_FORM_SUBMISSION->value,
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "error",
+                            type: "string",
+                            example: TaskResponseMessage::INVALID_FORM_SUBMISSION
+                        )
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: TaskResponseMessage::INTERNAL_SERVER_ERROR->value,
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "error",
+                            type: "string",
+                            example: TaskResponseMessage::INTERNAL_SERVER_ERROR
+                        )
+                    ],
+                    type: "object"
+                )
+            )
+        ]
+    )]
+    #[Route('/tasks/{id}/edit', name: 'api_task_edit', methods: ['PUT'])]
     public function editAction(
         Task $task,
         Request $request,
-        TaskRepository $taskRepository
-    ): RedirectResponse|Response {
+        TaskRepository $taskRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
+//        try {
+//            $this->denyAccessUnlessGranted(
+//                attribute: TaskVoter::EDIT,
+//                subject: $task,
+//                message: 'You cannot edit a task you did not create'
+//            );
+//        } catch (AccessDeniedException $e) {
+//            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+//        }
         try {
-            $this->denyAccessUnlessGranted(
-                attribute: TaskVoter::EDIT,
-                subject: $task,
-                message: 'You cannot edit a task you did not create'
-            );
-        } catch (AccessDeniedException $e) {
-            $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('task_list');
-        }
+            $data = json_decode($request->getContent(), true);
+            $task = $serializer->deserialize($request->getContent(), Task::class, 'json', ['object_to_populate' => $task]);
 
-        $form = $this->createForm(TaskType::class, $task);
-        $form->handleRequest($request);
+            if (isset($data['title'])) {
+                $task->setTitle($data['title']);
+            }
+            if (isset($data['content'])) {
+                $task->setContent($data['content']);
+            }
+            if (isset($data['deadline'])) {
+                $task->setDeadline(new DateTime($data['deadline']));
+            }
 
-        if ($form->isSubmitted() && $form->isValid()) {
             $taskRepository->save($task, true);
-            $this->addFlash('success', 'The task has been modified.');
-            return $this->redirectToRoute('task_list');
-        }
 
-        return $this->render('task/edit.html.twig', [
-            'form' => $form->createView(),
-            'task' => $task,
-        ]);
+            return new JsonResponse(
+                $serializer->serialize(
+                    $task,
+                    'json',
+                    ['groups' => 'task_list']
+                ),
+                Response::HTTP_OK,
+                [],
+                true
+            );
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    /**
-     * @throws Exception
-     */
-    #[Route('/tasks/{id}/change-status/{status}', name: 'task_change_status')]
+    #[OA\Put(
+        path: "/tasks/{id}/change-status/{status}",
+        summary: "Change the status of a task",
+        tags: ["Tasks"],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            ),
+            new OA\Parameter(
+                name: "status",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "string")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "Task status modified successfully",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "message",
+                            type: "string",
+                            example: "The task status has been successfully modified."
+                        )
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: "Internal server error",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "error",
+                            type: "string",
+                            example: TaskResponseMessage::INTERNAL_SERVER_ERROR
+                        )
+                    ],
+                    type: "object"
+                )
+            )
+        ]
+    )]
+    #[Route('/tasks/{id}/change-status/{status}', name: 'api_task_change_status', methods: ['PUT'])]
     public function changeStatusTaskAction(
         Task $task,
         TaskRepository $taskRepository,
         TaskStatus $status
-    ): RedirectResponse {
-        $task->setStatus($status);
-        $this->addFlash('warning', 'The task has been successfully modified.');
-        $taskRepository->save($task, true);
-        return $this->redirectToRoute('task_list');
+    ): JsonResponse {
+        try {
+            $task->setStatus($status);
+            $taskRepository->save($task, true);
+            return new JsonResponse(['message' => TaskResponseMessage::TASK_STATUS_MODIFIED], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    #[Route('/tasks/{id}/delete', name: 'task_delete')]
+    #[OA\Delete(
+        path: "/tasks/{id}/delete",
+        summary: "Delete a task",
+        tags: ["Tasks"],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: TaskResponseMessage::TASK_DELETED->value,
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "message",
+                            type: "string",
+                            example: TaskResponseMessage::TASK_DELETED
+                        )
+                    ],
+                    type: "object"
+                )
+            ),
+            new OA\Response(
+                response: 500,
+                description: "Internal server error",
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(
+                            property: "error",
+                            type: "string",
+                            example: TaskResponseMessage::INTERNAL_SERVER_ERROR
+                        )
+                    ],
+                    type: "object"
+                )
+            )
+        ]
+    )]
+    #[Route('/tasks/{id}/delete', name: 'task_delete', methods: ['DELETE'])]
     public function deleteTaskAction(
         Task $task,
         TaskRepository $taskRepository
-    ): RedirectResponse {
+    ): JsonResponse {
         try {
             $this->denyAccessUnlessGranted(
                 attribute: TaskVoter::DELETE,
@@ -102,33 +338,57 @@ class TaskController extends AbstractController
                 message: 'You cannot delete a task you did not create'
             );
         } catch (AccessDeniedException $e) {
-            $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('task_list');
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $task->setDeletedAt(new DateTime());
-        $taskRepository->save($task, true);
-        $this->addFlash('warning', 'The task has been successfully deleted.');
-        return $this->redirectToRoute('task_list');
+        try {
+            $task->setDeletedAt(new DateTime());
+            $taskRepository->save($task, true);
+            return new JsonResponse(['message' => TaskResponseMessage::TASK_DELETED], Response::HTTP_OK);
+        } catch (Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
-    #[Route('/tasks/{page}', name: 'task_list', defaults: ['page' => 1])]
+    #[OA\Get(
+        path: "/tasks",
+        summary: "List all tasks",
+        tags: ["Tasks"],
+        parameters: [
+            new OA\Parameter(
+                name: "page",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "integer", default: 1)
+            ),
+            new OA\Parameter(
+                name: "limit",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "integer", default: 10)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: "List of tasks",
+                content: new OA\JsonContent(
+                    type: "array",
+                    items: new OA\Items(ref: "#/components/schemas/Task")
+                )
+            )
+        ]
+    )]
+    #[Route('/tasks', name: 'api_task_list', methods: ['GET'])]
     public function listTasks(
         Request $request,
-        TaskRepository $taskRepository
-    ): Response {
-        $sort = $request->query->get('sort', 'title');
-        $direction = $request->query->get('direction', 'asc');
+        TaskRepository $taskRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
         $currentPage = $request->query->getInt('page', 1);
-
-        $tasks = $taskRepository->findBy([], [$sort => $direction], $limit = 10, $offset = ($currentPage - 1) * 10);
-
-        return $this->render('task/list.html.twig', [
-            'tasks' => $tasks,
-            'currentPage' => $currentPage,
-            'totalPages' => ceil(count($tasks) / 10),
-            'sort' => $sort,
-            'direction' => $direction,
-        ]);
+        $limit = $request->query->getInt('limit', 10);
+        $tasks = $taskRepository->findAllTasks($currentPage, $limit);
+        $tasksJson = $serializer->serialize($tasks, 'json', ['groups' => 'task_list']);
+        return new JsonResponse($tasksJson, Response::HTTP_OK, [], true);
     }
 }
