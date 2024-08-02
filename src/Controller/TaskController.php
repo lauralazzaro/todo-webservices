@@ -6,7 +6,6 @@ use App\Entity\Task;
 use App\Entity\User;
 use App\Enum\TaskResponseMessage;
 use App\Enum\TaskStatus;
-use App\Form\TaskType;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -179,18 +178,23 @@ class TaskController extends AbstractController
         TaskRepository $taskRepository,
         SerializerInterface $serializer
     ): JsonResponse {
-//        try {
-//            $this->denyAccessUnlessGranted(
-//                attribute: TaskVoter::EDIT,
-//                subject: $task,
-//                message: 'You cannot edit a task you did not create'
-//            );
-//        } catch (AccessDeniedException $e) {
-//            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-//        }
+        try {
+            $this->denyAccessUnlessGranted(
+                attribute: TaskVoter::EDIT,
+                subject: $task,
+                message: 'You cannot edit a task you did not create'
+            );
+        } catch (AccessDeniedException $e) {
+            return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         try {
             $data = json_decode($request->getContent(), true);
-            $task = $serializer->deserialize($request->getContent(), Task::class, 'json', ['object_to_populate' => $task]);
+            $task = $serializer->deserialize(
+                $request->getContent(),
+                Task::class,
+                'json',
+                ['object_to_populate' => $task]
+            );
 
             if (isset($data['title'])) {
                 $task->setTitle($data['title']);

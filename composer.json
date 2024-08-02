@@ -12,6 +12,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.15",
         "egulias/email-validator": "^4.0",
+        "nelmio/api-doc-bundle": "^4.29",
         "phpdocumentor/reflection-docblock": "^5.4",
         "phpstan/phpdoc-parser": "^1.29",
         "symfony/apache-pack": "^1.0",
@@ -29,8 +30,7 @@
         "symfony/security-bundle": "7.0.*",
         "symfony/serializer": "7.1.*",
         "symfony/validator": "*",
-        "symfony/yaml": "*",
-        "symfonycasts/reset-password-bundle": "^1.21"
+        "symfony/yaml": "*"
     },
     "config": {
         "allow-plugins": {
@@ -85,7 +85,7 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false,
+            "allow-contrib": true,
             "require": "7.1.*"
         }
     },

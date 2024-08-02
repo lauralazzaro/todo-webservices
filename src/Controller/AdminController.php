@@ -10,41 +10,46 @@ use App\Helper\UserHelper;
 use App\Repository\UserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdminController extends AbstractController
 {
-    #[Route('/admin/users', name: 'admin_user_list')]
-    public function listAction(UserRepository $userRepository): Response
+    #[Route('/api/admin/users', name: 'app_admin_user_list', methods: ['GET'])]
+    public function listAction(UserRepository $userRepository): JsonResponse
     {
-        return $this->render('admin/list_user.html.twig', [
-            'users' => $userRepository->findAll(),
-        ]);
+        $users = $userRepository->findAll();
+        $userData = array_map(function ($user) {
+            return [
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+                'email' => $user->getEmail(),
+                // Add other user fields as needed
+            ];
+        }, $users);
+
+        return new JsonResponse(['users' => $userData]);
     }
 
     /**
      * @throws Exception
      * @throws TransportExceptionInterface
      */
-    #[Route('/admin/users/create', name: 'admin_user_create')]
+    #[Route('/api/admin/users/create', name: 'app_admin_user_create', methods: ['POST'])]
     public function createAction(
         Request $request,
         UserRepository $userRepository,
         UserHelper $userHelper,
         Mailer $mailer
-    ): RedirectResponse|Response {
+    ): JsonResponse {
         $form = $this->createForm(AdminCreateUserType::class);
-
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $newUser = $form->getData();
-
             $initUserData = $userHelper->initUserData($newUser);
-
             $userRepository->save($initUserData['user'], true);
 
             $mailer->sendEmail(
@@ -53,40 +58,26 @@ class AdminController extends AbstractController
                 $newUser->getEmail()
             );
 
-            $this->addFlash('success', "New user created. Waiting for validation");
-
-            return $this->redirectToRoute('admin_user_list');
+            return new JsonResponse(['message' => 'New user created. Waiting for validation'], JsonResponse::HTTP_CREATED);
         }
-        return $this->render(
-            'admin/create_user.html.twig',
-            [
-                'form' => $form->createView()
-            ]
-        );
+
+        return new JsonResponse(['error' => 'Invalid form data.'], JsonResponse::HTTP_BAD_REQUEST);
     }
 
-    #[Route('/admin/users/{id}/edit', name: 'admin_user_edit')]
+    #[Route('/api/admin/users/{id}/edit', name: 'app_admin_user_edit', methods: ['PUT'])]
     public function editAction(
         User $user,
         Request $request,
         UserRepository $userRepository
-    ): RedirectResponse|Response {
+    ): JsonResponse {
         $form = $this->createForm(AdminEditUserType::class, $user);
-
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $userRepository->save($user, true);
-
-            $this->addFlash('success', "User successfully modified");
-
-            return $this->redirectToRoute('admin_user_list');
+            return new JsonResponse(['message' => 'User successfully modified']);
         }
-        return $this->render(
-            'admin/edit_user.html.twig',
-            ['form' => $form->createView(),
-                'user' => $user
-            ]
-        );
+
+        return new JsonResponse(['error' => 'Invalid form data.'], JsonResponse::HTTP_BAD_REQUEST);
     }
 }

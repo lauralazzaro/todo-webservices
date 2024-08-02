@@ -8,22 +8,21 @@ use App\Helper\UserHelper;
 use App\Repository\UserRepository;
 use App\Security\Voter\UserVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class UserController extends AbstractController
 {
-    #[Route('/user/{id}/edit', name: 'user_edit')]
+    #[Route('/api/user/{id}/edit', name: 'app_user_edit', methods: ['PUT'])]
     public function editAction(
         User $user,
         Request $request,
         UserRepository $userRepository,
         UserHelper $userHelper,
         int $id
-    ): RedirectResponse|Response {
+    ): JsonResponse {
         try {
             $this->denyAccessUnlessGranted(
                 attribute: UserVoter::EDIT,
@@ -31,8 +30,7 @@ class UserController extends AbstractController
                 message: 'You don\'t have the rights to access this page.'
             );
         } catch (AccessDeniedException $e) {
-            $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('task_list');
+            return new JsonResponse(['error' => $e->getMessage()], JsonResponse::HTTP_FORBIDDEN);
         }
 
         $form = $this->createForm(UserEditType::class, $user);
@@ -41,20 +39,20 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userHelper->updatePassword($user);
             $userRepository->save($user, true);
-            $this->addFlash('success', "You successfully update your password");
-            return $this->redirectToRoute('task_list');
+            return new JsonResponse(['message' => 'You successfully updated your password'], JsonResponse::HTTP_OK);
         }
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+
+        return new JsonResponse(['error' => 'Invalid form data.'], JsonResponse::HTTP_BAD_REQUEST);
     }
 
-    #[Route('/users/{id}/edit/generated_password', name: 'user_edit_generated_password')]
+    #[Route('/api/users/{id}/edit/generated_password', name: 'app_user_edit_generated_password', methods: ['PUT'])]
     public function editGeneratedPasswordAction(
         User $user,
         Request $request,
         UserRepository $userRepository,
         UserHelper $userHelper,
         int $id
-    ): RedirectResponse|Response {
+    ): JsonResponse {
         try {
             $this->denyAccessUnlessGranted(
                 attribute: UserVoter::EDIT,
@@ -62,8 +60,7 @@ class UserController extends AbstractController
                 message: 'You don\'t have the rights to access this page.'
             );
         } catch (AccessDeniedException $e) {
-            $this->addFlash('error', $e->getMessage());
-            return $this->redirectToRoute('task_list');
+            return new JsonResponse(['error' => $e->getMessage()], JsonResponse::HTTP_FORBIDDEN);
         }
 
         $form = $this->createForm(UserEditType::class, $user);
@@ -72,9 +69,9 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user = $userHelper->updatePassword($user);
             $userRepository->save($user, true);
-            $this->addFlash('success', "You successfully create your password");
-            return $this->redirectToRoute('task_list');
+            return new JsonResponse(['message' => 'You successfully created your password'], JsonResponse::HTTP_OK);
         }
-        return $this->render('user/edit.password.html.twig', ['form' => $form->createView(), 'user' => $user]);
+
+        return new JsonResponse(['error' => 'Invalid form data.'], JsonResponse::HTTP_BAD_REQUEST);
     }
 }
