@@ -12,6 +12,9 @@ homepage:
         route: homepage
         permanent: true
 
+api_login:
+    path: /api/login
+
 logout:
     path: /api/logout
     methods: [GET]
