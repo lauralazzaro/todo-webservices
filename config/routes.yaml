@@ -12,8 +12,8 @@ homepage:
         route: homepage
         permanent: true
 
-api_login:
-    path: /api/login
+api_login_check:
+    path: /api/login_check
 
 logout:
     path: /api/logout
