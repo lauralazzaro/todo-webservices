@@ -30,6 +30,7 @@
         "symfony/runtime": "*",
         "symfony/security-bundle": "7.0.*",
         "symfony/serializer": "7.1.*",
+        "symfony/twig-bundle": "7.1.*",
         "symfony/validator": "*",
         "symfony/yaml": "*"
     },
